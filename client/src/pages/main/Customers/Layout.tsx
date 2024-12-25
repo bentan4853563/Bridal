@@ -9,15 +9,18 @@ export default function CutomersLayout() {
       <div className="px-10 py-5 border-b flex justify-between items-center">
         <Breadcumbs />
 
-        {!location.pathname.includes('/new') && <Link
-          to="/customers/new"
-          type="button"
-          className="bg-blue-700 p-2 rounded-md text-white"
-        >
-          Add Customer
-        </Link>}
+        {!location.pathname.includes("/new") && (
+          <Link
+            to="/customers/new"
+            type="button"
+            className="bg-blue-700 p-2 rounded-md text-white"
+          >
+            Add Customer
+          </Link>
+        )}
       </div>
-      <Outlet />
+
+        <Outlet />
     </div>
   );
 }

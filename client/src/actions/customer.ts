@@ -8,7 +8,6 @@ export const handleCreateCustomer = async (
 ) => {
   try {
     await axiosInstance.post("/api/customers/create", formData);
-
     onSuccess();
   } catch (err: unknown) {
     const error = err as ApiError;

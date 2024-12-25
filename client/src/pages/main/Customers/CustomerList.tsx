@@ -69,11 +69,11 @@ export default function CustomerList() {
 
   // Navigate to edit page on row click
   const handleRowClick = (params: GridRowParams) => {
-    navigate(`/customers/edit/${params.row._id}`);
+    navigate(`/customers/${params.row._id}/information`);
   };
 
   return (
-    <div className="p-12">
+    <div className="p-12 h-full">
       <DataGrid
         rows={rows}
         getRowId={(row) => row._id} // Use _id as a unique identifier

@@ -6,7 +6,7 @@ export default function DashboardLayout() {
     <div className="text-black">
       <div className="flex flex-col">
         <div className="px-10 py-6 border-b flex justify-between">
-          <h2 className="text-2xl">Dashboard</h2>
+          <h2 className="text-xl">Dashboard</h2>
         </div>
       </div>
       <Outlet />

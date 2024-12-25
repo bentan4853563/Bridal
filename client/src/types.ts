@@ -5,3 +5,12 @@ export interface ApiError {
     };
   };
 }
+
+
+export interface ProductData {
+  name: string;
+  primaryPhoto: File | string;
+  rentalCostPerDay: number;
+  quantity: number;
+  status: string;
+}

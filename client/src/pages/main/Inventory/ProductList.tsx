@@ -13,15 +13,12 @@ const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 50 },
   { field: "name", headerName: "Name", flex: 1 }, // Use flex for responsive width
   {
-    field: "primaryPhoto",
+    field: "image",
     headerName: "Primary Photo",
     width: 150,
     renderCell: (params) => (
       <img
-        src={`${import.meta.env.VITE_BACKEND_URL}${params.value.replace(
-          "uploads",
-          "/"
-        )}`}
+        src={params.value}
         alt={params.row.name}
         style={{
           width: "50px",

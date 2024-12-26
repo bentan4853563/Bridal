@@ -8,7 +8,6 @@ export const handleCreateProduct = async (
   onSuccess: () => void
 ) => {
   try {
-    console.log("===========>");
     await axios.post(
       `${import.meta.env.VITE_BACKEND_URL}/api/products/create`,
       formData,
@@ -66,6 +65,22 @@ export const handleGetProducts = async (page: number, limit: number) => {
     const response = await axiosInstance.get(
       `/api/products/list?page=${page}&limit=${limit}`
     );
+    return response.data;
+  } catch (err: unknown) {
+    const error = err as ApiError;
+    if (error.response && error.response.data.errors) {
+      toast.error(error.response.data.errors[0].detail);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+    return null;
+  }
+};
+
+export const handleGetAllProducts = async () => {
+  try {
+    const response = await axiosInstance.get("/api/products/all");
+
     return response.data;
   } catch (err: unknown) {
     const error = err as ApiError;

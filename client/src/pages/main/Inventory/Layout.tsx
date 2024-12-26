@@ -18,7 +18,7 @@ export default function InventoryLayout() {
 
         {!location.pathname.includes("/new") && (
           <Link
-            to={`/product/new"`}
+            to={`/product/new`}
             type="button"
             className="bg-blue-700 p-2 rounded-md text-white"
           >

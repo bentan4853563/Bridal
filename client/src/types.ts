@@ -7,10 +7,24 @@ export interface ApiError {
 }
 
 
-export interface ProductData {
+export interface Product {
+  _id: string;
   name: string;
-  primaryPhoto: File | string;
+  image: string;
+  primaryPhoto: File;
   rentalCostPerDay: number;
   quantity: number;
   status: string;
+}
+
+export interface Customer {
+  _id: string;
+  name: string;
+  surname: string;
+  address: string;
+  city: string;
+  whatsApp: string;
+  date: string;
+  location: string;
+  type: string;
 }

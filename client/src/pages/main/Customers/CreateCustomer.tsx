@@ -5,18 +5,7 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import { handleCreateCustomer } from "../../../actions/customer";
 import { toast } from "react-toastify";
-
-// Define the structure of form data
-interface FormData {
-  name: string;
-  surname: string;
-  address: string;
-  city: string;
-  whatsApp: string;
-  date: string;
-  location: string;
-  type: string;
-}
+import { Customer } from "../../../types";
 
 // Define the structure of error messages
 interface Errors {
@@ -31,7 +20,7 @@ interface Errors {
 }
 
 export default function CreateCustomer() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<Customer>({
     name: "",
     surname: "",
     address: "",

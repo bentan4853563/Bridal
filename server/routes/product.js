@@ -20,12 +20,13 @@ router.post('/create', upload.single('primaryPhoto'), async (req, res) => {
     // Create a new product instance
     const newProduct = new Product({
       name: req.body.name,
-      primaryPhoto: req.file ? req.file.path : null,
+      image: req.file ? process.env.BASE_URL+ req.file.path.replace('uploads', '') : null,
       rentalCostPerDay: req.body.rentalCostPerDay,
       category: req.body.category,
       subCategory: req.body.subCategory,
       quantity: req.body.quantity,
       status: req.body.status,
+      type: req.body.type
     });
 
     const savedProduct = await newProduct.save();
@@ -58,6 +59,19 @@ router.get('/list', async (req, res) => {
     res
       .status(500)
       .json({ message: 'Failed to fetch customers', error: error.message });
+  }
+});
+
+router.get('/all', async (req, res) => {
+  try {
+    const products = await Product.find();
+
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res
+      .status(500)
+      .json({ message: 'Failed to fetch products', error: error.message });
   }
 });
 

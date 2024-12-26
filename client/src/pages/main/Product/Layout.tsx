@@ -72,7 +72,7 @@ export default function ProductLayout() {
         </div>
 
         {/* Render Child Routes */}
-        <Outlet context={{ productData }} />
+        <Outlet context={{ productData, setProductData }} />
       </div>
     </div>
   );

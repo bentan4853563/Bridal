@@ -2,37 +2,41 @@ import React, { Suspense } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
-import Loading from "./pages/loading";
+import "./App.css";
 
+import Loading from "./pages/loading";
 import Login from "./pages/auth/login";
 import Signup from "./pages/auth/signup";
 import AuthLayout from './pages/auth/Layout'
 import ForgotPassword from "./pages/auth/forgotPassword";
 import ResetPassword from "./pages/auth/resetPassword";
-
 import MainPageLayout from "./pages/main/Layout";
 
-import "./App.css";
+import CardsOnFile from "./pages/main/Customers/CardsOnFile";
 import CustomersLayout from './pages/main/Customers/Layout'
 import CustomerInformation from "./pages/main/Customers/CustomerInformation";
 import CustomerList from './pages/main/Customers/CustomerList'
 import CreateCustomer from "./pages/main/Customers/CreateCustomer";
+import CustomerLayout from "./pages/main/Customers/CustomerLayout";
 
 import InventoryLayout from "./pages/main/Inventory/Layout";
 import BundleList from "./pages/main/Inventory/BundleList";
 import ProductList from "./pages/main/Inventory/ProductList";
 import CollectionList from "./pages/main/Inventory/CollectionList";
+
 import ProductLayout from "./pages/main/Product/Layout";
 import Inventory from "./pages/main/Product/Inventory";
 import Setting from "./pages/main/Product/Setting";
 import Pricing from "./pages/main/Product/Pricing";
-import Dashbaord from "./pages/main/Dashboard/Layout";
-import CardsOnFile from "./pages/main/Customers/CardsOnFile";
-import Orders from "./pages/main/Customers/Orders";
-import CustomerLayout from "./pages/main/Customers/CustomerLayout";
-import OrdersLayout from "./pages/main/Orders/Layout";
-import CreateProduct from "./pages/main/Product/NewProduct";
 import History from "./pages/main/Product/History";
+
+import Dashbaord from "./pages/main/Dashboard/Layout";
+import Orders from "./pages/main/Customers/Orders";
+import CreateProduct from "./pages/main/Product/NewProduct";
+
+import OrdersLayout from "./pages/main/Orders/Layout";
+import OrderList from './pages/main/Orders/Layout'
+import CreateOrder from "./pages/main/Orders/CreateOrder";
 
 const App: React.FC = () => {
   return (
@@ -75,7 +79,11 @@ const App: React.FC = () => {
 
             <Route path="product/new" element={<CreateProduct />} />
 
-            <Route path="orders" element={<OrdersLayout />} />
+            <Route path="orders" element={<OrdersLayout />}>
+              <Route path="all" element={<OrderList />} />
+            </Route>
+
+            <Route path="orders/new" element={<CreateOrder />} />
           </Route>
         </Routes>
       </Router>

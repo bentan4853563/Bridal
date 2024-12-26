@@ -18,10 +18,7 @@ const columns: GridColDef[] = [
     width: 150,
     renderCell: (params) => (
       <img
-        src={`${import.meta.env.VITE_BACKEND_URL}${params.value.replace(
-          "uploads",
-          "/"
-        )}`}
+        src={params.value}
         alt={params.row.name}
         style={{
           width: "50px",

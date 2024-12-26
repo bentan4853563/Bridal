@@ -46,6 +46,19 @@ router.get('/list', async (req, res) => {
   }
 });
 
+router.get('/all', async (req, res) => {
+  try {
+    const customers = await Customer.find();
+
+    res.json(customers);
+  } catch (error) {
+    console.error('Error fetching customers:', error);
+    res
+      .status(500)
+      .json({ message: 'Failed to fetch customers', error: error.message });
+  }
+});
+
 // Get a customer by ID
 router.get('/one', async (req, res) => {
   try {

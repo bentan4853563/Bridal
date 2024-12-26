@@ -7,7 +7,7 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true, // Name is required
     },
-    primaryPhoto: {
+    image: {
       type: String, // URL or path to the primary photo
       required: true,
     },

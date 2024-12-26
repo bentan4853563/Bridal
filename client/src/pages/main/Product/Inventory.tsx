@@ -2,15 +2,12 @@ import { Button } from "@mui/material";
 import { useState } from "react";
 import AddStockModal from "../../../components/modals/AddStockModal";
 import { useOutletContext } from "react-router-dom";
-import { ProductData } from "../../../types";
-import { getImageURL } from "../../../utils/getImageURL";
+import { Product } from "../../../types";
 
 export default function ProductInventory() {
   const { productData } = useOutletContext<{
-    productData: ProductData | null;
+    productData: Product | null;
   }>();
-
-  console.log('productData :>> ', productData);
 
   const [isShowAddStockModal, setIsShowAddStockModal] = useState(false);
 
@@ -27,28 +24,30 @@ export default function ProductInventory() {
         {productData && (
           <AddStockModal
             open={isShowAddStockModal}
-            onClose={() => setIsShowAddStockModal(false)}
             name={productData.name}
+            onClose={() => setIsShowAddStockModal(false)}
           />
         )}
 
         <table className="w-full">
           <thead className="border-b">
-            <th></th>
-            <th>Product Name</th>
-            <th>Status</th>
-            <th>In Stock</th>
-            <th>Picked up</th>
-            <th>Total</th>
+            <tr>
+              <th></th>
+              <th>Product Name</th>
+              <th>Status</th>
+              <th>In Stock</th>
+              <th>Picked up</th>
+              <th>Total</th>
+            </tr>
           </thead>
           <tbody>
             <tr>
               <td>
-                {productData?.primaryPhoto ? (
+                {productData?.image ? (
                   <img
-                    src={getImageURL(String(productData.primaryPhoto))}
+                    src={productData.image}
                     alt="Product"
-                    className="w-16 h-16"
+                    className="w-16 h-16 rounded-lg"
                   />
                 ) : (
                   "No image available"

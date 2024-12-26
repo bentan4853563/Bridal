@@ -11,7 +11,6 @@ import {
 import { Link, useNavigate, useParams } from "react-router-dom";
 import trackIndividuallyImg from "../../../assets/individually.png";
 import trackQuantitiesImg from "../../../assets/quantities.png";
-import { getImageURL } from "../../../utils/getImageURL";
 
 interface FormData {
   name: string;
@@ -57,7 +56,7 @@ export default function Setting() {
 
         if (data) {
           setFormData(data);
-          setPrimaryPhotoPreview(getImageURL(String(data.primaryPhoto)));
+          setPrimaryPhotoPreview(data.image);
         }
         setLoading(false);
       }
@@ -65,6 +64,8 @@ export default function Setting() {
 
     fetchProductData();
   }, [params.id]);
+
+  console.log('formData :>> ', formData);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

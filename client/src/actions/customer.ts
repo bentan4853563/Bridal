@@ -55,6 +55,22 @@ export const handleGetCustomers = async (page: number, limit: number) => {
   }
 };
 
+export const handleGetAllCustomers = async () => {
+  try {
+    const response = await axiosInstance.get("/api/customers/all");
+
+    return response.data;
+  } catch (err: unknown) {
+    const error = err as ApiError;
+    if (error.response && error.response.data.errors) {
+      toast.error(error.response.data.errors[0].detail);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+    return null;
+  }
+};
+
 export const handleGetCustomerData = async (id: string) => {
   try {
     const response = await axiosInstance.get(`/api/customers/one?id=${id}`);

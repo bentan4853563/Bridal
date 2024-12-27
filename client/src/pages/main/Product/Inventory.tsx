@@ -5,8 +5,9 @@ import { useOutletContext } from "react-router-dom";
 import { Product } from "../../../types";
 
 export default function ProductInventory() {
-  const { productData } = useOutletContext<{
+  const { productData, setProductData } = useOutletContext<{
     productData: Product | null;
+    setProductData: (data: Product | null) => void; // Ensure setProductData is typed
   }>();
 
   const [isShowAddStockModal, setIsShowAddStockModal] = useState(false);
@@ -25,16 +26,15 @@ export default function ProductInventory() {
           <AddStockModal
             open={isShowAddStockModal}
             name={productData.name}
+            onSuccess={(data) => setProductData(data)} // Corrected function name
             onClose={() => setIsShowAddStockModal(false)}
           />
         )}
-
         <table className="w-full">
           <thead className="border-b">
             <tr>
-              <th></th>
+              <th>Photo</th>
               <th>Product Name</th>
-              <th>Status</th>
               <th>In Stock</th>
               <th>Picked up</th>
               <th>Total</th>
@@ -54,7 +54,6 @@ export default function ProductInventory() {
                 )}
               </td>
               <td>{productData?.name}</td>
-              <td>{productData?.status}</td>
               <td>{productData?.quantity}</td>
               <td></td>
               <td>{productData?.quantity}</td>

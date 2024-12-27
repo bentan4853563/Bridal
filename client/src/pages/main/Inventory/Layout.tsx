@@ -6,9 +6,7 @@ export default function InventoryLayout() {
   const lastPath = location.pathname.split("/").filter(x=> x)[1];
 
   const tabs = [
-    { label: "Products", path: "products" },
-    { label: "Bundles", path: "bundles" },
-    { label: "Collections", path: "collections" },
+    { label: "Products", path: "products" }
   ];
 
   return (

@@ -31,7 +31,7 @@ export const handleLogin = async (email: string, password: string, onSuccess: ()
       password,
     });
 
-    localStorage.setItem("token", response.data.csrfToken);
+    sessionStorage.setItem("token", response.data.csrfToken);
     onSuccess();
   } catch (err: unknown) {
     const error = err as ApiError;

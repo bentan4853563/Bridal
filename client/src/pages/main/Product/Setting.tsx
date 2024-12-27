@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Divider, Radio } from "@mui/material";
+import { Button, Divider } from "@mui/material";
 import { toast } from "react-toastify";
 import { CiImageOn } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
@@ -9,16 +9,14 @@ import {
   handleUpdateProduct,
 } from "../../../actions/product";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import trackIndividuallyImg from "../../../assets/individually.png";
-import trackQuantitiesImg from "../../../assets/quantities.png";
 
 interface FormData {
   name: string;
   primaryPhoto: File | null;
   rentalCostPerDay: number;
-  quantity: number;
+  category: string;
+  subCategory: string;
   status: string;
-  type: string;
 }
 
 interface Errors {
@@ -28,6 +26,8 @@ interface Errors {
   quantity?: string;
   status?: string;
   fileType?: string; // New error for file type
+  category?: string;
+  subCategory?: string;
 }
 
 export default function Setting() {
@@ -38,10 +38,11 @@ export default function Setting() {
     name: "",
     primaryPhoto: null,
     rentalCostPerDay: 0,
-    quantity: 0,
     status: "Draft",
-    type: "Track quantities",
+    category: "",
+    subCategory: "",
   });
+
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<Errors>({});
   const [primaryPhotoPreview, setPrimaryPhotoPreview] = useState<string | null>(
@@ -64,8 +65,6 @@ export default function Setting() {
 
     fetchProductData();
   }, [params.id]);
-
-  console.log('formData :>> ', formData);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -104,8 +103,6 @@ export default function Setting() {
       newErrors.primaryPhoto = "Primary photo is required";
     if (formData.rentalCostPerDay <= 0)
       newErrors.rentalCostPerDay = "Rental cost must be greater than zero";
-    if (formData.quantity < 0)
-      newErrors.quantity = "Quantity cannot be negative";
     return newErrors;
   };
 
@@ -125,7 +122,8 @@ export default function Setting() {
         "rentalCostPerDay",
         formData.rentalCostPerDay.toString()
       );
-      formDataToSubmit.append("quantity", formData.quantity.toString());
+      formDataToSubmit.append("category", formData.category);
+      formDataToSubmit.append("subCategory", formData.subCategory);
       formDataToSubmit.append("status", formData.status);
 
       try {
@@ -142,19 +140,14 @@ export default function Setting() {
     }
   };
 
-  // Handle product type selection
-  const handleChangeProductType = (type: string) => {
-    setFormData((prev) => ({ ...prev, type }));
-  };
-
   const resetForm = () => {
     setFormData({
       name: "",
       primaryPhoto: null,
       rentalCostPerDay: 0,
-      quantity: 0,
       status: "Draft",
-      type: "",
+      category: "",
+      subCategory: "",
     });
     setPrimaryPhotoPreview(null);
     setErrors({});
@@ -203,18 +196,55 @@ export default function Setting() {
             </div>
 
             <div className="w-full max-w-2xl bg-white rounded-lg p-8 flex flex-wrap gap-8">
-              <div className="flex flex-col flex-1 items-start">
-                <label htmlFor="name">Product Name</label>
-                <input
-                  type="text"
-                  id="name"
-                  className="w-full p-2 border rounded-md"
-                  value={formData.name}
-                  onChange={handleChange}
-                />
-                {errors.name && (
-                  <span className="text-red-500 text-sm">{errors.name}</span>
-                )}
+              <div className="w-full flex-1 flex flex-col gap-4">
+                {/* Nam */}
+                <div className="flex flex-col flex-1 items-start">
+                  <label htmlFor="name">Product Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    className="w-full p-2 border rounded-md"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                  {errors.name && (
+                    <span className="text-red-500 text-sm">{errors.name}</span>
+                  )}
+                </div>
+
+                {/* Category */}
+                <div className="flex flex-col flex-1 items-start">
+                  <label htmlFor="category">Category</label>
+                  <input
+                    type="text"
+                    id="category"
+                    className="w-full p-2 border rounded-md"
+                    value={formData.category}
+                    onChange={handleChange}
+                  />
+                  {errors.name && (
+                    <span className="text-red-500 text-sm">
+                      {errors.category}
+                    </span>
+                  )}
+                </div>
+
+                {/* SubCategory */}
+                <div className="flex flex-col flex-1 items-start">
+                  <label htmlFor="subCategory">Sub Category</label>
+                  <input
+                    type="text"
+                    id="subCategory"
+                    className="w-full p-2 border rounded-md"
+                    value={formData.subCategory}
+                    onChange={handleChange}
+                  />
+                  {errors.name && (
+                    <span className="text-red-500 text-sm">
+                      {errors.subCategory}
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="flex flex-col">
@@ -255,10 +285,8 @@ export default function Setting() {
               </div>
             </div>
           </div>
-
-          <Divider />
           {/* Product Type Section */}
-          <div className="flex flex-col xl:flex-row gap-4 xl:gap-12">
+          {/* <div className="flex flex-col xl:flex-row gap-4 xl:gap-12">
             <div className="xl:max-w-xs xl:px-8 flex flex-col items-start xl:gap-4">
               <span className="font-bold text-lg">Product Type</span>
               <p className="text-justify text-sm text-gray-600">
@@ -328,7 +356,7 @@ export default function Setting() {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <Divider />
           {/* Pricing Section */}

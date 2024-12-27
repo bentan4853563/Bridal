@@ -1,32 +1,35 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
+import { toast } from "react-toastify";
+import dayjs, { Dayjs } from "dayjs";
+
 import { Button, Chip } from "@mui/material";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 import { DateTimeRangePicker } from "@mui/x-date-pickers-pro/DateTimeRangePicker";
-import { Dayjs } from "dayjs";
-import { Customer, Product } from "../../../types";
+import { Customer, Order, Product } from "../../../types";
 
 import { IoSaveOutline } from "react-icons/io5";
 import { IoLockClosedOutline } from "react-icons/io5";
 import { TfiBackRight } from "react-icons/tfi";
 import { IoMdClose } from "react-icons/io";
 
+import { getColorFromLetter } from "../../../utils/getColorFromLetter";
+import { handleGetOrderById, handleReserve } from "../../../actions/order";
 import { handleGetAllCustomers } from "../../../actions/customer";
 import { handleGetAllProducts } from "../../../actions/product";
-import { getColorFromLetter } from "../../../utils/getColorFromLetter";
-import { handleReserve } from "../../../actions/order";
-import { toast } from "react-toastify";
 
-export default function CreateOrder() {
+export default function OrderElement() {
+  const params = useParams();
+
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
     null
   );
-  const [selectedProducts, setSelectedProduct] = useState<Product[]>([]);
+  const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
   const [differenceInDays, setDifferenceInDays] = useState<number | null>(null);
 
   const [orderDetails, setOrderDetails] = useState<
@@ -43,22 +46,39 @@ export default function CreateOrder() {
       const productList = await handleGetAllProducts();
       setCustomers(customerList);
       setProducts(productList);
+      if (params.id) {
+        const order: Order = await handleGetOrderById(params.id);
+        if (order.customer) {
+          setSelectedCustomer(order.customer);
+        }
+        if (order.reserveDate) {
+          setStartDate(dayjs(order.reserveDate));
+        }
+        if (order.returnDate) {
+          setEndDate(dayjs(order.returnDate));
+        }
+        if (order.details) {
+          const products = order.details.map((order) => order.product)
+          setSelectedProducts(products)
+        }
+      }
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      const diffDays = endDate.diff(startDate, "day");
+      setDifferenceInDays(diffDays);
+    } else {
+      setDifferenceInDays(null); // Reset if any date is null
+    }
+  }, [startDate, endDate]);
 
   const handleDateChange = (newValue: [Dayjs | null, Dayjs | null]) => {
     const [newStartDate, newEndDate] = newValue;
     setStartDate(newStartDate);
     setEndDate(newEndDate);
-
-    // Calculate the difference in days
-    if (newStartDate && newEndDate) {
-      const diffDays = newEndDate.diff(newStartDate, "day");
-      setDifferenceInDays(diffDays);
-    } else {
-      setDifferenceInDays(null); // Reset if any date is null
-    }
   };
 
   const handleOnSelectCustomer = (customer: Customer) => {
@@ -71,12 +91,9 @@ export default function CreateOrder() {
     );
 
     if (!isExist) {
-      setSelectedProduct([...selectedProducts, product]);
+      setSelectedProducts([...selectedProducts, product]);
       // Add product ID to orderDetails with a default amount of 1
-      setOrderDetails((prev) => [
-        ...prev,
-        { product: product._id, amount: 1 },
-      ]);
+      setOrderDetails((prev) => [...prev, { product: product._id, amount: 1 }]);
     }
   };
 
@@ -130,12 +147,26 @@ export default function CreateOrder() {
     });
   };
 
+  const pickup = () => {
+    const formData = {
+      customer: selectedCustomer?._id,
+      details: orderDetails,
+      reserveDate: startDate,
+      returnDate: endDate,
+      status: "Picked up",
+    };
+
+    handleReserve(formData, () => {
+      toast.success("Reserved your order successfully.");
+    });
+  };
+
   return (
     <div className="text-black h-screen flex flex-col">
       {/* Header */}
       <div className="px-12 py-6 border-b flex justify-between">
         <div className="bg-white flex items-center gap-8">
-          <span className="text-2xl">Orders / New</span>
+          <span className="text-2xl">Orders</span>
           <Chip label="New" />
         </div>
 
@@ -170,6 +201,7 @@ export default function CreateOrder() {
                 variant="contained"
                 size="small"
                 color="warning"
+                onClick={pickup}
               >
                 Pickup
               </Button>
@@ -257,7 +289,7 @@ export default function CreateOrder() {
                   primaryPhoto: product.primaryPhoto, // Ensure this exists in the product
                   quantity: product.quantity, // Ensure this exists in the product
                   category: product.category,
-                  subCategory: product.subCategory
+                  subCategory: product.subCategory,
                 })
               )}
               onSelect={handleOnSelectProduct}
@@ -285,9 +317,8 @@ export default function CreateOrder() {
                   {selectedProducts.length > 0 &&
                     selectedProducts.map((product, index) => {
                       const amount =
-                        orderDetails.find(
-                          (item) => item.product == product._id
-                        )?.amount || 1; // Default to 1 if not found
+                        orderDetails.find((item) => item.product == product._id)
+                          ?.amount || 1; // Default to 1 if not found
                       const totalPrice =
                         product.rentalCostPerDay *
                         amount *
@@ -302,7 +333,7 @@ export default function CreateOrder() {
                               className="w-16 h-16 rounded-lg"
                             />
                           </td>
-                          <td>{product.name}</td>
+                          <td>{product?.name}</td>
                           <td>
                             <input
                               type="number"
@@ -325,7 +356,7 @@ export default function CreateOrder() {
                             <IoMdClose
                               className="cursor-pointer"
                               onClick={() => {
-                                setSelectedProduct(
+                                setSelectedProducts(
                                   selectedProducts.filter(
                                     (p) => p._id !== product._id
                                   )

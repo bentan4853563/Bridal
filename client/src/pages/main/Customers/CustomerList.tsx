@@ -6,7 +6,8 @@ import {
   GridRowParams,
 } from "@mui/x-data-grid";
 import { handleGetCustomers } from "../../../actions/customer";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 
 // Define the columns based on the Customer model
 const columns: GridColDef[] = [
@@ -44,10 +45,12 @@ export default function CustomerList() {
 
         // Update rows with fetched data, ensuring unique IDs
         if (data) {
-          const updatedData = data.customers.map((item: GridColDef, index: number) => ({
-            id: paginationModel.page * paginationModel.pageSize + index + 1,
-            ...item,
-          }));
+          const updatedData = data.customers.map(
+            (item: GridColDef, index: number) => ({
+              id: paginationModel.page * paginationModel.pageSize + index + 1,
+              ...item,
+            })
+          );
           setRows(updatedData);
         }
       } catch (error) {
@@ -73,22 +76,36 @@ export default function CustomerList() {
   };
 
   return (
-    <div className="p-12 h-full">
-      <DataGrid
-        rows={rows}
-        getRowId={(row) => row._id} // Use _id as a unique identifier
-        columns={columns}
-        paginationModel={paginationModel}
-        onPaginationModelChange={handlePaginationModelChange}
-        pageSizeOptions={[5, 10]} // Pagination options
-        loading={loading} // Show loading state
-        onRowClick={handleRowClick} // Handle row click for navigation
-        sx={{
-          "& .MuiDataGrid-row": {
-            cursor: "pointer", // Change cursor to pointer for clickable rows
-          },
-        }}
-      />
+    <div className="h-screen flex flex-col">
+      {/* Header */}
+      <div className="bg-white px-12 py-6 border-b flex justify-between items-center">
+        <span className="text-2xl">Customers</span>
+
+        <Link to="/customers/new">
+          <Button variant="contained" size="small">
+            Add Customer
+          </Button>
+        </Link>
+      </div>
+
+      <div className="bg-gray-100 p-12 h-full">
+        <DataGrid
+          rows={rows}
+          getRowId={(row) => row._id} // Use _id as a unique identifier
+          columns={columns}
+          paginationModel={paginationModel}
+          onPaginationModelChange={handlePaginationModelChange}
+          pageSizeOptions={[5, 10]} // Pagination options
+          loading={loading} // Show loading state
+          onRowClick={handleRowClick} // Handle row click for navigation
+          sx={{
+            "& .MuiDataGrid-row": {
+              cursor: "pointer", // Change cursor to pointer for clickable rows
+            },
+            backgroundColor: "white"
+          }}
+        />
+      </div>
     </div>
   );
 }

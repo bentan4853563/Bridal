@@ -9,6 +9,7 @@ const { getSecret } = require('./secrets');
 const usersRoute = require('./routes/users');
 const customerRoute = require('./routes/customers')
 const productRoute = require('./routes/product');
+const orderRoute = require('./routes/orders');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(getSecret('dbUri')).then(
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'uploads')))
 app.use('/api/users', usersRoute);
 app.use('/api/customers', customerRoute);
 app.use('/api/products', productRoute);
+app.use('/api/orders', orderRoute);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

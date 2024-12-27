@@ -3,14 +3,16 @@ const { Schema, Types } = mongoose; // Import Schema and Types
 
 const OrderSchema = new Schema(
   {
-    customer: { type: Types.ObjectId, ref: 'customers', required: true }, // Ensure it's an ObjectId
-    detail: [{
-        product: { type: Types.ObjectId, ref: 'products', required: true }, // Ensure it's an ObjectId
-        amount: { type: Number, required: true },
-    }],
-    reservationDate: { type: Date },
+    customer: { type: Types.ObjectId, ref: 'Customer', required: true }, // Ensure it's an ObjectId
+    details: [
+      {
+        product: { type: Types.ObjectId, ref: 'Product' }, // Ensure it's an ObjectId
+        amount: { type: Number },
+      },
+    ],
+    reserveDate: { type: Date },
     returnDate: { type: Date },
-    paymentStatus: { type: String },
+    paymentStatus: { type: Boolean, default: false },
     status: {
       type: String,
       enum: ['Draft', 'Reserved', 'Picked up', 'Returned'],

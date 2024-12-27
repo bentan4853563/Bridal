@@ -14,18 +14,18 @@ export default function ProductLayout() {
   const location = useLocation();
 
   const [productData, setProductData] = useState<ProductData | null>(null);
-  // const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false); // Added loading state
 
   useEffect(() => {
     const fetchProductData = async () => {
       if (params.id) {
-        // setLoading(true);
+        setLoading(true); // Set loading to true
         const data = await handleGetProductData(params.id);
 
         if (data) {
           setProductData(data);
         }
-        // setLoading(false);
+        setLoading(false); // Set loading to false
       }
     };
 
@@ -35,7 +35,6 @@ export default function ProductLayout() {
   const tabs = [
     { label: "Inventory", path: "inventory" },
     { label: "Setting", path: "setting" },
-    { label: "Pricing", path: "pricing" },
     { label: "History", path: "history" },
   ];
 
@@ -46,7 +45,7 @@ export default function ProductLayout() {
           <Link to="/inventory/products" className="hover:underline">
             Inventory
           </Link>{" "}
-          / {productData?.name || "Loading..."}
+          / {loading ? "Loading..." : productData?.name || "No Product"}
         </span>
       </div>
       <div className="h-full overflow-y-auto bg-gray-100 flex flex-col gap-4 p-6">
@@ -54,7 +53,6 @@ export default function ProductLayout() {
         <div className="flex gap-4 border-b border-b-gray-400">
           {tabs.map((tab, index) => {
             const isActive = location.pathname.includes(tab.path);
-
             return (
               <Link
                 to={`/products/${params.id}/${tab.path}`}
@@ -70,7 +68,6 @@ export default function ProductLayout() {
             );
           })}
         </div>
-
         {/* Render Child Routes */}
         <Outlet context={{ productData, setProductData }} />
       </div>

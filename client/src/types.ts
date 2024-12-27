@@ -6,15 +6,15 @@ export interface ApiError {
   };
 }
 
-
 export interface Product {
   _id: string;
   name: string;
   image: string;
   primaryPhoto: File;
   rentalCostPerDay: number;
-  quantity: number;
-  status: string;
+  category: string;
+  subCategory: string;
+  quantity: number
 }
 
 export interface Customer {
@@ -27,4 +27,20 @@ export interface Customer {
   date: string;
   location: string;
   type: string;
+}
+
+export interface OrderDetail {
+  // Define properties for each detail in the details array
+  _id: string;
+  product: Product;
+  amount: number;
+}
+
+export interface Order {
+  _id: string; // Unique identifier for the order
+  customer: Customer; // Using the Customer interface
+  details: OrderDetail[]; // Array of order details
+  reserveDate: string; // ISO 8601 format date string
+  returnDate: string; // ISO 8601 format date string
+  paymentState: boolean; // True if paid, false otherwise
 }

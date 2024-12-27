@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiError } from "../types";
+import { ApiError, Product } from "../types";
 import axiosInstance from "./api";
 import { toast } from "react-toastify";
 
@@ -46,10 +46,19 @@ export const handleUpdateProduct = async (
   }
 };
 
-export const handleAddStockItem = async (id: string, quantity: number) => {
+export const handleAddStockItem = async (
+  id: string,
+  quantity: number
+): Promise<Product | null> => {
   try {
-    const response = await axiosInstance.put(`/api/products/add-stock/${id}`, {quantity});
-    console.log('response :>> ', response);
+    const response = await axiosInstance.put(`/api/products/add-stock/${id}`, {
+      quantity,
+    });
+    console.log("response :>> ", response);
+
+    // Assuming the response contains the updated product data
+    const updatedProduct: Product = response.data; // Adjust this based on your API response structure
+    return updatedProduct; // Return the updated product
   } catch (err) {
     const error = err as ApiError;
     if (error.response && error.response.data.errors) {
@@ -57,7 +66,11 @@ export const handleAddStockItem = async (id: string, quantity: number) => {
     } else {
       toast.error("An unexpected error occurred. Please try again.");
     }
+    return null; // Return null in case of an error
   }
+
+  // Ensure that the function always returns a value
+  return null; // This ensures that the function has a return value in all cases
 };
 
 export const handleGetProducts = async (page: number, limit: number) => {

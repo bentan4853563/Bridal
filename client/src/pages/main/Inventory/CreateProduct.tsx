@@ -85,7 +85,7 @@ export default function CreateProduct() {
       setErrors(validationErrors);
     } else {
       const formDataToSubmit = new FormData();
-      
+
       formDataToSubmit.append("name", formData.name);
       if (formData.primaryPhoto)
         formDataToSubmit.append("primaryPhoto", formData.primaryPhoto);
@@ -97,9 +97,10 @@ export default function CreateProduct() {
       formDataToSubmit.append("status", formData.status);
 
       try {
-        await handleCreateProduct(formDataToSubmit);
-        toast.success("Product created successfully.");
-        resetForm();
+        await handleCreateProduct(formDataToSubmit, () => {
+          toast.success("Product created successfully.");
+          resetForm();
+        });
       } catch (error) {
         toast.error("Error creating product.");
         console.error("Error:", error);

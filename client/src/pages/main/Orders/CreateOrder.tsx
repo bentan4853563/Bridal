@@ -133,8 +133,8 @@ export default function CreateOrder() {
   return (
     <div className="text-black h-screen flex flex-col">
       {/* Header */}
-      <div className="px-12 py-6 border-b flex justify-between">
-        <div className="bg-white flex items-center gap-8">
+      <div className="bg-white px-12 py-6 border-b flex justify-between">
+        <div className="flex items-center gap-8">
           <span className="text-2xl">Orders / New</span>
           <Chip label="New" />
         </div>
@@ -257,7 +257,7 @@ export default function CreateOrder() {
                   primaryPhoto: product.primaryPhoto, // Ensure this exists in the product
                   quantity: product.quantity, // Ensure this exists in the product
                   category: product.category,
-                  subCategory: product.subCategory
+                  subCategory: product.subCategory,
                 })
               )}
               onSelect={handleOnSelectProduct}
@@ -285,9 +285,8 @@ export default function CreateOrder() {
                   {selectedProducts.length > 0 &&
                     selectedProducts.map((product, index) => {
                       const amount =
-                        orderDetails.find(
-                          (item) => item.product == product._id
-                        )?.amount || 1; // Default to 1 if not found
+                        orderDetails.find((item) => item.product == product._id)
+                          ?.amount || 1; // Default to 1 if not found
                       const totalPrice =
                         product.rentalCostPerDay *
                         amount *

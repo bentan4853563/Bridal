@@ -11,7 +11,7 @@ export default function InventoryLayout() {
 
   return (
     <div className="text-black h-screen flex flex-col">
-      <div className="px-10 py-5 border-b flex justify-between items-center">
+      <div className="bg-white px-10 py-5 border-b flex justify-between items-center">
         <span className="text-2xl">Inventory / {lastPath}</span>
 
         {!location.pathname.includes("/new") && (

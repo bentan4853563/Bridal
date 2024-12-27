@@ -168,8 +168,8 @@ export default function OrderElement() {
   return (
     <div className="text-black h-screen flex flex-col">
       {/* Header */}
-      <div className="px-12 py-6 border-b flex justify-between">
-        <div className="bg-white flex items-center gap-8">
+      <div className="bg-white px-12 py-6 border-b flex justify-between">
+        <div className="flex items-center gap-8">
           <span className="text-2xl">Orders</span>
           <Chip label="New" />
         </div>

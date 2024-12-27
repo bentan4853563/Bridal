@@ -20,7 +20,17 @@ interface Errors {
 }
 
 export default function CreateCustomer() {
-  const [formData, setFormData] = useState<Customer>({});
+  const [formData, setFormData] = useState<Customer>({
+    _id: "",
+    name: "",
+    surname: "",
+    address: "",
+    city: "",
+    whatsApp: "",
+    date: "",
+    location: "",
+    type: "",
+  });
 
   const [errors, setErrors] = useState<Errors>({});
   const [phoneValue, setPhoneValue] = useState("");
@@ -63,10 +73,20 @@ export default function CreateCustomer() {
       };
       // Submit the form (e.g., send to an API)
       handleCreateCustomer(submissionData, () => {
-        toast.success("Saved customer data successfully.")
+        toast.success("Saved customer data successfully.");
       });
       // Reset form or redirect as needed
-      setFormData({});
+      setFormData({
+        _id: "",
+        name: "",
+        surname: "",
+        address: "",
+        city: "",
+        whatsApp: "",
+        date: "",
+        location: "",
+        type: "",
+      });
       setPhoneValue("");
       setErrors({});
     }

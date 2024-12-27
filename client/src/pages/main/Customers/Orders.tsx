@@ -152,7 +152,7 @@ export default function Orders() {
   };
 
   return (
-    <div className="p-12 text-black">
+    <div className="bg-white p-12 text-black">
       <DataGrid
         rows={rows}
         getRowId={(row) => row._id} // Use id as a unique identifier

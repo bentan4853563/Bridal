@@ -104,14 +104,16 @@ router.post('/list-by-customer', async (req, res) => {
 
 router.post('/pay', async (req, res) => {
   try {
-    const order = await Order.findById(req.body.id)
+    const order = await Order.findById(req.body.id);
     const updatedOrder = await Order.findByIdAndUpdate(
       req.body.id,
       {
         paymentStatus: !order.paymentStatus,
       },
       { new: true }
-    );
+    )
+      .populate('customer')
+      .populate('details.product');
 
     res.json(updatedOrder);
   } catch (error) {
@@ -124,7 +126,7 @@ router.post('/pay', async (req, res) => {
 // Get a single order by ID
 router.get('/one/:id', async (req, res) => {
   try {
-    console.log(req.params.id)
+    console.log(req.params.id);
     const order = await Order.findById(req.params.id)
       .populate('customer')
       .populate('details.product');

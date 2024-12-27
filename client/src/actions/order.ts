@@ -59,8 +59,7 @@ export const handleGetOrdersByCustomer = async(id: string, page: number, limit: 
 export const handleOrderPay = async (id: string) => {
   try {
     const response = await axiosInstance.post("/api/orders/pay", { id });
-    toast.success("Paid successfuly.");
-
+    toast.success("Success!");
     return response.data;
   } catch (err) {
     const error = err as ApiError;

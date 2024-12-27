@@ -24,6 +24,7 @@ import { handleGetAllProducts } from "../../../actions/product";
 export default function OrderElement() {
   const params = useParams();
 
+  const [orderStatus, setOrderStatus] = useState("");
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
@@ -58,8 +59,11 @@ export default function OrderElement() {
           setEndDate(dayjs(order.returnDate));
         }
         if (order.details) {
-          const products = order.details.map((order) => order.product)
-          setSelectedProducts(products)
+          const products = order.details.map((order) => order.product);
+          setSelectedProducts(products);
+        }
+        if (order.status) {
+          setOrderStatus(order.status);
         }
       }
     };
@@ -171,41 +175,46 @@ export default function OrderElement() {
         </div>
 
         <div className="flex gap-4">
-          <Link to="/orders/new">
-            <Button
-              component="label"
-              role={undefined}
-              variant="outlined"
-              tabIndex={-1}
-              startIcon={<IoSaveOutline />}
-              size="small"
-              className="text-sm"
-              color="inherit"
-            >
-              Save as draft
-            </Button>
-          </Link>
-          {areFieldsValid() && (
+          {areFieldsValid() ? (
             <>
-              <Button
-                startIcon={<IoLockClosedOutline />}
-                variant="contained"
-                size="small"
-                color="primary"
-                onClick={reserve}
-              >
-                Reserve
-              </Button>
-              <Button
-                startIcon={<TfiBackRight />}
-                variant="contained"
-                size="small"
-                color="warning"
-                onClick={pickup}
-              >
-                Pickup
-              </Button>
+              {orderStatus != "Reserved" && (
+                <Button
+                  startIcon={<IoLockClosedOutline />}
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                  onClick={reserve}
+                >
+                  Reserve
+                </Button>
+              )}
+              {orderStatus != "Picked up" && (
+                <Button
+                  startIcon={<TfiBackRight />}
+                  variant="contained"
+                  size="small"
+                  color="warning"
+                  onClick={pickup}
+                >
+                  Pickup
+                </Button>
+              )}
             </>
+          ) : (
+            <Link to="/orders/new">
+              <Button
+                component="label"
+                role={undefined}
+                variant="outlined"
+                tabIndex={-1}
+                startIcon={<IoSaveOutline />}
+                size="small"
+                className="text-sm"
+                color="inherit"
+              >
+                Save as draft
+              </Button>
+            </Link>
           )}
         </div>
       </div>

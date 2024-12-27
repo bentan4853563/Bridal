@@ -130,7 +130,6 @@ export default function CreateProduct() {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      console.log("formData :>> ", formData);
       const formDataToSubmit = new FormData();
 
       formDataToSubmit.append("name", formData.name);

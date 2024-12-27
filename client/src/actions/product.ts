@@ -54,7 +54,6 @@ export const handleAddStockItem = async (
     const response = await axiosInstance.put(`/api/products/add-stock/${id}`, {
       quantity,
     });
-    console.log("response :>> ", response);
 
     // Assuming the response contains the updated product data
     const updatedProduct: Product = response.data; // Adjust this based on your API response structure

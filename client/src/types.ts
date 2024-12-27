@@ -43,4 +43,5 @@ export interface Order {
   reserveDate: string; // ISO 8601 format date string
   returnDate: string; // ISO 8601 format date string
   paymentState: boolean; // True if paid, false otherwise
+  status: string
 }

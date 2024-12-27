@@ -21,7 +21,6 @@ const orderSlice = createSlice({
   reducers: {
     // Action to set the entire array of customers. Payload should be an array of Customer objects.
     setOrders: (state, action: PayloadAction<Order[]>) => {
-      console.log('action.payload :>> ', action.payload);
       state.orders = action.payload;
     },
     // Action to update an individual customer within the array.

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   DataGrid,
   GridColDef,
@@ -6,68 +7,90 @@ import {
   GridRowParams,
 } from "@mui/x-data-grid";
 import { parseISO, format } from "date-fns";
-import { handleGetOrdersByCustomer, handleOrderPay } from "../../../actions/order";
+import {
+  handleGetOrdersByCustomer,
+  handleOrderPay,
+} from "../../../actions/order";
 import { useParams } from "react-router-dom";
 import { Button, Chip } from "@mui/material";
-
-// Define the columns based on the Product model
-const columns: GridColDef[] = [
-  { field: "id", headerName: "Id", width: 200 },
-  {
-    field: "customer.name",
-    headerName: "Customer",
-    flex: 1,
-    valueGetter: (_, row) => row.customer.name,
-  },
-  { field: "status", headerName: "Status", flex: 1 },
-  {
-    field: "reserveDate",
-    headerName: "Reserve Date",
-    flex: 1,
-    valueFormatter: (_, row) => {
-      if (!row.reserveDate) return "N/A";
-      return format(parseISO(row.reserveDate), "yyyy-MM-dd HH:mm");
-    },
-  },
-  {
-    field: "returnDate",
-    headerName: "Return Date",
-    flex: 1,
-    valueFormatter: (_, row) => {
-      if (!row.reserveDate) return "N/A";
-      return format(parseISO(row.reserveDate), "yyyy-MM-dd HH:mm");
-    },
-  },
-  {
-    field: "paymentStatus",
-    headerName: "Payment Status",
-    flex: 1,
-    renderCell: (params) => {
-      return params.value ? (
-        <Chip label="Paid" color="success" />
-      ) : (
-        <Button
-          onClick={() => handleOrderPay(params.row._id)}
-          variant="contained"
-          color="primary"
-          size="small"
-        >
-          Pay
-        </Button>
-      );
-    },
-  },
-];
+import { Order } from "../../../types";
 
 export default function Orders() {
+  const navigate = useNavigate();
   const params = useParams();
   // State to hold Product rows, pagination model, and loading state
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<Order[]>([]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 5,
   });
   const [loading, setLoading] = useState(true);
+
+  // Define the columns based on the Product model
+  const columns: GridColDef[] = [
+    { field: "id", headerName: "Id", width: 200 },
+    {
+      field: "customer.name",
+      headerName: "Customer",
+      flex: 1,
+      valueGetter: (_, row) => row.customer.name,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+      renderCell: (params) => {
+        return params.value == "Reserved" ? (
+          <Chip label={params.value} color="success" />
+        ) : params.value == "Picked up" ? (
+          <Chip label={params.value} color="warning" />
+        ) : (
+          <Chip label={params.value} color="default" />
+        );
+      },
+    },
+    {
+      field: "reserveDate",
+      headerName: "Reserve Date",
+      flex: 1,
+      valueFormatter: (_, row) => {
+        if (!row.reserveDate) return "N/A";
+        return format(parseISO(row.reserveDate), "yyyy-MM-dd HH:mm");
+      },
+    },
+    {
+      field: "returnDate",
+      headerName: "Return Date",
+      flex: 1,
+      valueFormatter: (_, row) => {
+        if (!row.reserveDate) return "N/A";
+        return format(parseISO(row.reserveDate), "yyyy-MM-dd HH:mm");
+      },
+    },
+    {
+      field: "paymentStatus",
+      headerName: "Payment Status",
+      flex: 1,
+      renderCell: (params) => {
+        return params.value ? (
+          <Chip
+            label="Paid"
+            color="success"
+            onClick={(event) => handlePay(event, params.row._id)}
+          />
+        ) : (
+          <Button
+            onClick={(event) => handlePay(event, params.row._id)}
+            variant="contained"
+            color="primary"
+            size="small"
+          >
+            Pay
+          </Button>
+        );
+      },
+    },
+  ];
 
   // Fetch Products on pagination model change
   useEffect(() => {
@@ -109,7 +132,23 @@ export default function Orders() {
 
   // Navigate to edit page on row click
   const handleRowClick = (params: GridRowParams) => {
-    console.log("params.row :>> ", params.row);
+    navigate(`/orders/${params.id}`);
+  };
+
+  const handlePay = async (
+    event: React.MouseEvent,
+    id: string
+  ): Promise<void> => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const updatedOrder: Order = await handleOrderPay(id);
+
+    setRows((prev) =>
+      prev.map((order) =>
+        order._id == updatedOrder._id ? updatedOrder : order
+      )
+    );
   };
 
   return (

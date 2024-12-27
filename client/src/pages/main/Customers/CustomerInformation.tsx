@@ -58,7 +58,6 @@ export default function CustomerInformation() {
   useEffect(() => {
     const fetchCustomerData = async () => {
       if (params.id) {
-        console.log("params.id :>> ", params.id);
         setLoading(true);
         const data = await handleGetCustomerData(params.id);
         if (data) {

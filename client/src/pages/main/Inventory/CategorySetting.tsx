@@ -74,7 +74,6 @@ export default function CategorySetting() {
         const addedSubCategory: Category = await handleAddSubCategory(
           subCategory
         );
-        console.log('addedSubCategory :>> ', addedSubCategory);
         setSubCategories((prev) => [...prev, addedSubCategory]);
         toast.success("Added new subcategory successfully");
         setSubCategory(null); // Clear input after adding

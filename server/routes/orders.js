@@ -51,7 +51,6 @@ router.get('/list', async (req, res) => {
       .limit(limit)
       .populate('customer')
       .populate('details.product')
-      .exec();
 
     const totalOrders = await Order.countDocuments();
     const totalPages = Math.ceil(totalOrders / limit);

@@ -96,7 +96,6 @@ export default function OrderList() {
           paginationModel.page,
           paginationModel.pageSize
         );
-
         // Update rows with fetched data, ensuring unique IDs
         if (data) {
           const updatedData = data.map((item: object, index: number) => ({

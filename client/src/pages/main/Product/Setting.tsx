@@ -43,6 +43,7 @@ export default function Setting() {
   const [category, setCategory] = useState<string | null>(null);
   const [subCategory, setSubCategory] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [allSubCategories, setAllSubCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<Category[]>([]);
 
   const [formData, setFormData] = useState<FormData>({
@@ -70,7 +71,7 @@ export default function Setting() {
           setCategories(categoryList);
         }
         if (subCategoryList) {
-          setSubCategories(subCategoryList);
+          setAllSubCategories(subCategoryList);
         }
       } catch (err) {
         console.log(err);
@@ -82,9 +83,14 @@ export default function Setting() {
 
   useEffect(() => {
     const fetchProductData = async () => {
-      if (params.id) {
+      if (params.id && categories && allSubCategories) {
         setLoading(true);
         const data = await handleGetProductData(params.id);
+        const categoryData = categories.find((item) => item._id == data.category)
+        const subCategoriesData = allSubCategories.filter((item) => data.subCategories.includes(item._id))
+        console.log('subCategoriesData :>> ', subCategoriesData);
+        setCategory(categoryData);
+        setSubCategories(subCategoriesData);
 
         if (data) {
           setFormData(data);
@@ -95,7 +101,7 @@ export default function Setting() {
     };
 
     fetchProductData();
-  }, [params.id]);
+  }, [params.id, categories, allSubCategories]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -150,8 +156,8 @@ export default function Setting() {
     value: Category[]
   ): void => {
     // Explicitly specifying the return type as void
-    console.log("Selected subcategories: ", value);
-    const subCategoryIds = value.map((subCategory) => subCategory.id); // Extract IDs
+    setSubCategories(value)
+    const subCategoryIds = value.map((subCategory) => subCategory._id); // Extract IDs
     setFormData({ ...formData, subCategories: subCategoryIds }); // Update formData with IDs
   };
 
@@ -183,7 +189,6 @@ export default function Setting() {
         if (params.id) {
           handleUpdateProduct(params.id, formDataToSubmit, () => {
             toast.success("Product created successfully.");
-            resetForm();
           });
         }
       } catch (error) {
@@ -264,11 +269,12 @@ export default function Setting() {
                     <span className="text-red-500 text-sm">{errors.name}</span>
                   )}
                 </div>
-                
+
                 <Autocomplete
                   disablePortal
                   options={categories}
                   getOptionLabel={(option) => option.name}
+                  value={category}
                   onChange={handleCategoryChange}
                   renderInput={(params) => (
                     <TextField {...params} label="Category" size="small" />
@@ -277,8 +283,9 @@ export default function Setting() {
                 <Autocomplete
                   multiple
                   id="sub-categories"
-                  options={subCategories}
+                  options={allSubCategories}
                   onChange={handleSubCategoryChange}
+                  value={subCategories}
                   getOptionLabel={(option) => option.name}
                   renderInput={(params) => (
                     <TextField

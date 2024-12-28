@@ -24,7 +24,7 @@ export const handleReserve = async (
 export const handleGetOrders = async (page: number, limit: number) => {
   try {
     const response = await axiosInstance.get(
-      `/api/orders/list?page=${page}&limit=${limit}`
+      `/api/orders/list?page=${page}&limit=${limit}`  
     );
     setOrders(response.data);
     return response.data.orders;

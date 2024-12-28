@@ -77,7 +77,11 @@ router.get('/all', async (req, res) => {
 // Get a product by ID
 router.get('/one', async (req, res) => {
   try {
-    const product = await Product.findById(req.query.id);
+    const product = await Product.findById(req.query.id)
+      .populate('Category')
+      .populate('SubCategory');
+
+      console.log('product :>> ', product);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -91,31 +95,26 @@ router.get('/one', async (req, res) => {
 });
 
 // Update a product
-router.put(
-  '/update/:id',
-  upload.single('primaryPhoto'),
-  async (req, res) => {
-    try {
-      const { id } = req.params;
-      const updatedData = req.body;
+router.put('/update/:id', upload.single('primaryPhoto'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
 
-      console.log('updatedData :>> ', updatedData);
+    const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    })
 
-      const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, {
-        new: true,
-      });
-      if (!updatedProduct) {
-        return res.status(404).json({ message: 'Product not found' });
-      }
-      res.json(updatedProduct);
-    } catch (error) {
-      console.error('Error updating product:', error);
-      res
-        .status(400)
-        .json({ message: 'Failed to update customer', error: error.message });
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
     }
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res
+      .status(400)
+      .json({ message: 'Failed to update customer', error: error.message });
   }
-);
+});
 
 // Add stock
 router.put('/add-stock/:id', async (req, res) => {

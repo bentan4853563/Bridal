@@ -20,6 +20,7 @@ import { getColorFromLetter } from "../../../utils/getColorFromLetter";
 import { handleGetOrderById, handleReserve } from "../../../actions/order";
 import { handleGetAllCustomers } from "../../../actions/customer";
 import { handleGetAllProducts } from "../../../actions/product";
+import { addBaseURL } from "../../../utils/addBaseURL";
 
 export default function OrderElement() {
   const params = useParams();
@@ -329,7 +330,7 @@ export default function OrderElement() {
                         orderDetails.find((item) => item.product == product._id)
                           ?.amount || 1; // Default to 1 if not found
                       const totalPrice =
-                        product.rentalCostPerDay *
+                        product?.rentalCostPerDay *
                         amount *
                         (differenceInDays || 1);
 
@@ -337,8 +338,8 @@ export default function OrderElement() {
                         <tr key={index}>
                           <td>
                             <img
-                              src={product.image}
-                              alt={product.name}
+                              src={addBaseURL(product?.image)}
+                              alt={product?.name}
                               className="w-16 h-16 rounded-lg"
                             />
                           </td>
@@ -358,7 +359,7 @@ export default function OrderElement() {
                               }
                             />
                           </td>
-                          <td>{product.rentalCostPerDay}</td>
+                          <td>{product?.rentalCostPerDay}</td>
                           <td>{differenceInDays}</td>
                           <td>{totalPrice}</td>
                           <td>

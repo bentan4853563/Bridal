@@ -40,7 +40,7 @@ export default function ProductLayout() {
 
   return (
     <div className="h-screen flex flex-col">
-      <div className="flex justify-start p-6 border-b border-gray-200">
+      <div className="bg-white flex justify-start p-6 border-b border-gray-200">
         <span className="text-2xl">
           <Link to="/inventory/products" className="hover:underline">
             Inventory

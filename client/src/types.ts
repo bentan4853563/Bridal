@@ -45,3 +45,8 @@ export interface Order {
   paymentState: boolean; // True if paid, false otherwise
   status: string
 }
+
+export interface Category {
+  _id: string;
+  name: string;
+}

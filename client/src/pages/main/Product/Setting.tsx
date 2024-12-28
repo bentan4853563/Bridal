@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Divider } from "@mui/material";
+import { Autocomplete, Button, Divider, TextField } from "@mui/material";
 import { toast } from "react-toastify";
 import { CiImageOn } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
@@ -9,14 +9,20 @@ import {
   handleUpdateProduct,
 } from "../../../actions/product";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { addBaseURL } from "../../../utils/addBaseURL";
+import { Category } from "../../../types";
+import {
+  handleGetCategoryList,
+  handleGetSubCategoryList,
+} from "../../../actions/category";
 
 interface FormData {
   name: string;
   primaryPhoto: File | null;
   rentalCostPerDay: number;
   category: string;
-  subCategory: string;
-  status: string;
+  subCategories: Array<string>;
+  image: string;
 }
 
 interface Errors {
@@ -27,20 +33,25 @@ interface Errors {
   status?: string;
   fileType?: string; // New error for file type
   category?: string;
-  subCategory?: string;
+  subCategories?: string; // Specify the type of elements in the array
 }
 
 export default function Setting() {
   const params = useParams();
   const navigate = useNavigate();
 
+  const [category, setCategory] = useState<string | null>(null);
+  const [subCategory, setSubCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subCategories, setSubCategories] = useState<Category[]>([]);
+
   const [formData, setFormData] = useState<FormData>({
     name: "",
     primaryPhoto: null,
     rentalCostPerDay: 0,
-    status: "Draft",
     category: "",
-    subCategory: "",
+    subCategories: [],
+    image: "",
   });
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,6 +61,26 @@ export default function Setting() {
   );
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const categoryList = await handleGetCategoryList();
+        const subCategoryList = await handleGetSubCategoryList();
+
+        if (categoryList) {
+          setCategories(categoryList);
+        }
+        if (subCategoryList) {
+          setSubCategories(subCategoryList);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     const fetchProductData = async () => {
       if (params.id) {
         setLoading(true);
@@ -57,7 +88,7 @@ export default function Setting() {
 
         if (data) {
           setFormData(data);
-          setPrimaryPhotoPreview(data.image);
+          setPrimaryPhotoPreview(addBaseURL(data.image));
         }
         setLoading(false);
       }
@@ -99,11 +130,29 @@ export default function Setting() {
   const validateForm = (): Errors => {
     const newErrors: Errors = {};
     if (!formData.name) newErrors.name = "Name is required";
-    if (!formData.primaryPhoto)
+    if (!formData.primaryPhoto && !formData.image)
       newErrors.primaryPhoto = "Primary photo is required";
     if (formData.rentalCostPerDay <= 0)
       newErrors.rentalCostPerDay = "Rental cost must be greater than zero";
     return newErrors;
+  };
+
+  const handleCategoryChange = (
+    event: React.SyntheticEvent<Element, Event>,
+    value: Category | null
+  ) => {
+    console.log("Selected category: ", value);
+    setFormData({ ...formData, category: value ? value._id : null }); // Use value.id to get the ObjectId
+  };
+
+  const handleSubCategoryChange = (
+    event: React.SyntheticEvent<Element, Event>,
+    value: Category[]
+  ): void => {
+    // Explicitly specifying the return type as void
+    console.log("Selected subcategories: ", value);
+    const subCategoryIds = value.map((subCategory) => subCategory.id); // Extract IDs
+    setFormData({ ...formData, subCategories: subCategoryIds }); // Update formData with IDs
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -123,8 +172,12 @@ export default function Setting() {
         formData.rentalCostPerDay.toString()
       );
       formDataToSubmit.append("category", formData.category);
-      formDataToSubmit.append("subCategory", formData.subCategory);
-      formDataToSubmit.append("status", formData.status);
+      // Append each subCategory individually
+      if (formData.subCategories && Array.isArray(formData.subCategories)) {
+        formData.subCategories.forEach((subCategory) => {
+          formDataToSubmit.append("subCategories", subCategory); // Use "subCategories[]" to indicate an array
+        });
+      }
 
       try {
         if (params.id) {
@@ -144,10 +197,10 @@ export default function Setting() {
     setFormData({
       name: "",
       primaryPhoto: null,
+      image: "",
       rentalCostPerDay: 0,
-      status: "Draft",
       category: "",
-      subCategory: "",
+      subCategories: [],
     });
     setPrimaryPhotoPreview(null);
     setErrors({});
@@ -197,7 +250,7 @@ export default function Setting() {
 
             <div className="w-full max-w-2xl bg-white rounded-lg p-8 flex flex-wrap gap-8">
               <div className="w-full flex-1 flex flex-col gap-4">
-                {/* Nam */}
+                {/* Name */}
                 <div className="flex flex-col flex-1 items-start">
                   <label htmlFor="name">Product Name</label>
                   <input
@@ -211,40 +264,30 @@ export default function Setting() {
                     <span className="text-red-500 text-sm">{errors.name}</span>
                   )}
                 </div>
-
-                {/* Category */}
-                <div className="flex flex-col flex-1 items-start">
-                  <label htmlFor="category">Category</label>
-                  <input
-                    type="text"
-                    id="category"
-                    className="w-full p-2 border rounded-md"
-                    value={formData.category}
-                    onChange={handleChange}
-                  />
-                  {errors.name && (
-                    <span className="text-red-500 text-sm">
-                      {errors.category}
-                    </span>
+                
+                <Autocomplete
+                  disablePortal
+                  options={categories}
+                  getOptionLabel={(option) => option.name}
+                  onChange={handleCategoryChange}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Category" size="small" />
                   )}
-                </div>
-
-                {/* SubCategory */}
-                <div className="flex flex-col flex-1 items-start">
-                  <label htmlFor="subCategory">Sub Category</label>
-                  <input
-                    type="text"
-                    id="subCategory"
-                    className="w-full p-2 border rounded-md"
-                    value={formData.subCategory}
-                    onChange={handleChange}
-                  />
-                  {errors.name && (
-                    <span className="text-red-500 text-sm">
-                      {errors.subCategory}
-                    </span>
+                />
+                <Autocomplete
+                  multiple
+                  id="sub-categories"
+                  options={subCategories}
+                  onChange={handleSubCategoryChange}
+                  getOptionLabel={(option) => option.name}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Subcategories"
+                      placeholder="Select subcategories"
+                    />
                   )}
-                </div>
+                />
               </div>
 
               <div className="flex flex-col">

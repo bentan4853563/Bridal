@@ -6,7 +6,8 @@ export default function InventoryLayout() {
   const lastPath = location.pathname.split("/").filter(x=> x)[1];
 
   const tabs = [
-    { label: "Products", path: "products" }
+    { label: "Products", path: "products" },
+    { label: "Category Setting", path: "setting" }
   ];
 
   return (
@@ -30,7 +31,7 @@ export default function InventoryLayout() {
         )}
       </div>
 
-      <div className="bg-slate-100 p-12 h-full">
+      <div className="bg-slate-100 p-12 h-full overflow-y-auto">
         {/* Tab */}
         <div className="flex gap-4 border-b border-gray-200">
           {tabs.map((tab, index) => {

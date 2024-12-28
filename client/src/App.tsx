@@ -1,6 +1,8 @@
 import React, { Suspense} from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+
 
 import "./App.css";
 
@@ -19,9 +21,8 @@ import CreateCustomer from "./pages/main/Customers/CreateCustomer";
 import CustomerLayout from "./pages/main/Customers/CustomerLayout";
 
 import InventoryLayout from "./pages/main/Inventory/Layout";
-import BundleList from "./pages/main/Inventory/BundleList";
 import ProductList from "./pages/main/Inventory/ProductList";
-import CollectionList from "./pages/main/Inventory/CollectionList";
+
 
 import ProductLayout from "./pages/main/Product/Layout";
 import Inventory from "./pages/main/Product/Inventory";
@@ -40,6 +41,7 @@ import UpcomingOrderList from "./pages/main/Orders/UpcomingOrderList";
 import LateOrderList from "./pages/main/Orders/LateOrderList";
 import ShortageOrderList from "./pages/main/Orders/ShortageOrderList";
 import OrderElement from "./pages/main/Orders/OrderElement";
+import CategorySetting from "./pages/main/Inventory/CategorySetting";
 
 const App: React.FC = () => {
   return (
@@ -68,8 +70,7 @@ const App: React.FC = () => {
 
             <Route path="inventory" element={<InventoryLayout />}>
               <Route path="products" element={<ProductList />} />
-              <Route path="bundles" element={<BundleList />} />
-              <Route path="collections" element={<CollectionList />} />
+              <Route path="setting" element={<CategorySetting />} />
             </Route>
 
             <Route path="products/:id" element={<ProductLayout />}>

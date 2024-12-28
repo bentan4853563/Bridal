@@ -162,7 +162,7 @@ export default function Orders() {
         pageSizeOptions={[5, 10]} // Pagination options
         loading={loading} // Show loading state
         onRowClick={handleRowClick} // Handle row click for navigation
-        sx={{
+        sx={{ 
           "& .MuiDataGrid-row": {
             cursor: "pointer", // Change cursor to pointer for clickable rows
           },

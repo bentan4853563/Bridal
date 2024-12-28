@@ -28,6 +28,13 @@ input, table, td, th {
   background-color: white;
 }
 
+input:focus {
+  outline-color: rgb(105, 105, 255);
+  outline-width: 0.5px; /* Use a fractional value for a thinner outline */
+  outline-style: solid;
+}
+
+
 h1,
 h2,
 h3 {

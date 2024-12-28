@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { Schema, Types } = mongoose; // Import Schema and Types
 
 // Define the schema for your model
 const ProductSchema = new mongoose.Schema(
@@ -23,24 +24,20 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       required: true, // Rental cost is required
     },
-    type: {
-      type: String,
-    },
     category: {
-      type: String,
+      type: Types.ObjectId,
+      ref: 'Category',
     },
-    subCategory: {
-      type: String,
-    },
+    subCategory: [
+      {
+        type: Types.ObjectId,
+        ref: 'SubCategory'
+      },
+    ],
     quantity: {
       type: Number,
       required: true,
       default: 0,
-    },
-    status: {
-      type: String,
-      enum: ['Draft', 'Published'], // Only allow these values
-      default: 'Draft', // Default status
     },
   },
   {

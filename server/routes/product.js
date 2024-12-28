@@ -17,21 +17,20 @@ const upload = multer({ storage: storage });
 
 router.post('/create', upload.single('primaryPhoto'), async (req, res) => {
   try {
-    // Create a new product instance
     const newProduct = new Product({
       name: req.body.name,
-      image: req.file ? process.env.BASE_URL+ req.file.path.replace('uploads', '') : null,
+      image: req.file ? req.file.path.replace('uploads', '') : null,
       rentalCostPerDay: req.body.rentalCostPerDay,
       category: req.body.category,
       subCategory: req.body.subCategory,
       quantity: req.body.quantity,
       status: req.body.status,
-      type: req.body.type
     });
 
+    console.log('newProduct :>> ', newProduct);
+
     const savedProduct = await newProduct.save();
-    console.log('savedProduct :>> ', savedProduct);
-    res.json('Saved product data.');
+    res.json(savedProduct);
   } catch (error) {
     console.log('error :>> ', error);
   }
@@ -100,15 +99,15 @@ router.put(
       const { id } = req.params;
       const updatedData = req.body;
 
-      const updatedCustomer = await Product.findByIdAndUpdate(id, updatedData, {
+      console.log('updatedData :>> ', updatedData);
+
+      const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, {
         new: true,
       });
-      if (!updatedCustomer) {
+      if (!updatedProduct) {
         return res.status(404).json({ message: 'Product not found' });
       }
-      res.json({
-        message: 'Product updated successfully',
-      });
+      res.json(updatedProduct);
     } catch (error) {
       console.error('Error updating product:', error);
       res

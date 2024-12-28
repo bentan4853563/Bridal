@@ -138,16 +138,16 @@ export default function CustomerInformation() {
         toast.error("Customer ID is not defined.");
       }
 
-      setFormData({
-        name: "",
-        surname: "",
-        address: "",
-        city: "",
-        whatsApp: "",
-        date: "",
-        location: "",
-        type: "client",
-      });
+      // setFormData({
+      //   name: "",
+      //   surname: "",
+      //   address: "",
+      //   city: "",
+      //   whatsApp: "",
+      //   date: "",
+      //   location: "",
+      //   type: "client",
+      // });
       setPhoneValue("");
       setErrors({});
       setIsDirty(false); // Reset dirty state after submission

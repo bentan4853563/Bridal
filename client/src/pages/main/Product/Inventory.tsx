@@ -3,6 +3,7 @@ import { useState } from "react";
 import AddStockModal from "../../../components/modals/AddStockModal";
 import { useOutletContext } from "react-router-dom";
 import { Product } from "../../../types";
+import { addBaseURL } from "../../../utils/addBaseURL";
 
 export default function ProductInventory() {
   const { productData, setProductData } = useOutletContext<{
@@ -45,7 +46,7 @@ export default function ProductInventory() {
               <td>
                 {productData?.image ? (
                   <img
-                    src={productData.image}
+                    src={addBaseURL(productData.image)}
                     alt="Product"
                     className="w-16 h-16 rounded-lg"
                   />

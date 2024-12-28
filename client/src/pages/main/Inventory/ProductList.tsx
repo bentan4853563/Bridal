@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   DataGrid,
   GridColDef,
   GridPaginationModel,
   GridRowParams,
 } from "@mui/x-data-grid";
+import { parseISO, format } from "date-fns";
 import { handleGetProducts } from "../../../actions/product";
-import { useNavigate } from "react-router-dom";
+import { addBaseURL } from "../../../utils/addBaseURL";
 
 // Define the columns based on the Product model
 const columns: GridColDef[] = [
@@ -14,11 +16,11 @@ const columns: GridColDef[] = [
   { field: "name", headerName: "Name", flex: 1 }, // Use flex for responsive width
   {
     field: "image",
-    headerName: "Primary Photo",
+    headerName: "Photo",
     width: 150,
     renderCell: (params) => (
       <img
-        src={params.value}
+        src={addBaseURL(params.value)}
         alt={params.row.name}
         style={{
           width: "50px",
@@ -31,8 +33,15 @@ const columns: GridColDef[] = [
     ),
   },
   { field: "rentalCostPerDay", headerName: "Rental Cost/Day", flex: 1 }, // Use flex for responsive width
-  { field: "status", headerName: "Status", flex: 1 }, // Use flex for responsive width
-  { field: "createdAt", headerName: "Created At", flex: 1 }, // Use flex for responsive width
+  {
+    field: "createdAt",
+    headerName: "Created At",
+    flex: 1,
+    valueFormatter: (_, row) => {
+      if (!row.createdAt) return "N/A";
+      return format(parseISO(row.createdAt), "yyyy-MM-dd HH:mm");
+    },
+  }, // Use flex for responsive width
 ];
 
 export default function ProductList() {

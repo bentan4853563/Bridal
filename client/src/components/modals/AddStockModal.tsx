@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Modal,
   Box,
@@ -21,17 +21,11 @@ interface AddStockModalProps {
 
 const AddStockModal: React.FC<AddStockModalProps> = ({
   open,
-  name,
   onSuccess,
   onClose,
 }) => {
   const params = useParams();
   const [quantity, setQuantity] = useState(1);
-  const [productName, setProductName] = useState("");
-
-  useEffect(() => {
-    setProductName(name);
-  }, [name]);
 
   const addStockItem = async () => {
     if (params.id) {
@@ -73,21 +67,6 @@ const AddStockModal: React.FC<AddStockModalProps> = ({
             type="number"
             inputProps={{
               min: 1, // Set the minimum value here
-            }}
-          />
-        </div>
-        <div className="mb-4">
-          <Typography variant="body1" className="mb-2">
-            Stock item identifiers
-          </Typography>
-          <TextField
-            fullWidth
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
-            placeholder="Set a short product name"
-            size="small"
-            InputProps={{
-              endAdornment: <Typography variant="body2">###</Typography>,
             }}
           />
         </div>

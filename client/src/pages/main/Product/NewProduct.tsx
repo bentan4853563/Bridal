@@ -1,13 +1,10 @@
 import React, { useState } from "react";
-import { Button, Divider, Radio } from "@mui/material";
+import { Button, Divider } from "@mui/material";
 import { toast } from "react-toastify";
 import { CiImageOn } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import { handleCreateProduct } from "../../../actions/product";
 import { Link } from "react-router-dom";
-
-import trackIndividuallyImg from "../../../assets/individually.png";
-import trackQuantitiesImg from "../../../assets/quantities.png";
 
 // Define the structure of form data
 interface FormData {
@@ -47,11 +44,6 @@ const CreateProduct: React.FC = () => {
   ) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
-  };
-
-  // Handle product type selection
-  const handleChangeProductType = (type: string) => {
-    setFormData((prev) => ({ ...prev, type }));
   };
 
   // Handle file selection and validation
@@ -214,80 +206,6 @@ const CreateProduct: React.FC = () => {
                   {errors.primaryPhoto}
                 </span>
               )}
-            </div>
-          </div>
-        </div>
-
-        <Divider />
-        {/* Product Type Section */}
-        <div className="flex flex-col xl:flex-row gap-4 xl:gap-12">
-          <div className="xl:max-w-xs xl:px-8 flex flex-col items-start xl:gap-4">
-            <span className="font-bold text-lg">Product Type</span>
-            <p className="text-justify text-sm text-gray-600">
-              The tracking method determines how detailed a product's inventory
-              is tracked.
-            </p>
-          </div>
-
-          <div className="w-full max-w-2xl bg-white rounded-lg p-8 flex flex-col lg:flex-row gap-8">
-            <div
-              onClick={() => handleChangeProductType("Track individually")}
-              className="flex flex-col flex-1 border rounded-lg cursor-pointer"
-            >
-              <div className="lg:min-h-44 py-4 flex items-start">
-                <Radio
-                  checked={formData.type === "Track individually"}
-                  value="Track individually"
-                  name="product-type"
-                  inputProps={{ "aria-label": "Track individually" }}
-                />
-                <div className="flex flex-col items-start gap-2">
-                  <h4 className="font-bold">Track Individually</h4>
-                  <p className="text-left">
-                    Monitor unique items separately. Ideal for products with
-                    specific identifiers or individual tracking needs.
-                  </p>
-                </div>
-              </div>
-              <Divider />
-              <div className="bg-amber-100 flex flex-col items-start p-4">
-                <span>Example</span>
-                <img
-                  src={trackIndividuallyImg}
-                  alt="Track Individually Example"
-                  className="w-64 h-32 object-cover rounded-lg"
-                />
-              </div>
-            </div>
-
-            <div
-              onClick={() => handleChangeProductType("Track quantities")}
-              className="flex flex-col flex-1 border rounded-lg cursor-pointer"
-            >
-              <div className="lg:min-h-44 py-4 flex items-start">
-                <Radio
-                  checked={formData.type === "Track quantities"}
-                  value="Track quantities"
-                  name="product-type"
-                  inputProps={{ "aria-label": "Track quantities" }}
-                />
-                <div className="flex flex-col items-start gap-2">
-                  <h4 className="font-bold">Track Quantities</h4>
-                  <p className="text-left">
-                    Monitor inventory in bulk. Ideal for products that are sold
-                    in larger quantities.
-                  </p>
-                </div>
-              </div>
-              <Divider />
-              <div className="bg-amber-100 flex flex-col items-start p-4">
-                <span>Example</span>
-                <img
-                  src={trackQuantitiesImg}
-                  alt="Track Quantities Example"
-                  className="w-64 h-32 object-cover rounded-lg"
-                />
-              </div>
             </div>
           </div>
         </div>

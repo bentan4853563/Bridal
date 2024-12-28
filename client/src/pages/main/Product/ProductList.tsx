@@ -5,8 +5,9 @@ import {
   GridPaginationModel,
   GridRowParams,
 } from "@mui/x-data-grid";
-import { handleGetProducts } from "../../../actions/product";
 import { useNavigate } from "react-router-dom";
+import { handleGetProducts } from "../../../actions/product";
+import { addBaseURL } from "../../../utils/addBaseURL";
 
 // Define the columns based on the Product model
 const columns: GridColDef[] = [
@@ -18,7 +19,7 @@ const columns: GridColDef[] = [
     width: 150,
     renderCell: (params) => (
       <img
-        src={params.value}
+        src={addBaseURL(params.value)}
         alt={params.row.name}
         style={{
           width: "50px",

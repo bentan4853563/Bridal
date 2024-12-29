@@ -79,7 +79,6 @@ router.get('/one', async (req, res) => {
   try {
     const product = await Product.findById(req.query.id)
       .populate('Category')
-      .populate('SubCategory');
 
       console.log('product :>> ', product);
     if (!product) {

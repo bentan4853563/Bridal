@@ -12,8 +12,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { addBaseURL } from "../../../utils/addBaseURL";
 import { Category } from "../../../types";
 import {
-  handleGetCategoryList,
-  handleGetSubCategoryList,
+  handleGetCategoryList
 } from "../../../actions/category";
 
 interface FormData {
@@ -40,11 +39,10 @@ export default function Setting() {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [category, setCategory] = useState<string | null>(null);
-  const [subCategory, setSubCategory] = useState<string | null>(null);
+  const [category, setCategory] = useState<Category | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [allSubCategories, setAllSubCategories] = useState<Category[]>([]);
-  const [subCategories, setSubCategories] = useState<Category[]>([]);
+  const [allSubCategories, setAllSubCategories] = useState<string[]>([]);
+  const [subCategories, setSubCategories] = useState<string[]>([]);
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -65,13 +63,8 @@ export default function Setting() {
     const fetchData = async () => {
       try {
         const categoryList = await handleGetCategoryList();
-        const subCategoryList = await handleGetSubCategoryList();
-
         if (categoryList) {
           setCategories(categoryList);
-        }
-        if (subCategoryList) {
-          setAllSubCategories(subCategoryList);
         }
       } catch (err) {
         console.log(err);
@@ -82,26 +75,30 @@ export default function Setting() {
   }, []);
 
   useEffect(() => {
-    const fetchProductData = async () => {
-      if (params.id && categories && allSubCategories) {
-        setLoading(true);
-        const data = await handleGetProductData(params.id);
-        const categoryData = categories.find((item) => item._id == data.category)
-        const subCategoriesData = allSubCategories.filter((item) => data.subCategories.includes(item._id))
-        console.log('subCategoriesData :>> ', subCategoriesData);
-        setCategory(categoryData);
-        setSubCategories(subCategoriesData);
+    if(params.id && categories.length > 0){
 
-        if (data) {
-          setFormData(data);
-          setPrimaryPhotoPreview(addBaseURL(data.image));
+      const fetchProductData = async () => {
+        if (params.id && categories.length > 0) {
+          setLoading(true);
+          const data = await handleGetProductData(params.id);
+          if(data.category) {
+            const categoryData = categories.find((item) => item._id == data.category)
+            setCategory(categoryData || null);
+            setAllSubCategories(categoryData?.subCategories || [])
+            setSubCategories(data.subCategories);
+          }
+  
+          if (data) {
+            setFormData(data);
+            setPrimaryPhotoPreview(addBaseURL(data.image));
+          }
+          setLoading(false);
         }
-        setLoading(false);
-      }
-    };
-
-    fetchProductData();
-  }, [params.id, categories, allSubCategories]);
+      };
+  
+      fetchProductData();
+    }
+  }, [params.id, categories]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -147,18 +144,18 @@ export default function Setting() {
     event: React.SyntheticEvent<Element, Event>,
     value: Category | null
   ) => {
-    console.log("Selected category: ", value);
-    setFormData({ ...formData, category: value ? value._id : null }); // Use value.id to get the ObjectId
+    setCategory(value)
+    setAllSubCategories(value?.subCategories || [])
+    setFormData({ ...formData, category: value ? value._id : "" }); 
   };
 
   const handleSubCategoryChange = (
     event: React.SyntheticEvent<Element, Event>,
-    value: Category[]
+    value: string[]
   ): void => {
     // Explicitly specifying the return type as void
-    setSubCategories(value)
-    const subCategoryIds = value.map((subCategory) => subCategory._id); // Extract IDs
-    setFormData({ ...formData, subCategories: subCategoryIds }); // Update formData with IDs
+    setSubCategories(value || [])
+    setFormData({ ...formData, subCategories: value }); // Update formData with IDs
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -168,7 +165,6 @@ export default function Setting() {
       setErrors(validationErrors);
     } else {
       const formDataToSubmit = new FormData();
-
       formDataToSubmit.append("name", formData.name);
       if (formData.primaryPhoto) {
         formDataToSubmit.append("primaryPhoto", formData.primaryPhoto);
@@ -198,18 +194,18 @@ export default function Setting() {
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      primaryPhoto: null,
-      image: "",
-      rentalCostPerDay: 0,
-      category: "",
-      subCategories: [],
-    });
-    setPrimaryPhotoPreview(null);
-    setErrors({});
-  };
+  // const resetForm = () => {
+  //   setFormData({
+  //     name: "",
+  //     primaryPhoto: null,
+  //     image: "",
+  //     rentalCostPerDay: 0,
+  //     category: "",
+  //     subCategories: [],
+  //   });
+  //   setPrimaryPhotoPreview(null);
+  //   setErrors({});
+  // };
 
   const handleClosePrimaryPhoto = (event: React.MouseEvent<SVGElement>) => {
     event.preventDefault();
@@ -237,7 +233,7 @@ export default function Setting() {
   return (
     <div className="w-full mx-auto">
       {loading ? (
-        "Loading Proeduct Data"
+        "Loading Product Data"
       ) : (
         <form
           onSubmit={handleSubmit}
@@ -286,7 +282,7 @@ export default function Setting() {
                   options={allSubCategories}
                   onChange={handleSubCategoryChange}
                   value={subCategories}
-                  getOptionLabel={(option) => option.name}
+                  getOptionLabel={(option) => option}
                   renderInput={(params) => (
                     <TextField
                       {...params}

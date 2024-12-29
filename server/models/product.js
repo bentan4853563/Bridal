@@ -30,9 +30,8 @@ const ProductSchema = new mongoose.Schema(
     },
     subCategories: [
       {
-        type: Types.ObjectId,
-        ref: 'SubCategory',
-      },
+        type: String
+      }
     ],
     quantity: {
       type: Number,

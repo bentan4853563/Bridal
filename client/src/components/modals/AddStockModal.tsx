@@ -15,12 +15,16 @@ import { toast } from "react-toastify";
 interface AddStockModalProps {
   open: boolean;
   name: string;
+  isAdd: boolean;
+  currentQuantity: number;
   onSuccess: (data: Product | null) => void; // Ensure onSuccess is typed correctly
   onClose: () => void;
 }
 
 const AddStockModal: React.FC<AddStockModalProps> = ({
   open,
+  isAdd,
+  currentQuantity,
   onSuccess,
   onClose,
 }) => {
@@ -30,14 +34,21 @@ const AddStockModal: React.FC<AddStockModalProps> = ({
   const addStockItem = async () => {
     if (params.id) {
       try {
-        const updatedProduct: Product | null = await handleAddStockItem(
-          params.id,
-          quantity
-        ); // Ensure this returns a Product
-        toast.success("Stocked successfully")
-        onSuccess(updatedProduct); // Pass the updated product to onSuccess
-        setQuantity(1);
-        onClose();
+        if (!isAdd && quantity > currentQuantity) {
+          toast.error("Please set quantity currectly.");
+        } else {
+          const updatedQuantity = isAdd ? quantity : quantity * -1;
+          const updatedProduct: Product | null = await handleAddStockItem(
+            params.id,
+            updatedQuantity
+          ); // Ensure this returns a Product
+          toast.success(
+            `${isAdd ? "Added" : "Removed"} stock Items successfully.`
+          );
+          onSuccess(updatedProduct); // Pass the updated product to onSuccess
+          setQuantity(1);
+          onClose();
+        }
       } catch (error) {
         console.error("Error adding stock item:", error);
         // Handle error (e.g., show a notification)
@@ -74,8 +85,8 @@ const AddStockModal: React.FC<AddStockModalProps> = ({
           <Button variant="outlined" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={addStockItem} variant="contained" color="primary">
-            Add {quantity} stock item{quantity > 1 ? "s" : ""}
+          <Button onClick={addStockItem} variant="contained" color={isAdd ? "primary" : "warning"}>
+            {isAdd ? "Add" : "Remove"} {quantity} stock item{quantity > 1 ? "s" : ""}
           </Button>
         </div>
       </Box>

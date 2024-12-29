@@ -12,23 +12,43 @@ export default function ProductInventory() {
   }>();
 
   const [isShowAddStockModal, setIsShowAddStockModal] = useState(false);
+  const [isAdd, setIsAdd] = useState(true);
 
   return (
     <div className="flex flex-col items-start gap-4">
-      <Button
-        className="ml-auto"
-        variant="contained"
-        onClick={() => setIsShowAddStockModal(true)}
-      >
-        Add Stock Items
-      </Button>
+      <div className="flex gap-4">
+        <Button
+          className="ml-auto"
+          variant="contained"
+          onClick={() => setIsShowAddStockModal(true)}
+        >
+          Add Stock Items
+        </Button>
+
+        <Button
+          className="ml-auto"
+          variant="contained"
+          color="warning"
+          onClick={() => {
+            setIsShowAddStockModal(true);
+            setIsAdd(false);
+          }}
+        >
+          Remove Items
+        </Button>
+      </div>
       <div className="w-full bg-white p-4 border rounded-lg flex flex-col items-start gap-2">
         {productData && (
           <AddStockModal
             open={isShowAddStockModal}
             name={productData.name}
+            isAdd={isAdd}
+            currentQuantity={productData.quantity}
             onSuccess={(data) => setProductData(data)} // Corrected function name
-            onClose={() => setIsShowAddStockModal(false)}
+            onClose={() => {
+              setIsShowAddStockModal(false);
+              setIsAdd(true);
+            }}
           />
         )}
         <table className="w-full">

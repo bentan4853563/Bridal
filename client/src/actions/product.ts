@@ -33,7 +33,6 @@ export const handleUpdateProduct = async (
   formData: object,
   onSuccess: () => void
 ) => {
-  console.log('formData :>> ', formData);
   try {
     await axiosInstance.put(`/api/products/update/${id}`, formData);
     onSuccess();

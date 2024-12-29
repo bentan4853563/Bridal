@@ -11,9 +11,7 @@ import {
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { addBaseURL } from "../../../utils/addBaseURL";
 import { Category } from "../../../types";
-import {
-  handleGetCategoryList
-} from "../../../actions/category";
+import { handleGetCategoryList } from "../../../actions/category";
 
 interface FormData {
   name: string;
@@ -75,19 +73,20 @@ export default function Setting() {
   }, []);
 
   useEffect(() => {
-    if(params.id && categories.length > 0){
-
+    if (params.id && categories.length > 0) {
       const fetchProductData = async () => {
         if (params.id && categories.length > 0) {
           setLoading(true);
           const data = await handleGetProductData(params.id);
-          if(data.category) {
-            const categoryData = categories.find((item) => item._id == data.category)
+          if (data.category) {
+            const categoryData = categories.find(
+              (item) => item._id == data.category
+            );
             setCategory(categoryData || null);
-            setAllSubCategories(categoryData?.subCategories || [])
+            setAllSubCategories(categoryData?.subCategories || []);
             setSubCategories(data.subCategories);
           }
-  
+
           if (data) {
             setFormData(data);
             setPrimaryPhotoPreview(addBaseURL(data.image));
@@ -95,7 +94,7 @@ export default function Setting() {
           setLoading(false);
         }
       };
-  
+
       fetchProductData();
     }
   }, [params.id, categories]);
@@ -144,9 +143,9 @@ export default function Setting() {
     event: React.SyntheticEvent<Element, Event>,
     value: Category | null
   ) => {
-    setCategory(value)
-    setAllSubCategories(value?.subCategories || [])
-    setFormData({ ...formData, category: value ? value._id : "" }); 
+    setCategory(value);
+    setAllSubCategories(value?.subCategories || []);
+    setFormData({ ...formData, category: value ? value._id : "" });
   };
 
   const handleSubCategoryChange = (
@@ -154,7 +153,7 @@ export default function Setting() {
     value: string[]
   ): void => {
     // Explicitly specifying the return type as void
-    setSubCategories(value || [])
+    setSubCategories(value || []);
     setFormData({ ...formData, subCategories: value }); // Update formData with IDs
   };
 
@@ -403,6 +402,90 @@ export default function Setting() {
               </div>
             </div>
           </div> */}
+
+          <Divider />
+          {/* Pricing Section */}
+          <div className="flex flex-col xl:flex-row gap-4 xl:gap-12">
+            <div className="xl:max-w-xs xl:px-8 flex flex-col items-start xl:gap-4">
+              <span className="font-bold text-lg">Images and Videos</span>
+            </div>
+
+            <div className="w-full max-w-2xl bg-white rounded-lg p-8">
+              {/* Rental Cost/Day Input */}
+              <div className="flex flex-col items-start">
+                <label htmlFor="rentalCostPerDay">Rental Cost / Day ($)</label>
+                <input
+                  type="number"
+                  id="rentalCostPerDay"
+                  className="w-full p-2 border rounded-md"
+                  value={formData.rentalCostPerDay}
+                  onChange={handleChange}
+                />
+                {errors.rentalCostPerDay && (
+                  <span className="text-red-500 text-sm">
+                    {errors.rentalCostPerDay}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <Divider />
+          {/* Pricing Section */}
+          <div className="flex flex-col xl:flex-row gap-4 xl:gap-12">
+            <div className="xl:max-w-xs xl:px-8 flex flex-col items-start xl:gap-4">
+              <span className="font-bold text-lg">Pricing</span>
+              <p className="text-justify text-sm text-gray-600">
+                Determines how the price will be calculated for a rental period.
+              </p>
+              <p className="text-justify text-sm text-gray-600">
+                You can configure additional settings for pricing after the
+                product has been created.
+              </p>
+            </div>
+
+            <div className="w-full max-w-2xl bg-white rounded-lg p-8">
+              {/* Secondary Photos */}
+              <div className="flex flex-col items-start">
+                <span>Secondary Photos</span>
+                <div className="flex flex-wrap gap-2">
+                  {secondaryPhotoPreviews.map((preview, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={preview}
+                        alt={`Secondary Preview ${index + 1}`}
+                        loading="lazy"
+                        className="w-16 sm:w-32 h-16 sm:h-32 rounded-lg"
+                      />
+                      <IoMdClose
+                        onClick={() => handleCloseSecondaryPhoto(index)}
+                        className="absolute top-2 right-2 text-white text-2xl cursor-pointer"
+                      />
+                    </div>
+                  ))}
+                  <div className="border rounded-lg hover:border-sky-300">
+                    <input
+                      type="file"
+                      id="secondaryPhotos"
+                      name="secondaryPhotos"
+                      className="hidden"
+                      accept="image/*" // Restrict to image files
+                      onChange={handleFileSelect}
+                    />
+                    <label
+                      htmlFor="secondaryPhotos"
+                      className="flex justify-center w-full h-full cursor-pointer"
+                    >
+                      <div className="w-16 sm:w-32 h-16 sm:h-32 p-4 border rounded-lg hover:border-sky-300 flex flex-col items-center justify-center gap-2">
+                        <CiImageOn className="text-3xl" />
+                        <span className="hidden sm:block">Secondary Image</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <Divider />
           {/* Pricing Section */}

@@ -8,11 +8,17 @@ import {
 import { useNavigate } from "react-router-dom";
 import { handleGetProducts } from "../../../actions/product";
 import { addBaseURL } from "../../../utils/addBaseURL";
+import { Chip } from "@mui/material";
 
 // Define the columns based on the Product model
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 50 },
   { field: "name", headerName: "Name", flex: 1 }, // Use flex for responsive width
+  {
+    field: 'category', headerName: "Category", flex: 1, renderCell: (params) => (
+      <Chip>{params.row.category.name}</Chip>
+    )
+  },
   {
     field: "primaryPhoto",
     headerName: "Primary Photo",

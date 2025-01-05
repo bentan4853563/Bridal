@@ -42,7 +42,7 @@ router.get('/list', async (req, res) => {
     const limit = parseInt(req.params.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const customers = await Product.find().skip(skip).limit(limit);
+    const customers = await Product.find().skip(skip).limit(limit).populate('category');
 
     const totalCustomers = await Product.countDocuments();
     const totalPages = Math.ceil(totalCustomers / limit);

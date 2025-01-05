@@ -9,11 +9,12 @@ import {
 import { parseISO, format } from "date-fns";
 import { handleGetProducts } from "../../../actions/product";
 import { addBaseURL } from "../../../utils/addBaseURL";
+import { Chip, Tooltip } from "@mui/material";
 
 // Define the columns based on the Product model
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 50 },
-  { field: "name", headerName: "Name", flex: 1 }, // Use flex for responsive width
+  { field: "name", headerName: "Name", flex: 1 },
   {
     field: "image",
     headerName: "Photo",
@@ -32,7 +33,26 @@ const columns: GridColDef[] = [
       />
     ),
   },
-  { field: "rentalCostPerDay", headerName: "Rental Cost/Day", flex: 1 }, // Use flex for responsive width
+  {
+    field: 'category',
+    headerName: "Categories",
+    flex: 1,
+    renderCell: (params) => (
+      <div className="h-full flex items-center gap-2">
+      {params.row.category && (
+        <Tooltip title="Category" arrow>
+          <Chip label={params.row.category.name} color="primary" />
+        </Tooltip>
+      )}
+      {params.row.subCategories.map((item: string, index: number) => (
+        <Tooltip title="Sub Category" arrow key={index}>
+          <Chip label={item} />
+        </Tooltip>
+      ))}
+    </div>
+    )
+  },
+  { field: "rentalCostPerDay", headerName: "Rental Cost/Day", flex: 1 },
   {
     field: "createdAt",
     headerName: "Created At",
@@ -41,13 +61,11 @@ const columns: GridColDef[] = [
       if (!row.createdAt) return "N/A";
       return format(parseISO(row.createdAt), "yyyy-MM-dd HH:mm");
     },
-  }, // Use flex for responsive width
+  },
 ];
 
 export default function ProductList() {
   const navigate = useNavigate();
-
-  // State to hold Product rows, pagination model, and loading state
   const [rows, setRows] = useState([]);
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
@@ -55,7 +73,8 @@ export default function ProductList() {
   });
   const [loading, setLoading] = useState(true);
 
-  // Fetch Products on pagination model change
+  console.log(rows)
+
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -65,9 +84,9 @@ export default function ProductList() {
           paginationModel.pageSize
         );
 
-        // Update rows with fetched data, ensuring unique IDs
-        if (data) {
-          const updatedData = data.customers.map((item: object, index: number) => ({
+        // Ensure that the data structure is correct
+        if (data && data.customers) {
+          const updatedData = data.customers.map((item: any, index: number) => ({
             id: index + 1,
             ...item,
           }));
@@ -83,14 +102,12 @@ export default function ProductList() {
     fetchProducts();
   }, [paginationModel]);
 
-  // Handle pagination model changes
   const handlePaginationModelChange = (
     newPaginationModel: GridPaginationModel
   ) => {
     setPaginationModel(newPaginationModel);
   };
 
-  // Navigate to edit page on row click
   const handleRowClick = (params: GridRowParams) => {
     navigate(`/products/${params.row._id}/inventory`);
   };
@@ -99,16 +116,16 @@ export default function ProductList() {
     <div className="mt-12">
       <DataGrid
         rows={rows}
-        getRowId={(row) => row.id} // Use id as a unique identifier
+        getRowId={(row) => row.id}
         columns={columns}
         paginationModel={paginationModel}
         onPaginationModelChange={handlePaginationModelChange}
-        pageSizeOptions={[5, 10]} // Pagination options
-        loading={loading} // Show loading state
-        onRowClick={handleRowClick} // Handle row click for navigation
+        pageSizeOptions={[5, 10]}
+        loading={loading}
+        onRowClick={handleRowClick}
         sx={{
           "& .MuiDataGrid-row": {
-            cursor: "pointer", // Change cursor to pointer for clickable rows
+            cursor: "pointer",
           },
           backgroundColor: "white",
         }}

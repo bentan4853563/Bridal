@@ -53,7 +53,7 @@ export const handleGetAllOrders = async () => {
   }
 };
 
-export const handleGetOrdersByCustomer = async(id: string) => {
+export const handleGetOrdersByCustomer = async(id: string, p0?: number, pageSize?: number) => {
   try {
     const response = await axiosInstance.post(
       `/api/orders/list-by-customer`, {id}

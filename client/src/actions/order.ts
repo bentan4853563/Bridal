@@ -58,7 +58,8 @@ export const handleGetOrdersByCustomer = async(id: string, p0?: number, pageSize
     const response = await axiosInstance.post(
       `/api/orders/list-by-customer`, {id}
     );
-    console.log('response.data :>> ', response.data);
+
+    console.log('p0, pageSize :>> ', p0, pageSize);
     return response.data;
   } catch (err: unknown) {
     const error = err as ApiError;

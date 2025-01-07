@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Schema, Types } = mongoose; 
+const { Schema, Types } = mongoose;
 
 // Define the schema for your model
 const ProductSchema = new mongoose.Schema(
@@ -8,7 +8,7 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: true, // Name is required
     },
-    image: {
+    primaryPhoto: {
       type: String, // URL or path to the primary photo
       required: true,
     },
@@ -17,10 +17,12 @@ const ProductSchema = new mongoose.Schema(
         type: String, // Array of URLs or paths for secondary photos
       },
     ],
-    videoUrls: [{
-      type: String, // Array of video URLs or paths
-    }],
-    rentalCostPerDay: {
+    videoUrls: [
+      {
+        type: String, // Array of video URLs or paths
+      },
+    ],
+    rentalCost: {
       type: Number,
       required: true, // Rental cost is required
     },
@@ -28,15 +30,18 @@ const ProductSchema = new mongoose.Schema(
       type: Types.ObjectId,
       ref: 'Category',
     },
-    subCategories: [
-      {
-        type: String,
-      },
-    ],
+    subCategory: {
+      type: String,
+    },
     quantity: {
       type: Number,
       required: true,
       default: 0,
+    },
+    status: {
+      type: String,
+      enum: ['Draft', 'Published'],
+      default: 'Draft',
     },
   },
   {

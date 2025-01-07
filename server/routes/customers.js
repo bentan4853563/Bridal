@@ -1,23 +1,54 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
 require('dotenv').config();
 
 const Customer = require('../models/customer');
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Determine the folder based on file type
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (['.png', '.jpg', '.jpeg', '.gif'].includes(ext)) {
+      cb(null, 'uploads/customers/images'); // Image files
+    } else {
+      cb(null, 'uploads/customers/documents'); // Document files
+    }
+  },
+  filename: (req, file, cb) => {
+    // Create a unique filename
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 // Create a new customer
 router.post('/create', async (req, res) => {
   try {
     const customer = new Customer(req.body);
     const savedCustomer = await customer.save();
-    res.status(201).json({
-      message: 'Customer created successfully',
-      customer: savedCustomer,
-    });
+
+    res.status(201).json(savedCustomer);
   } catch (error) {
     console.error('Error creating customer:', error);
     res
       .status(400)
       .json({ message: 'Failed to create customer', error: error.message });
+  }
+});
+
+router.get('/', async (req, res) => {
+  try {
+    const customers = await Customer.find();
+
+    res.json(customers);
+  } catch (error) {
+    console.error('Error fetching customers:', error);
+    res
+      .status(500)
+      .json({ message: 'Failed to fetch customers', error: error.message });
   }
 });
 
@@ -76,28 +107,61 @@ router.get('/one', async (req, res) => {
 });
 
 // Update a customer
-router.put('/update/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const updatedData = req.body;
+router.put(
+  '/update/:id',
+  upload.fields([{ name: 'newFiles', maxCount: 10 }]),
+  async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updatedData = req.body;
 
-    const updatedCustomer = await Customer.findByIdAndUpdate(id, updatedData, {
-      new: true,
-    });
-    if (!updatedCustomer) {
-      return res.status(404).json({ message: 'Customer not found' });
+      // Fetch the existing customer
+      const existingCustomer = await Customer.findById(id);
+      if (!existingCustomer) {
+        return res.status(404).json({ message: 'Customer not found' });
+      }
+
+      // Initialize attachments if not provided
+      updatedData.attachments = updatedData.attachments || [];
+
+      // Filter existing attachments
+      const attachments = existingCustomer.attachments.filter(file =>
+        updatedData.attachments.some(link => link.includes(file.link))
+      );
+
+      // Update secondary photos if provided
+      if (req.files.newFiles && req.files.newFiles.length > 0) {
+        const newAttachments = req.files.newFiles.map((file) => ({
+          name: file.originalname, // File name
+          size: file.size, // File size in bytes
+          link: file.path.replace(/^uploads/, ''), // File link
+        }));
+
+        // Combine existing attachments with new ones
+        updatedData.attachments = [...attachments, ...newAttachments];
+      } else {
+        // If no new files are uploaded, keep existing attachments
+        updatedData.attachments = attachments;
+      }
+
+      // Update the customer with the new data
+      const updatedCustomer = await Customer.findByIdAndUpdate(
+        id,
+        updatedData,
+        {
+          new: true,
+          runValidators: true, // Ensure validators are run for the update
+        }
+      );
+
+      res.json(updatedCustomer);
+    } catch (error) {
+      console.error('Error updating customer:', error);
+      res.status(400).json({ message: 'Failed to update customer', error: error.message });
     }
-    res.json({
-      message: 'Customer updated successfully',
-      customer: updatedCustomer,
-    });
-  } catch (error) {
-    console.error('Error updating customer:', error);
-    res
-      .status(400)
-      .json({ message: 'Failed to update customer', error: error.message });
   }
-});
+);
+
 
 // Delete a customer
 router.delete('/delete/:id', async (req, res) => {

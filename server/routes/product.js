@@ -1,14 +1,16 @@
 const express = require('express');
 const multer = require('multer');
 const router = express.Router();
+const path = require('path');
 
 const Product = require('../models/product');
 
-const front_url = process.env.FRONT_URL
+const front_url = process.env.FRONT_URL;
+const base_url = process.env.BASE_URL;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, 'uploads/items');
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname);
@@ -17,24 +19,60 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.post('/create', upload.single('primaryPhoto'), async (req, res) => {
-  try {
-    const newProduct = new Product({
-      name: req.body.name,
-      image: req.file ? req.file.path.replace('uploads', '') : null,
-      rentalCostPerDay: req.body.rentalCostPerDay,
-      category: req.body.category,
-      subCategory: req.body.subCategory,
-      quantity: req.body.quantity,
-      status: req.body.status,
-    });
+// Create route
+router.post(
+  '/create',
+  upload.fields([
+    { name: 'newPrimaryPhoto' },
+    { name: 'newSecondPhotos' },
+    { name: 'newVideos' },
+  ]),
+  async (req, res) => {
+    try {
+      // Extract form data
+      const { name, rentalCost, category, subCategory, quantity, status } =
+        req.body;
 
-    const savedProduct = await newProduct.save();
-    res.json(savedProduct);
-  } catch (error) {
-    console.log('error :>> ', error);
+      // Prepare file paths
+      const primaryPhoto = req.files['newPrimaryPhoto'][0].path.replace(
+        'uploads',
+        ''
+      ); // Path to the primary photo
+      const secondaryImages = req.files['newSecondPhotos']
+        ? req.files['newSecondPhotos'].map((file) =>
+            file.path.replace('uploads', '')
+          )
+        : []; // Array of secondary image paths
+      const videoUrls = req.files['newVideos']
+        ? req.files['newVideos'].map((file) => file.path.replace('uploads', ''))
+        : []; // Array of video paths
+
+      // Create a new product instance
+      const newProduct = new Product({
+        name,
+        rentalCost,
+        category,
+        subCategory,
+        quantity,
+        status,
+        primaryPhoto,
+        secondaryImages,
+        videoUrls,
+      });
+
+      // Save the product to the database
+      await newProduct.save();
+
+      // Respond with success
+      res.status(201).json(newProduct);
+    } catch (error) {
+      console.error('Error:', error);
+      res
+        .status(500)
+        .json({ message: 'Internal server error', error: error.message });
+    }
   }
-});
+);
 
 router.get('/list', async (req, res) => {
   try {
@@ -42,7 +80,10 @@ router.get('/list', async (req, res) => {
     const limit = parseInt(req.params.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const customers = await Product.find().skip(skip).limit(limit).populate('category');
+    const customers = await Product.find()
+      .skip(skip)
+      .limit(limit)
+      .populate('category');
 
     const totalCustomers = await Product.countDocuments();
     const totalPages = Math.ceil(totalCustomers / limit);
@@ -77,8 +118,7 @@ router.get('/all', async (req, res) => {
 // Get a product by ID
 router.get('/one', async (req, res) => {
   try {
-    const product = await Product.findById(req.query.id)
-      .populate('Category')
+    const product = await Product.findById(req.query.id).populate('Category');
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -92,75 +132,64 @@ router.get('/one', async (req, res) => {
   }
 });
 
-// // Update a product
-// router.put('/update/:id', upload.single('primaryPhoto'), async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const updatedData = req.body;
-
-//     const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, {
-//       new: true,
-//     })
-
-//     if (!updatedProduct) {
-//       return res.status(404).json({ message: 'Product not found' });
-//     }
-//     res.json(updatedProduct);
-//   } catch (error) {
-//     console.error('Error updating product:', error);
-//     res
-//       .status(400)
-//       .json({ message: 'Failed to update customer', error: error.message });
-//   }
-// });
-
+// Update a product
 router.put(
   '/update/:id',
   upload.fields([
-    { name: 'primaryPhoto', maxCount: 1 },
-    { name: 'secondaryPhotos', maxCount: 10 },
-    { name: 'videos', maxCount: 10 },
+    { name: 'newPrimaryPhoto' },
+    { name: 'newSecondPhotos' },
+    { name: 'newVideos' },
   ]),
   async (req, res) => {
     try {
       const { id } = req.params;
       const updatedData = req.body;
-      console.log('updatedData :>> ', updatedData);
 
       // Update primary photo if provided
-      if (req.files.primaryPhoto && req.files.primaryPhoto.length > 0) {
-        updatedData.image = req.files.primaryPhoto[0].path.replace(
+      if (req.files.newPrimaryPhoto && req.files.newPrimaryPhoto.length > 0) {
+        updatedData.primaryPhoto = req.files.newPrimaryPhoto[0].path.replace(
           'uploads',
           ''
         );
-      } else if (!updatedData.image) {
+      } else if (!updatedData.primaryPhoto) {
         // If no new primary photo and no existing image, keep it as is
-        updatedData.image = updatedData.image || null; // or keep existing value
+        updatedData.primaryPhoto = updatedData.primaryPhoto || null; // or keep existing value
       }
 
-      // Update secondary photos if provided
-      if (req.files.secondaryPhotos && req.files.secondaryPhotos.length > 0) {
-        const newSecondaryImages = req.files.secondaryPhotos.map((file) =>
+      // Ensure secondaryImages is an array
+      updatedData.secondaryImages = Array.isArray(updatedData.secondaryImages)
+        ? updatedData.secondaryImages
+        : [];
+
+      // Update secondary images if provided
+      if (req.files.newSecondPhotos && req.files.newSecondPhotos.length > 0) {
+        const newSecondaryImages = req.files.newSecondPhotos.map((file) =>
           file.path.replace('uploads', '')
         );
-        const existImages =
-          updatedData.secondaryImages?.filter(
-            (url) => !url.includes(front_url)
-          ) || [];
-        updatedData.secondaryImages = [...existImages, ...newSecondaryImages];
+        const existingImages =
+          updatedData.secondaryImages
+            ?.filter((url) => !url.includes(front_url)) || [];
+        updatedData.secondaryImages = [
+          ...existingImages,
+          ...newSecondaryImages,
+        ];
       } else {
-        // If no new secondary photos, retain existing ones
+        // If no new secondary images, retain existing ones
         updatedData.secondaryImages = updatedData.secondaryImages || [];
       }
 
-      // Update videos if provided
-      if (req.files.videos && req.files.videos.length > 0) {
-        const newVideoUrls = req.files.videos.map((file) =>
+      // Ensure secondaryImages is an array
+      updatedData.videoUrls = Array.isArray(updatedData.videoUrls)
+        ? updatedData.videoUrls
+        : [];
+      // Update video URLs if provided
+      if (req.files.newVideos && req.files.newVideos.length > 0) {
+        const newVideoUrls = req.files.newVideos.map((file) =>
           file.path.replace('uploads', '')
         );
-        const existVideos =
+        const existingVideos =
           updatedData.videoUrls?.filter((url) => url.includes(front_url)) || [];
-        updatedData.videoUrls = [...existVideos, ...newVideoUrls];
+        updatedData.videoUrls = [...existingVideos, ...newVideoUrls];
       } else {
         // If no new videos, retain existing ones
         updatedData.videoUrls = updatedData.videoUrls || [];
@@ -171,6 +200,10 @@ router.put(
         new: true,
         runValidators: true, // Ensure validators are run for the update
       });
+      console.log(updatedProduct);
+      if (!updatedProduct) {
+        return res.status(404).json({ message: 'Product not found' });
+      }
 
       res.json(updatedProduct);
     } catch (error) {
@@ -181,7 +214,6 @@ router.put(
     }
   }
 );
-
 
 // Add stock
 router.put(
@@ -252,7 +284,6 @@ router.put(
     }
   }
 );
-
 
 // Delete a product
 router.delete('/delete/:id', async (req, res) => {

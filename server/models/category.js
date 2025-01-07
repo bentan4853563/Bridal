@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const CategorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    subCategories: [{ type: String }],
+    description: { type: String },
+    subCategories: [{ type: String, unique: true }],
   },
   { timestamps: true }
 );

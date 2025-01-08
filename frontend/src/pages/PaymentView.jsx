@@ -265,7 +265,7 @@ const PaymentView = () => {
                   </div>
 
                   <a
-                    href={file.url}
+                    href={addBaseURL(file.url)}
                     download
                     className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                   >

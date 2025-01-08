@@ -13,7 +13,7 @@ const PaymentSchema = new Schema(
     },
     paymentType: {
       type: String,
-      enum: ['Advance', 'Reservation', 'Guarantee', 'Refund'],
+      enum: ['Advance', 'Security', 'Final', 'Other'],
     },
     reference: {
       type: String,

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FileIcon, DownloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import FileUpload from "./FileUpload";
+import { addBaseURL } from "../../utils/updateURL";
 
 const AttachmentsSection = ({
   existingFiles = [],
@@ -53,7 +54,7 @@ const AttachmentsSection = ({
                 </div>
                 <div className="flex items-center space-x-2">
                   <a
-                    href={file.link}
+                    href={addBaseURL(file.link)}
                     download
                     className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                   >

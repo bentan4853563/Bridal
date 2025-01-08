@@ -36,7 +36,7 @@ const Reservations = () => {
   // Filter reservations based on search term
   const filteredReservations = reservations.filter(
     (reservation) =>
-      reservation.client.name
+      reservation.client?.name
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
       reservation.items[0].name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -183,7 +183,7 @@ const Reservations = () => {
                   <td className="p-4 text-white">
                     {new Date(reservation.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="p-4 text-white">{reservation.client.name}</td>
+                  <td className="p-4 text-white">{reservation.client?.name}</td>
                   <td className="p-4">
                     <div className="flex items-center gap-3">
                       <img

@@ -22,7 +22,7 @@ const customerSlice = createSlice({
     },
     deleteCustomer(state, action) {
       state.customers = state.customers.filter(
-        (customer) => customer.id !== action.payload
+        (customer) => customer._id !== action.payload
       );
     },
   },

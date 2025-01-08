@@ -1,20 +1,25 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import {
   PlusIcon,
   Pencil1Icon,
   TrashIcon,
   EyeOpenIcon,
 } from "@radix-ui/react-icons";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+
 import AddCustomer from "./AddCustomer";
 import Pagination from "../components/Pagination";
 
+import { handleDeleteCustomer } from "../actions/customer";
+import { deleteCustomer } from "../store/reducers/customerSlice";
+
 const Customers = () => {
   const location = useLocation();
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
   const customers = useSelector((state) => state.customer.customers); // Get customers from Redux
   const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
   const [showAddModal, setShowAddModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -55,6 +60,16 @@ const Customers = () => {
     setItemsPerPage(newItemsPerPage);
     setCurrentPage(1);
   };
+
+  const handleDelete = (customerId) => {
+    {
+      if (window.confirm("Are you sure you want to delete this customer?")) {
+        handleDeleteCustomer(customerId, () => {
+          dispatch(deleteCustomer(customerId))
+        })
+      }
+    }
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -172,16 +187,7 @@ const Customers = () => {
                       <button
                         className="p-1 hover:bg-white/10 rounded"
                         title="Delete"
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you want to delete this customer?"
-                            )
-                          ) {
-                            // Add delete logic here
-                            console.log("Delete customer:", customer.id);
-                          }
-                        }}
+                        onClick={() => handleDelete(customer._id)}
                       >
                         <TrashIcon className="h-4 w-4 text-red-400" />
                       </button>

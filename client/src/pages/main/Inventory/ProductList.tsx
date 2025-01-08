@@ -44,7 +44,7 @@ const columns: GridColDef[] = [
           <Chip label={params.row.category.name} color="primary" />
         </Tooltip>
       )}
-      {params.row.subCategories.map((item: string, index: number) => (
+      {params.row.subCategories?.map((item: string, index: number) => (
         <Tooltip title="Sub Category" arrow key={index}>
           <Chip label={item} />
         </Tooltip>
@@ -86,7 +86,7 @@ export default function ProductList() {
 
         // Ensure that the data structure is correct
         if (data && data.customers) {
-          const updatedData = data.customers.map((item: any, index: number) => ({
+          const updatedData = data.customers?.map((item: any, index: number) => ({
             id: index + 1,
             ...item,
           }));

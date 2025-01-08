@@ -83,7 +83,7 @@ const CategoryForm: React.FC = () => {
           `${import.meta.env.VITE_BACKEND_URL}/api/category/subcategory/add`,
           newSubCategory
         );
-        const updatedCategories = categories.map((cat) => {
+        const updatedCategories = categories?.map((cat) => {
           if (cat.name === selectedParent) {
             return {
               ...cat,
@@ -114,7 +114,7 @@ const CategoryForm: React.FC = () => {
           Categories
         </Typography>
         <List>
-          {categories.map((cat, index) => (
+          {categories?.map((cat, index) => (
             <div key={index}>
               <ListItem
                 component="div"
@@ -152,7 +152,7 @@ const CategoryForm: React.FC = () => {
                   disablePadding
                   sx={{ marginLeft: "12px" }}
                 >
-                  {cat.subCategories.map((sub, subIndex) => (
+                  {cat.subCategories?.map((sub, subIndex) => (
                     <ListItem key={subIndex}>
                       <ListItemText primary={sub} />
                     </ListItem>
@@ -204,7 +204,7 @@ const CategoryForm: React.FC = () => {
                 label="Label"
                 required
               >
-                {categories.map((cat, index) => (
+                {categories?.map((cat, index) => (
                   <MenuItem key={index} value={cat.name}>
                     {cat.name}
                   </MenuItem>

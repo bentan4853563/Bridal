@@ -38,7 +38,7 @@ const AddReservationModal = ({ isOpen, onClose }) => {
 
   // Filter customers based on search
   const filteredCustomers = customerSearch.length >= 2
-    ? dummyCustomers.filter(customer =>
+    ? dummyCustomers?.filter(customer =>
         customer.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
         customer.identification.toLowerCase().includes(customerSearch.toLowerCase()) ||
         customer.phone.includes(customerSearch)
@@ -108,7 +108,7 @@ const AddReservationModal = ({ isOpen, onClose }) => {
                   {/* Customer Dropdown */}
                   {showCustomerDropdown && filteredCustomers.length > 0 && (
                     <div className="absolute z-10 w-full mt-1 bg-gray-800 border border-white/10 rounded-lg shadow-lg max-h-60 overflow-auto">
-                      {filteredCustomers.map((customer) => (
+                      {filteredCustomers?.map((customer) => (
                         <button
                           key={customer.id}
                           type="button"

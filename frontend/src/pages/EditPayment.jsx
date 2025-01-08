@@ -72,7 +72,7 @@ const EditPayment = () => {
   // Filter customers based on search
   const filteredCustomers =
     customerSearch.length >= 2
-      ? clients.filter(
+      ? clients?.filter(
           (customer) =>
             customer.name
               .toLowerCase()
@@ -83,7 +83,7 @@ const EditPayment = () => {
 
   // Get reservations for selected customer
   const customerReservations = selectedCustomer
-    ? reservations.filter((res) => res.client?._id === selectedCustomer._id)
+    ? reservations?.filter((res) => res.client?._id === selectedCustomer._id)
     : [];
 
   const handleCustomerSelect = (customer) => {
@@ -186,7 +186,7 @@ const EditPayment = () => {
                   {/* Customer Dropdown */}
                   {showCustomerDropdown && filteredCustomers.length > 0 && (
                     <div className="absolute z-10 w-full mt-1 bg-gray-800 border border-white/10 rounded-lg shadow-lg max-h-60 overflow-auto">
-                      {filteredCustomers.map((customer) => (
+                      {filteredCustomers?.map((customer) => (
                         <button
                           key={customer._id}
                           type="button"
@@ -211,7 +211,7 @@ const EditPayment = () => {
                     Reservation <span className="text-red-400">*</span>
                   </label>
                   <div className="grid grid-cols-1 gap-2">
-                    {customerReservations.map((reservation) => (
+                    {customerReservations?.map((reservation) => (
                       <button
                         key={reservation._id}
                         type="button"
@@ -395,7 +395,7 @@ const EditPayment = () => {
                         Existing Files
                       </label>
                       <div className="grid grid-cols-1 gap-3">
-                        {existingFiles.map((file) => (
+                        {existingFiles?.map((file) => (
                           <div
                             key={file.url}
                             className="flex items-center gap-4 rounded-lg border border-white/20 bg-white/5 p-4"
@@ -412,18 +412,16 @@ const EditPayment = () => {
                               </p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <a
-                                href={addBaseURL(file.url)}
-                                download
-                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                              >
+                              <a href={addBaseURL(file.url)} target="_blank" rel="noopener noreferrer" download
+                      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    >
                                 <DownloadIcon className="h-4 w-4 text-blue-400" />
                               </a>
                               <button
                                 type="button"
                                 onClick={() => {
                                   setExistingFiles(
-                                    existingFiles.filter(
+                                    existingFiles?.filter(
                                       (f) => f.url !== file.url
                                     )
                                   );
@@ -474,7 +472,7 @@ const EditPayment = () => {
                     {/* New Files Preview */}
                     {newFiles.length > 0 && (
                       <div className="grid grid-cols-1 gap-3 mt-4">
-                        {newFiles.map((file, index) => (
+                        {newFiles?.map((file, index) => (
                           <div
                             key={index}
                             className="flex items-center gap-4 rounded-lg border border-white/20 bg-white/5 p-4"
@@ -494,7 +492,7 @@ const EditPayment = () => {
                               type="button"
                               onClick={() => {
                                 setNewFiles(
-                                  newFiles.filter((_, i) => i !== index)
+                                  newFiles?.filter((_, i) => i !== index)
                                 );
                               }}
                               className="p-2 hover:bg-white/10 rounded-lg transition-colors"

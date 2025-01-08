@@ -97,7 +97,7 @@ router.put('/update-subcategory/:id', async (req, res) => {
       req.params.id,
       {
         $set: {
-          subCategories: category.subCategories.map((item) =>
+          subCategories: category.subCategories?.map((item) =>
             item === oldname ? newname : item
           ),
         },

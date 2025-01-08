@@ -39,7 +39,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
 
   return (
     <div className="flex gap-4">
-      {secondaryPhotoPreviews.map((preview, index) => (
+      {secondaryPhotoPreviews?.map((preview, index) => (
         <div key={index} className="relative">
           <img
             src={preview}

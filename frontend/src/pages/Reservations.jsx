@@ -34,7 +34,7 @@ const Reservations = () => {
   const [selectedReservation, setSelectedReservation] = useState(null);
 
   // Filter reservations based on search term
-  const filteredReservations = reservations.filter(
+  const filteredReservations = reservations?.filter(
     (reservation) =>
       reservation.client?.name
         .toLowerCase()
@@ -45,11 +45,11 @@ const Reservations = () => {
   // Calculate pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredReservations.slice(
+  const currentItems = filteredReservations?.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredReservations?.length / itemsPerPage);
 
   // Update getPaymentStatus to calculate based on payments
   const getPaymentStatus = (reservation) => {
@@ -152,6 +152,9 @@ const Reservations = () => {
                 Item
               </th>
               <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                Wedding Date
+              </th>
+              <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
                 Pickup Date
               </th>
               <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
@@ -172,7 +175,7 @@ const Reservations = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">
-            {currentItems.map((reservation, index) => {
+            {currentItems?.map((reservation, index) => {
               const financials = calculateFinancials(reservation);
               const paymentStatus = getPaymentStatus(reservation);
               const mainItem = reservation.items[0]; // Get first item for display
@@ -202,6 +205,9 @@ const Reservations = () => {
                         )}
                       </div>
                     </div>
+                  </td>
+                  <td className="p-4 text-white">
+                    {new Date(reservation.client.weddingDate).toLocaleDateString()}
                   </td>
                   <td className="p-4 text-white">
                     {new Date(reservation.pickupDate).toLocaleDateString()}

@@ -161,12 +161,12 @@ const Documentation = () => {
         <h1 className="text-2xl font-semibold text-white">Documentation</h1>
 
         <div className="space-y-8">
-          {sections.map((section) => (
+          {sections?.map((section) => (
             <div key={section.title} className="space-y-6">
               <h2 className="text-xl font-medium text-white">{section.title}</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {section.items.map((item) => (
+                {section.items?.map((item) => (
                   <div 
                     key={item.name}
                     className="bg-white/10 backdrop-blur-lg rounded-xl border border-white/10 p-6 space-y-4"
@@ -177,14 +177,14 @@ const Documentation = () => {
                     {item.components && (
                       <div className="space-y-4">
                         <h4 className="text-sm font-medium text-gray-300">Components</h4>
-                        {item.components.map((component) => (
+                        {item.components?.map((component) => (
                           <div key={component.name} className="space-y-2">
                             <h5 className="text-white font-medium">{component.name}</h5>
                             <p className="text-sm text-gray-400">{component.description}</p>
                             {component.props && (
                               <div className="mt-2 space-y-1">
                                 <h6 className="text-xs font-medium text-gray-300">Props:</h6>
-                                {component.props.map((prop) => (
+                                {component.props?.map((prop) => (
                                   <div key={prop.name} className="text-xs text-gray-400">
                                     <span className="text-blue-400">{prop.name}</span>
                                     <span className="text-gray-500"> ({prop.type})</span>
@@ -196,7 +196,7 @@ const Documentation = () => {
                             {component.fields && (
                               <div className="mt-2 space-y-1">
                                 <h6 className="text-xs font-medium text-gray-300">Fields:</h6>
-                                {component.fields.map((field) => (
+                                {component.fields?.map((field) => (
                                   <div key={field.name} className="text-xs text-gray-400">
                                     <span className="text-blue-400">{field.name}</span>
                                     <span className="text-gray-500"> ({field.type})</span>
@@ -208,7 +208,7 @@ const Documentation = () => {
                             {component.columns && (
                               <div className="mt-2 space-y-1">
                                 <h6 className="text-xs font-medium text-gray-300">Columns:</h6>
-                                {component.columns.map((column) => (
+                                {component.columns?.map((column) => (
                                   <div key={column.name} className="text-xs text-gray-400">
                                     <span className="text-blue-400">{column.name}</span>
                                     <span> - {column.description}</span>
@@ -225,7 +225,7 @@ const Documentation = () => {
                       <div className="space-y-2">
                         <h4 className="text-sm font-medium text-gray-300">Features</h4>
                         <ul className="list-disc list-inside text-sm text-gray-400 space-y-1">
-                          {item.features.map((feature, index) => (
+                          {item.features?.map((feature, index) => (
                             <li key={index}>{feature}</li>
                           ))}
                         </ul>
@@ -246,7 +246,7 @@ const Documentation = () => {
                     {item.fields && (
                       <div className="space-y-2">
                         <h4 className="text-sm font-medium text-gray-300">Data Fields</h4>
-                        {item.fields.map((field) => (
+                        {item.fields?.map((field) => (
                           <div key={field.name} className="text-sm text-gray-400">
                             <span className="text-blue-400">{field.name}</span>
                             <span className="text-gray-500"> ({field.type})</span>

@@ -21,7 +21,7 @@ const CustomerReservations = ({ reservations }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-white/10">
-          {reservations.map((reservation) => (
+          {reservations?.map((reservation) => (
             <tr key={reservation.id} className="hover:bg-white/5">
               <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                 {reservation.createdAt.split("T")[0]}

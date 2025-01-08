@@ -29,7 +29,7 @@ const FilterPopover = ({ type, dateRange, activeRange, onRangeChange, onDateChan
           
           {/* Predefined Options */}
           <div className="flex flex-wrap gap-2">
-            {dateRangeOptions.map(option => (
+            {dateRangeOptions?.map(option => (
               <button
                 key={option.id}
                 onClick={() => onRangeChange(option.id, type)}

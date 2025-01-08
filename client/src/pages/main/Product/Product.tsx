@@ -14,7 +14,7 @@ export default function Product() {
     <div className="flex flex-col gap-4 p-10">
       {/* Tab */}
       <div className="p-2 flex gap-4 border-b">
-        {tabs.map((tab, index) => {
+        {tabs?.map((tab, index) => {
           const isActive = location.pathname.includes(tab.path);
 
           return (

@@ -22,7 +22,7 @@ const itemSlice = createSlice({
       }
     },
     deleteItem(state, action) {
-      state.items = state.items.filter((item) => item._id !== action.payload);
+      state.items = state.items?.filter((item) => item._id !== action.payload);
     },
   },
 });

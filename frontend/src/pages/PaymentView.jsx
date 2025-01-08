@@ -237,7 +237,7 @@ const PaymentView = () => {
           <h3 className="text-lg font-medium text-white mb-4">Attachments</h3>
           {payment.attachments?.length > 0 ? (
             <div className="grid grid-cols-1 gap-3">
-              {payment.attachments.map((file) => (
+              {payment.attachments?.map((file) => (
                 <div
                   key={file.id}
                   className="flex items-center gap-4 rounded-lg border border-white/20 bg-white/5 p-4"
@@ -264,11 +264,9 @@ const PaymentView = () => {
                     </p>
                   </div>
 
-                  <a
-                    href={addBaseURL(file.url)}
-                    download
-                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                  >
+                  <a href={addBaseURL(file.url)} target="_blank" rel="noopener noreferrer" download
+                      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    >
                     <DownloadIcon className="h-4 w-4 text-blue-400" />
                   </a>
                 </div>

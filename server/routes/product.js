@@ -162,7 +162,7 @@ router.put(
 
       // Update secondary images if provided
       if (req.files.newSecondPhotos && req.files.newSecondPhotos.length > 0) {
-        const newSecondaryImages = req.files.newSecondPhotos.map((file) =>
+        const newSecondaryImages = req.files.newSecondPhotos?.map((file) =>
           file.path.replace('uploads', '')
         );
         const existingImages =
@@ -183,7 +183,7 @@ router.put(
         : [];
       // Update video URLs if provided
       if (req.files.newVideos && req.files.newVideos.length > 0) {
-        const newVideoUrls = req.files.newVideos.map((file) =>
+        const newVideoUrls = req.files.newVideos?.map((file) =>
           file.path.replace('uploads', '')
         );
         const existingVideos =
@@ -244,7 +244,7 @@ router.put(
 
       // Update secondary photos if provided
       if (req.files.secondaryPhotos && req.files.secondaryPhotos.length > 0) {
-        const newSecondaryImages = req.files.secondaryPhotos.map((file) =>
+        const newSecondaryImages = req.files.secondaryPhotos?.map((file) =>
           file.path.replace('uploads', '')
         );
         const existImages =
@@ -258,11 +258,11 @@ router.put(
 
       // Update videos if provided
       if (req.files.videos && req.files.videos.length > 0) {
-        const newVideoUrls = req.files.videos.map((file) =>
+        const newVideoUrls = req.files.videos?.map((file) =>
           file.path.replace('uploads', '')
         );
         const existVideos =
-          updatedData.videoUrls.filter((url) => url.includes(front_url)) || [];
+          updatedData.videoUrls?.filter((url) => url.includes(front_url)) || [];
         updatedData.videoUrls = [...existVideos, ...newVideoUrls];
       } else {
         updatedData.videoUrls = updatedData.videoUrls || [];

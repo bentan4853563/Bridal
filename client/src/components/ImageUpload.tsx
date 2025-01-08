@@ -12,7 +12,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   onFileSelect,
 }) => {
   const classNames = (...classes: (string | undefined)[]) => {
-    return classes.filter(Boolean).join(" ");
+    return classes?.filter(Boolean).join(" ");
   };
 
   const handleChangeFile = (e: ChangeEvent<HTMLInputElement>) => {

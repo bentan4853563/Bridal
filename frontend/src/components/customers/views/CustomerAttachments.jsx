@@ -19,14 +19,36 @@ const CustomerAttachments = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
 
+  const fetchFile = (file) => {
+    axios({
+          url: file.link,
+          method: "GET",
+          headers: headers,
+          responseType: "blob" // important
+      }).then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute(
+              "download",
+              `${this.props.file.name}.${this.props.file.mime}`
+          );
+          document.body.appendChild(link);
+          link.click();
   
-  const imageFiles = attachments.filter((file) =>
+          // Clean up and remove the link
+          link.parentNode.removeChild(link);
+      });
+  }
+
+
+  const imageFiles = attachments?.filter((file) =>
     file.link.includes("images\\")
-);
-const documentFiles = attachments.filter((file) =>
-  file.link.includes("documents\\")
-);
-console.log('attachments, imageFiles, documentFiles :>> ', attachments, imageFiles, documentFiles);
+  );
+  const documentFiles = attachments?.filter((file) =>
+    file.link.includes("documents\\")
+  );
+  console.log('attachments, imageFiles, documentFiles :>> ', attachments, imageFiles, documentFiles);
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prev) =>
@@ -43,7 +65,7 @@ console.log('attachments, imageFiles, documentFiles :>> ', attachments, imageFil
   const handleFilesAdded = async (files) => {
     setIsUploading(true);
     try {
-      const validFiles = files.filter((file) => file.size <= 10 * 1024 * 1024);
+      const validFiles = files?.filter((file) => file.size <= 10 * 1024 * 1024);
       await onAddFiles(validFiles);
     } finally {
       setIsUploading(false);
@@ -60,7 +82,7 @@ console.log('attachments, imageFiles, documentFiles :>> ', attachments, imageFil
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-white">Images</h3>
             <div className="grid grid-cols-2 gap-4">
-              {imageFiles.map((file, index) => (
+              {imageFiles?.map((file, index) => (
                 <div
                   key={index}
                   className="group relative aspect-square rounded-lg overflow-hidden bg-white/5 cursor-pointer"
@@ -90,9 +112,9 @@ console.log('attachments, imageFiles, documentFiles :>> ', attachments, imageFil
           <div className="space-y-4">
             <h3 className="text-lg font-medium text-white">Documents</h3>
             <div className="space-y-3">
-              {documentFiles.map((file) => (
+              {documentFiles?.map((file, index) => (
                 <div
-                  key={file.id}
+                  key={index}
                   className="flex items-center justify-between p-3 bg-white/10 rounded-lg group"
                 >
                   <div className="flex items-center space-x-3">
@@ -107,12 +129,11 @@ console.log('attachments, imageFiles, documentFiles :>> ', attachments, imageFil
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => window.open(file.url, "_blank")}
+                    <a href={file.link} target="_blank" rel="noopener noreferrer" download
                       className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                     >
                       <DownloadIcon className="h-4 w-4 text-white/60" />
-                    </button>
+                    </a>
                     {!readOnly && (
                       <button
                         onClick={() => onDeleteFile(file.id)}

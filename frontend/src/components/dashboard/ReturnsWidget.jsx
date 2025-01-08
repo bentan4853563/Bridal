@@ -57,7 +57,7 @@ const ReturnsWidget = ({
         </div>
         
         <div className="space-y-4">
-          {returns.map(returnItem => (
+          {returns?.map(returnItem => (
             <div 
               key={returnItem.id}
               className="flex items-center justify-between p-4 rounded-lg bg-white/5"
@@ -66,7 +66,7 @@ const ReturnsWidget = ({
                 <h3 className="font-medium text-white">{returnItem.customerName}</h3>
                 <p className="text-sm text-gray-400">{returnItem.date}</p>
                 <div className="mt-1">
-                  {returnItem.items.map(item => (
+                  {returnItem.items?.map(item => (
                     <span key={item.id} className="inline-block text-xs text-gray-400 mr-2">
                       {item.name} {item.size ? `(${item.size})` : ''}
                     </span>

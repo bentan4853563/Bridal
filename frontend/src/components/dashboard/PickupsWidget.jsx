@@ -57,7 +57,7 @@ const PickupsWidget = ({
         </div>
         
         <div className="space-y-4">
-          {pickups.map(pickup => (
+          {pickups?.map(pickup => (
             <div 
               key={pickup.id}
               className="flex items-center justify-between p-4 rounded-lg bg-white/5"
@@ -66,7 +66,7 @@ const PickupsWidget = ({
                 <h3 className="font-medium text-white">{pickup.customerName}</h3>
                 <p className="text-sm text-gray-400">{pickup.date}</p>
                 <div className="mt-1">
-                  {pickup.items.map(item => (
+                  {pickup.items?.map(item => (
                     <span key={item.id} className="inline-block text-xs text-gray-400 mr-2">
                       {item.name} {item.size ? `(${item.size})` : ''}
                     </span>

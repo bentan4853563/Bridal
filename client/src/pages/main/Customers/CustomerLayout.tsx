@@ -36,7 +36,7 @@ export default function CustomerLayout() {
       <div className="bg-gray-100 p-12 h-full">
         {/* Tab */}
         <div className="flex gap-4 border-b border-gray-200">
-          {tabs.map((tab, index) => {
+          {tabs?.map((tab, index) => {
             const isActive = location.pathname.includes(tab.path);
 
             return (

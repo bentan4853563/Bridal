@@ -12,7 +12,7 @@ const RecentActivityWidget = ({ activities }) => {
         </div>
       </div>
       <div className="space-y-6">
-        {activities.map((activity) => (
+        {activities?.map((activity) => (
           <div
             key={activity.id}
             className="flex items-start gap-4 p-4 bg-white/5 rounded-lg"

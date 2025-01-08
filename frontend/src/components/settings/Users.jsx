@@ -45,7 +45,7 @@ const Users = () => {
   }
 
   const handleEditUser = (formData) => {
-    const updatedUsers = users.map(user => {
+    const updatedUsers = users?.map(user => {
       if (user.id === editingUser.id) {
         return {
           ...user,
@@ -72,7 +72,7 @@ const Users = () => {
   }
 
   const handleConfirmDelete = () => {
-    setUsers(users.filter(user => user.id !== itemToDelete.id))
+    setUsers(users?.filter(user => user.id !== itemToDelete.id))
     setShowDeleteModal(false)
     setItemToDelete(null)
   }
@@ -91,7 +91,7 @@ const Users = () => {
       </div>
 
       <div className="grid gap-4">
-        {users.map((user) => (
+        {users?.map((user) => (
           <div
             key={user.id}
             className="bg-white/10 rounded-lg p-4 flex items-center justify-between"

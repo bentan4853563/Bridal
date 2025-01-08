@@ -119,7 +119,7 @@ const Categories = () => {
       </div>
 
       <div className="grid gap-4">
-        {categories.map((category) => (
+        {categories?.map((category) => (
           <div
             key={category._id}
             className="bg-white/10 rounded-lg p-4 space-y-4"
@@ -159,7 +159,7 @@ const Categories = () => {
 
             {/* Sub Categories */}
             <div className="flex flex-wrap gap-2">
-              {category.subCategories.map((sub, index) => (
+              {category.subCategories?.map((sub, index) => (
                 <div
                   key={index}
                   className="group flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full"

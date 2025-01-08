@@ -58,7 +58,7 @@ export default function ProductList() {
 
         // Update rows with fetched data, ensuring unique IDs
         if (data) {
-          const updatedData = data.customers.map((item: object, index: number) => ({
+          const updatedData = data.customers?.map((item: object, index: number) => ({
             id: paginationModel.page * paginationModel.pageSize + index + 1,
             ...item,
           }));

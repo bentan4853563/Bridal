@@ -27,7 +27,7 @@ const CustomerTabs = ({ activeTab, onTabChange }) => {
   return (
     <div className="border-b border-white/20">
       <div className="flex">
-        {tabs.map(tab => (
+        {tabs?.map(tab => (
           <TabButton 
             key={tab.id}
             active={activeTab === tab.id} 

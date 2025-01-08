@@ -73,7 +73,7 @@ const EditCustomerForm = ({
   const handleRemoveExisting = (fileToRemove) => {
     setFormData((prev) => ({
       ...prev,
-      attachments: prev.attachments.filter(
+      attachments: prev.attachments?.filter(
         (file) => file.link !== fileToRemove.link
       ),
     }));

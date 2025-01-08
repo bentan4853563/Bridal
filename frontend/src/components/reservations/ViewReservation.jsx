@@ -13,7 +13,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
   useEffect(() => {
     if(reservation && payments.length) {
       setAssociatedPayments(
-        payments.filter((item) => item.reservation._id === reservation._id)
+        payments?.filter((item) => item.reservation._id === reservation._id)
       );
     }
   }, [reservation, payments])
@@ -291,7 +291,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
 
   const renderReservedItems = () => (
     <div className="space-y-4">
-      {reservation.items.map((item) => (
+      {reservation.items?.map((item) => (
         <div
           key={item.id}
           className="flex items-center gap-4 bg-white/5 rounded-lg p-4"
@@ -365,13 +365,13 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <a
               onClick={() => {/* Download/Print contract logic */}}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm font-medium transition-colors"
             >
               <DownloadIcon className="h-5 w-5" />
               Download Contract
-            </button>
+            </a>
             <button
               onClick={onClose}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -384,7 +384,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
         {/* Tabs */}
         <div className="border-b border-white/10 mb-6">
           <div className="flex space-x-8">
-            {tabs.map((tab) => (
+            {tabs?.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}

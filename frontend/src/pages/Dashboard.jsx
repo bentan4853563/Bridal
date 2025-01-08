@@ -204,12 +204,12 @@ const DashboardContent = () => {
   // Then use availableWidgets in your state
   const [visibleWidgets, setVisibleWidgets] = useState(() => {
     const saved = localStorage.getItem('visibleWidgets')
-    return saved ? JSON.parse(saved) : availableWidgets.map(w => w.id)
+    return saved ? JSON.parse(saved) : availableWidgets?.map(w => w.id)
   })
 
   const [widgetOrder, setWidgetOrder] = useState(() => {
     const saved = localStorage.getItem('widgetOrder')
-    return saved ? JSON.parse(saved) : availableWidgets.map(w => w.id)
+    return saved ? JSON.parse(saved) : availableWidgets?.map(w => w.id)
   })
 
   // Debug log to check current order
@@ -625,7 +625,7 @@ const DashboardContent = () => {
             
             {/* Predefined Options */}
             <div className="flex flex-wrap gap-2">
-              {dateRangeOptions.map(option => (
+              {dateRangeOptions?.map(option => (
                 <button
                   key={option.id}
                   onClick={() => calculateDateRange(option.id, type)}

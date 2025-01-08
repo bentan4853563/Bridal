@@ -7,7 +7,7 @@ const DataTable = ({
   initialVisibleColumns,
   className = ''
 }) => {
-  const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns || columns.map(col => col.key))
+  const [visibleColumns, setVisibleColumns] = useState(initialVisibleColumns || columns?.map(col => col.key))
 
   const handleToggleColumn = (columnKey) => {
     setVisibleColumns(prev => {

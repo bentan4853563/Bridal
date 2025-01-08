@@ -34,7 +34,7 @@ export default function InventoryLayout() {
       <div className="bg-slate-100 p-12 h-full overflow-y-auto">
         {/* Tab */}
         <div className="flex gap-4 border-b border-gray-200">
-          {tabs.map((tab, index) => {
+          {tabs?.map((tab, index) => {
             const isActive = location.pathname.includes(tab.path);
 
             return (

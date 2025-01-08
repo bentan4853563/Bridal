@@ -57,7 +57,7 @@ const AddReservation = ({ isOpen, onClose }) => {
   // Update search functionality
   useEffect(() => {
     if (searchTerm.length >= 2) {
-      const filtered = clients.filter(
+      const filtered = clients?.filter(
         (client) =>
           client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           client.phone.includes(searchTerm) ||
@@ -144,7 +144,7 @@ const AddReservation = ({ isOpen, onClose }) => {
         {/* Dropdown for search results */}
         {showClientDropdown && filteredClients.length > 0 && (
           <div className="absolute z-10 w-full mt-2 bg-gray-800 border border-white/10 rounded-lg shadow-lg max-h-60 overflow-auto">
-            {filteredClients.map((client) => (
+            {filteredClients?.map((client) => (
               <button
                 key={client.id}
                 onClick={() => handleClientSelect(client)}
@@ -322,7 +322,7 @@ const AddReservation = ({ isOpen, onClose }) => {
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      items: selectedItems.map((i) => i._id),
+      items: selectedItems?.map((i) => i._id),
     }));
   }, [selectedItems]);
 
@@ -505,7 +505,7 @@ const AddReservation = ({ isOpen, onClose }) => {
   const getAvailableItems = () => {
     // if (!formData.pickupDate || !formData.returnDate || !selectedClient?.weddingDate) return []
 
-    // return items.filter(item => {
+    // return items?.filter(item => {
     //   const isAvailable = checkItemAvailability(item, formData.pickupDate, formData.returnDate)
     //   const matchesSearch = itemSearchTerm === '' ||
     //     item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
@@ -728,7 +728,7 @@ const AddReservation = ({ isOpen, onClose }) => {
         paymentStatus: "Pending",
         pickupDate: formData.pickupDate,
         returnDate: formData.returnDate,
-        items: selectedItems.map((item) => item._id),
+        items: selectedItems?.map((item) => item._id),
         additionalCost: Number(formData.additionalCost),
         travelCost: Number(formData.travelCost),
         securityDepositPercentage: financials.securityDepositPercentage,
@@ -839,7 +839,7 @@ const AddReservation = ({ isOpen, onClose }) => {
             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select a client</option>
-            {clients.map((client) => (
+            {clients?.map((client) => (
               <option key={client._id} value={client._id}>
                 {client.name} - {client.phone}
               </option>
@@ -909,7 +909,7 @@ const AddReservation = ({ isOpen, onClose }) => {
         {/* Steps */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            {steps.map((stepItem, index) => (
+            {steps?.map((stepItem, index) => (
               <div
                 key={stepItem.number}
                 className={`flex-1 relative ${

@@ -42,7 +42,7 @@ function WidgetManager({ widgets, visibleWidgets, onToggleWidget, onReorderWidge
                     {...provided.droppableProps}
                     ref={provided.innerRef}
                   >
-                    {widgets.map((widget, index) => (
+                    {widgets?.map((widget, index) => (
                       <Draggable 
                         key={widget.id} 
                         draggableId={widget.id} 

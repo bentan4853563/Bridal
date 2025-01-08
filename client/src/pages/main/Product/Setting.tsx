@@ -105,10 +105,10 @@ export default function Setting() {
             setFormData(data);
             setPrimaryPhotoPreview(addBaseURL(data.image));
             setSecondaryPhotoPreviews(
-              data.secondaryImages.map((url: string) => addBaseURL(url))
+              data.secondaryImages?.map((url: string) => addBaseURL(url))
             );
             setVideoPreviews(
-              data.videoUrls.map((url: string) => addBaseURL(url))
+              data.videoUrls?.map((url: string) => addBaseURL(url))
             );
           }
           setLoading(false);
@@ -527,7 +527,7 @@ const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
               <div className="flex flex-col items-start">
                 <span>Secondary Photos</span>
                 <div className="flex flex-wrap gap-2">
-                  {secondaryPhotoPreviews.map((preview, index) => (
+                  {secondaryPhotoPreviews?.map((preview, index) => (
                     <div key={index} className="relative">
                       <img
                         src={preview}
@@ -567,7 +567,7 @@ const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
               <div className="flex flex-col items-start">
                 <span>Videos</span>
                 <div className="flex flex-wrap gap-2">
-                  {videoPreviews.map((preview, index) => (
+                  {videoPreviews?.map((preview, index) => (
                     <div key={index} className="relative">
                       <video controls width="250">
                         <source src={preview} type="video/mp4" />

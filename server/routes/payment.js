@@ -26,7 +26,7 @@ router.post(
       });
       // Update secondary photos if provided
       if (req.files.files && req.files.files.length > 0) {
-        const newAttachments = req.files.files.map((file) => ({
+        const newAttachments = req.files.files?.map((file) => ({
           name: file.originalname, // File name
           size: file.size, // File size in bytes
           url: file.path.replace(/^uploads/, ''), // File link
@@ -78,7 +78,7 @@ router.put(
 
       // Initialize attachments
       if (req.files.newFiles && req.files.newFiles.length > 0) {
-        const newAttachments = req.files.newFiles.map((file) => ({
+        const newAttachments = req.files.newFiles?.map((file) => ({
           name: file.originalname, // File name
           size: file.size, // File size in bytes
           url: file.path.replace(/^uploads/, ''), // File link

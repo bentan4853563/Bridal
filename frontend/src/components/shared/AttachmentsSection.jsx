@@ -16,7 +16,7 @@ const AttachmentsSection = ({
     setIsUploading(true);
     try {
       // Filter files larger than 10MB
-      const validFiles = files.filter((file) => file.size <= 10 * 1024 * 1024);
+      const validFiles = files?.filter((file) => file.size <= 10 * 1024 * 1024);
       onAddFiles(validFiles);
     } catch (error) {
       console.error("Error handling files:", error);
@@ -36,7 +36,7 @@ const AttachmentsSection = ({
         <div className="space-y-4">
           <h4 className="text-sm font-medium text-gray-400">Uploaded Files</h4>
           <div className="space-y-3">
-            {existingFiles.map((file, index) => (
+            {existingFiles?.map((file, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between p-3 bg-white/10 rounded-lg group"
@@ -53,11 +53,9 @@ const AttachmentsSection = ({
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <a
-                    href={addBaseURL(file.link)}
-                    download
-                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                  >
+                <a href={file.link} target="_blank" rel="noopener noreferrer" download
+                      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                    >
                     <DownloadIcon className="h-4 w-4 text-white/60" />
                   </a>
 
@@ -73,7 +71,7 @@ const AttachmentsSection = ({
               </div>
             ))}
 
-            {newFiles.map((file, index) => (
+            {newFiles?.map((file, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between p-3 bg-white/10 rounded-lg group"

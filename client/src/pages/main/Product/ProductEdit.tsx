@@ -189,7 +189,7 @@ export default function ProductEdit() {
 
   const handleCloseSecondaryPhoto = (index: number) => {
     setFormData((prev) => {
-      const updatedPhotos = prev.secondaryPhotos.filter((_, i) => i !== index);
+      const updatedPhotos = prev.secondaryPhotos?.filter((_, i) => i !== index);
       return { ...prev, secondaryPhotos: updatedPhotos };
     });
     setSecondaryPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
@@ -197,7 +197,7 @@ export default function ProductEdit() {
 
   const handleCloseVideo = (index: number) => {
     setFormData((prev) => {
-      const updatedVideos = prev.videos.filter((_, i) => i !== index);
+      const updatedVideos = prev.videos?.filter((_, i) => i !== index);
       return { ...prev, videos: updatedVideos };
     });
     setVideoPreviews((prev) => prev.filter((_, i) => i !== index));
@@ -344,7 +344,7 @@ export default function ProductEdit() {
             <div className="flex flex-col items-start">
               <span>Secondary Photos</span>
               <div className="flex flex-wrap gap-2">
-                {secondaryPhotoPreviews.map((preview, index) => (
+                {secondaryPhotoPreviews?.map((preview, index) => (
                   <div key={index} className="relative">
                     <img
                       src={preview}
@@ -384,7 +384,7 @@ export default function ProductEdit() {
             <div className="flex flex-col items-start">
               <span>Videos</span>
               <div className="flex flex-wrap gap-2">
-                {videoPreviews.map((preview, index) => (
+                {videoPreviews?.map((preview, index) => (
                   <div key={index} className="relative">
                     <video controls width="250">
                       <source src={preview} type="video/mp4" />

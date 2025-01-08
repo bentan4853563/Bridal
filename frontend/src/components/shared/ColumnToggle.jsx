@@ -19,7 +19,7 @@ const ColumnToggle = ({ columns, visibleColumns, onToggleColumn }) => {
           sideOffset={5}
         >
           <div className="space-y-2">
-            {columns.map((column) => (
+            {columns?.map((column) => (
               <label 
                 key={column.key} 
                 className="flex items-center space-x-2 p-2 hover:bg-white/5 rounded-md cursor-pointer"

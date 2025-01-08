@@ -86,7 +86,7 @@ const Items = () => {
   };
 
   // Filter items
-  const filteredItems = items.filter((item) => {
+  const filteredItems = items?.filter((item) => {
     if (filters.category !== "all" && item.category !== filters.category)
       return false;
     if (filters.status !== "all" && item.status !== filters.status)
@@ -97,8 +97,8 @@ const Items = () => {
   // Then paginate
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const currentItems = filteredItems?.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredItems?.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -138,7 +138,7 @@ const Items = () => {
             className="bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20"
           >
             <option value="all">All Categories</option>
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <option key={category._id} value={category._id}>
                 {category.name}
               </option>
@@ -159,7 +159,7 @@ const Items = () => {
 
         {/* Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {currentItems.map((item) => (
+          {currentItems?.map((item) => (
             <div
               key={item.id}
               className="bg-white/10 rounded-lg overflow-hidden group"
@@ -226,7 +226,7 @@ const Items = () => {
                 </div>
                 <div className="flex flex-wrap gap-2 pt-2">
                   <span className="px-2 py-1 bg-white/5 rounded-full text-xs text-white">
-                    {categories.filter((cat) => cat._id == item.category)[0]?.name}
+                    {categories?.filter((cat) => cat._id == item.category)[0]?.name}
                   </span>
                   <span className="px-2 py-1 bg-white/5 rounded-full text-xs text-white">
                     {item.subCategory}

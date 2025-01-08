@@ -17,14 +17,14 @@ const CustomerView = () => {
   const reservations = useSelector(state => state.reservation.reservations);
   const payments = useSelector(state => state.payment.payments);
   const customerData = customers.find((customer) => customer._id === id);
-  const reservationsData = reservations.filter(
+  const reservationsData = reservations?.filter(
     (item) => item.client._id === id
   );
-  const paymentsData = payments.filter((item) => item.client._id === id);
+  const paymentsData = payments?.filter((item) => item.client._id === id);
   // const [reservationsData, setReservationsData] = useState([])
 
   // useEffect(() => {
-  //   setReservationsData(reservations.filter(item => item.client._id === id))
+  //   setReservationsData(reservations?.filter(item => item.client._id === id))
   // }, [id, reservations])
 
   console.log('paymentsData :>> ', paymentsData);
@@ -50,7 +50,7 @@ const CustomerView = () => {
       case "attachments":
         return (
           <CustomerAttachments
-            attachments={customerData.attachments.map(
+            attachments={customerData.attachments?.map(
               (file) => ({...file, link: `${import.meta.env.VITE_BACKEND_URL}${file.link}`})
             )}
             readOnly

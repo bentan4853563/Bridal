@@ -153,7 +153,7 @@ export default function CreatePayment() {
                     <option value="" disabled>
                       Select an order
                     </option>
-                    {associatedOrders.map((order) => (
+                    {associatedOrders?.map((order) => (
                       <option key={order._id} value={order._id}>
                         {order.details
                           .map((item) => `${item.product.name}: ${item.amount}`)

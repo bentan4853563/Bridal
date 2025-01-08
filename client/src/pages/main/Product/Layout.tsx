@@ -51,7 +51,7 @@ export default function ProductLayout() {
       <div className="h-full overflow-y-auto bg-gray-100 flex flex-col gap-4 p-6">
         {/* Tab Navigation */}
         <div className="flex gap-4 border-b border-b-gray-400">
-          {tabs.map((tab, index) => {
+          {tabs?.map((tab, index) => {
             const isActive = location.pathname.includes(tab.path);
             return (
               <Link

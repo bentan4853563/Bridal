@@ -110,7 +110,7 @@ const Sidebar = () => {
 
         {/* Item List */}
         <div className="p-4 flex flex-col gap-4">
-          {items.map((item, index) => {
+          {items?.map((item, index) => {
             const isActive = item.path.includes(pathnames[0]) ? true : false;
 
             return (

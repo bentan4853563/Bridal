@@ -83,7 +83,7 @@ const Navbar = () => {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-2 p-6">
-          {tabs.map((tab) => {
+          {tabs?.map((tab) => {
             const Icon = tab.icon
             return (
               <button

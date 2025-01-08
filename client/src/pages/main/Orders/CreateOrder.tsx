@@ -250,7 +250,7 @@ export default function CreateOrder() {
           </div>
           <div className="w-full p-4 flex flex-col">
             <ReactSearchAutocomplete
-              items={products.map(
+              items={products?.map(
                 (product): Product => ({
                   _id: product._id,
                   name: product.name,
@@ -286,7 +286,7 @@ export default function CreateOrder() {
                 </thead>
                 <tbody>
                   {selectedProducts.length > 0 &&
-                    selectedProducts.map((product, index) => {
+                    selectedProducts?.map((product, index) => {
                       const amount =
                         orderDetails.find((item) => item.product == product._id)
                           ?.amount || 1; // Default to 1 if not found
@@ -328,13 +328,13 @@ export default function CreateOrder() {
                               className="cursor-pointer"
                               onClick={() => {
                                 setSelectedProduct(
-                                  selectedProducts.filter(
+                                  selectedProducts?.filter(
                                     (p) => p._id !== product._id
                                   )
                                 );
                                 // Remove product ID from orderDetails
                                 setOrderDetails(
-                                  orderDetails.filter(
+                                  orderDetails?.filter(
                                     (item) => item.product !== product._id
                                   )
                                 );

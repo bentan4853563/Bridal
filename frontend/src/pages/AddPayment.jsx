@@ -31,7 +31,7 @@ const AddPayment = ({ isOpen, onClose }) => {
   // Filter customers based on search
   const filteredCustomers =
     customerSearch.length >= 2
-      ? customers.filter(
+      ? customers?.filter(
           (customer) =>
             customer.name
               .toLowerCase()
@@ -42,7 +42,7 @@ const AddPayment = ({ isOpen, onClose }) => {
 
   // Get reservations for selected customer
   const customerReservations = selectedCustomer
-    ? reservations.filter((res) => res.client?._id === selectedCustomer._id)
+    ? reservations?.filter((res) => res.client?._id === selectedCustomer._id)
     : [];
 
   const handleCustomerSelect = (customer) => {
@@ -91,7 +91,7 @@ const AddPayment = ({ isOpen, onClose }) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf']
     const maxSize = 5 * 1024 * 1024 // 5MB
 
-    const validFiles = newFiles.filter(file => {
+    const validFiles = newFiles?.filter(file => {
       if (!allowedTypes.includes(file.type)) {
         alert(`File type not allowed: ${file.name}`)
         return false
@@ -107,7 +107,7 @@ const AddPayment = ({ isOpen, onClose }) => {
   }
 
   const removeFile = (fileToRemove) => {
-    setFiles(files.filter(file => file !== fileToRemove))
+    setFiles(files?.filter(file => file !== fileToRemove))
   }
 
   const handleSubmit = async (e) => {
@@ -190,7 +190,7 @@ const AddPayment = ({ isOpen, onClose }) => {
       {/* File List */}
       {files.length > 0 && (
         <div className="mt-4 space-y-2">
-          {files.map((file, index) => (
+          {files?.map((file, index) => (
             <div
               key={index}
               className="flex items-center justify-between p-2 rounded-lg bg-white/5"
@@ -350,14 +350,14 @@ const AddPayment = ({ isOpen, onClose }) => {
                   {/* Customer Dropdown */}
                   {showCustomerDropdown && filteredCustomers.length > 0 && (
                     <div className="absolute z-10 w-full mt-1 bg-gray-800 border border-white/10 rounded-lg shadow-lg max-h-60 overflow-auto">
-                      {filteredCustomers.map((customer) => (
+                      {filteredCustomers?.map((customer) => (
                         <button
                           key={customer._id}
                           type="button"
                           onClick={() => handleCustomerSelect(customer)}
                           className="w-full px-4 py-2 text-left hover:bg-white/5 text-white text-sm"
                         >
-                          <div className="font-medium">{customer.name}</div>
+                          <div className="font-medium">{customer.name}{" "}{customer.surname}</div>
                           <div className="text-xs text-gray-400">
                             {customer.phone} 
                           </div>
@@ -373,7 +373,7 @@ const AddPayment = ({ isOpen, onClose }) => {
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-200">Reservation</label>
                   <div className="grid grid-cols-1 gap-2">
-                    {customerReservations.map((reservation) => (
+                    {customerReservations?.map((reservation) => (
                       <button
                         key={reservation._id}
                         type="button"

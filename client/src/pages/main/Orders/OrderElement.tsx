@@ -60,7 +60,7 @@ export default function OrderElement() {
           setEndDate(dayjs(order.returnDate));
         }
         if (order.details) {
-          const products = order.details.map((order) => order.product);
+          const products = order.details?.map((order) => order.product);
           setSelectedProducts(products);
         }
         if (order.status) {
@@ -289,7 +289,7 @@ export default function OrderElement() {
           </div>
           <div className="w-full p-4 flex flex-col">
             <ReactSearchAutocomplete
-              items={products.map(
+              items={products?.map(
                 (product): Product => ({
                   _id: product._id,
                   name: product.name,
@@ -324,7 +324,7 @@ export default function OrderElement() {
                 </thead>
                 <tbody>
                   {selectedProducts.length > 0 &&
-                    selectedProducts.map((product, index) => {
+                    selectedProducts?.map((product, index) => {
                       const amount =
                         orderDetails.find((item) => item.product == product._id)
                           ?.amount || 1; // Default to 1 if not found
@@ -366,13 +366,13 @@ export default function OrderElement() {
                               className="cursor-pointer"
                               onClick={() => {
                                 setSelectedProducts(
-                                  selectedProducts.filter(
+                                  selectedProducts?.filter(
                                     (p) => p._id !== product._id
                                   )
                                 );
                                 // Remove product ID from orderDetails
                                 setOrderDetails(
-                                  orderDetails.filter(
+                                  orderDetails?.filter(
                                     (item) => item.product !== product._id
                                   )
                                 );

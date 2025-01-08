@@ -33,11 +33,11 @@ const Customers = () => {
   // Calculate pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredCustomers.slice(
+  const currentItems = filteredCustomers?.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredCustomers?.length / itemsPerPage);
 
   const handleRowClick = (customerId) => {
     navigate(`/customer/${customerId}`);
@@ -136,7 +136,7 @@ const Customers = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
-              {currentItems.map((customer, index) => (
+              {currentItems?.map((customer, index) => (
                 <tr
                   key={customer._id}
                   className="hover:bg-white/5 transition-colors"

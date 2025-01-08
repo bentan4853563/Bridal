@@ -54,7 +54,7 @@ const ItemDetails = ({ item }) => {
               Videos
             </h4>
             <div className="grid grid-cols-2 gap-4">
-              {item.videoUrls.map((video, index) => (
+              {item.videoUrls?.map((video, index) => (
                 <div
                   key={index}
                   className="aspect-video rounded-lg overflow-hidden bg-white/5 border border-white/10 shadow-md hover:shadow-lg transition-shadow duration-300"

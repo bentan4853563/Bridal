@@ -117,7 +117,7 @@ router.put(
 
       // Update secondary photos if provided
       if (req.files.newFiles && req.files.newFiles.length > 0) {
-        const newAttachments = req.files.newFiles.map((file) => ({
+        const newAttachments = req.files.newFiles?.map((file) => ({
           name: file.originalname, // File name
           size: file.size, // File size in bytes
           link: file.path.replace(/^uploads/, ''), // File link

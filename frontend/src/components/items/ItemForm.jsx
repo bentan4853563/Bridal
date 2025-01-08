@@ -33,12 +33,12 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
       }
       if (initialData.secondaryImages) {
         setSecondaryPhotosPreviews(
-          initialData.secondaryImages.map((image) => addBaseURL(image))
+          initialData.secondaryImages?.map((image) => addBaseURL(image))
         );
       }
       if (initialData.videoUrls) {
         setVideoPreviews(
-          initialData.videoUrls.map((video) => addBaseURL(video))
+          initialData.videoUrls?.map((video) => addBaseURL(video))
         );
       }
     }
@@ -62,13 +62,13 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
         }
       } else if (name === "secondaryPhotos") {
         const files = Array.from(e.target.files);
-        const previews = files.map((file) => URL.createObjectURL(file));
+        const previews = files?.map((file) => URL.createObjectURL(file));
         setSecondaryPhotos((exists) => [...exists, ...files]);
         setSecondaryPhotosPreviews((exists) => [...exists, ...previews]);
       } else if (name === "videos") {
         const files = Array.from(e.target.files);
         setVideos((exists) => [...exists, ...files]);
-        const previews = files.map((file) => URL.createObjectURL(file));
+        const previews = files?.map((file) => URL.createObjectURL(file));
         setVideoPreviews((exists) => [...exists, ...previews]);
       }
     } else {
@@ -236,7 +236,7 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
                 } bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20`}
               >
                 <option value="">Select Sub-category</option>
-                {availableSubCategories.map((subCategory) => (
+                {availableSubCategories?.map((subCategory) => (
                   <option key={subCategory} value={subCategory}>
                     {subCategory}
                   </option>
@@ -341,7 +341,7 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
                 Secondary Photos
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {secondaryPhotosPreviews.map((preview, index) => (
+                {secondaryPhotosPreviews?.map((preview, index) => (
                   <div key={index} className="relative">
                     <img
                       src={preview}
@@ -379,7 +379,7 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
                 Videos
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {videoPreviews.map((video, index) => (
+                {videoPreviews?.map((video, index) => (
                   <div
                     key={index}
                     className="relative bg-white/5 rounded-lg p-3"

@@ -48,7 +48,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
   const [availableItems, setAvailableItems] = useState(items);
 
   // Filter available items based on search and dates
-  const filteredItems = items.filter((item) => {
+  const filteredItems = items?.filter((item) => {
     const categoryName = categories.find(
       (cat) => cat._id === item.category
     )?.name;
@@ -134,7 +134,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         status: formData.status,
         pickupDate: formData.pickupDate,
         returnDate: formData.returnDate,
-        items: selectedItems.map((item) => item._id),
+        items: selectedItems?.map((item) => item._id),
         additionalCost: Number(formData.additionalCost),
         travelCost: Number(formData.travelCost),
         securityDepositPercentage: formData.securityDepositPercentage,
@@ -172,7 +172,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select a client</option>
-            {clients.map((client) => (
+            {clients?.map((client) => (
               <option key={client._id} value={client._id}>
                 {client.name} - {client.phone}
               </option>
@@ -226,7 +226,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
       </div>
 
       <div className="space-y-4">
-        {selectedItems.map((item) => (
+        {selectedItems?.map((item) => (
           <div
             key={item.id}
             className="flex items-center justify-between bg-white/5 p-4 rounded-lg"
@@ -244,7 +244,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             </div>
             <button
               onClick={() =>
-                setSelectedItems(selectedItems.filter((i) => i.id !== item.id))
+                setSelectedItems(selectedItems?.filter((i) => i.id !== item.id))
               }
               className="text-red-400 hover:text-red-300 transition-colors"
             >
@@ -282,7 +282,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
 
             {/* Available Items */}
             <div className="grid grid-cols-2 gap-4 max-h-96 overflow-y-auto">
-              {filteredItems.map((item) => (
+              {filteredItems?.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => {
@@ -622,7 +622,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         {/* Steps */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            {steps.map((stepItem, index) => (
+            {steps?.map((stepItem, index) => (
               <div
                 key={stepItem.number}
                 className={`flex-1 relative ${

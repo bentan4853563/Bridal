@@ -23,7 +23,7 @@ const Payments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const filteredPayments = payments.filter(
+  const filteredPayments = payments?.filter(
     (payment) =>
       payment.client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       payment.reference.toLowerCase().includes(searchTerm.toLowerCase())
@@ -32,11 +32,11 @@ const Payments = () => {
   // Calculate pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredPayments.slice(
+  const currentItems = filteredPayments?.slice(
     indexOfFirstItem,
     indexOfLastItem
   );
-  const totalPages = Math.ceil(filteredPayments.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredPayments?.length / itemsPerPage);
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
@@ -133,7 +133,7 @@ const Payments = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
-              {currentItems.map((payment) => (
+              {currentItems?.map((payment) => (
                 <tr
                   key={payment.id}
                   className="hover:bg-white/5 transition-colors"
@@ -142,7 +142,7 @@ const Payments = () => {
                     {payment.reference}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    {payment.client.name}
+                    {payment.client.name}{" "}{payment.client.surname}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                     ${payment.amount.toLocaleString()}

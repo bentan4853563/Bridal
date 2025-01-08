@@ -45,7 +45,7 @@ export default function CustomerList() {
 
         // Update rows with fetched data, ensuring unique IDs
         if (data) {
-          const updatedData = data.customers.map(
+          const updatedData = data.customers?.map(
             (item: GridColDef, index: number) => ({
               id: paginationModel.page * paginationModel.pageSize + index + 1,
               ...item,

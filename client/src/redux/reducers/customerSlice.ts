@@ -27,14 +27,14 @@ const customerSlice = createSlice({
     // Action to update an individual customer within the array.
     // The payload should be a Customer object representing the updated customer.
     updateCustomer: (state, action: PayloadAction<Customer>) => {
-      state.customers = state.customers.map((customer) =>
+      state.customers = state.customers?.map((customer) =>
         // Check if the current customer matches the one being updated via _id
         customer._id === action.payload._id ? action.payload : customer
       );
     },
     // Action to delete a customer. The payload should be the customer's _id.
     deleteCustomer: (state, action: PayloadAction<string>) => {
-      state.customers = state.customers.filter(
+      state.customers = state.customers?.filter(
         (customer) => customer._id !== action.payload
       );
     },

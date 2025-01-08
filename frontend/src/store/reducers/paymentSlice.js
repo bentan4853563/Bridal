@@ -22,7 +22,7 @@ const paymentSlice = createSlice({
       }
     },
     deletePayment(state, action) {
-      state.payments = state.payments.filter(
+      state.payments = state.payments?.filter(
         (payment) => payment._id !== action.payload
       );
     },

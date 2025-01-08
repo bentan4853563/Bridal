@@ -1,219 +1,160 @@
-import { useState, useEffect } from 'react'
-import { Cross2Icon, PlusIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
-import { useNavigate } from 'react-router-dom'
-
-// Add dummy clients data
-const dummyClients = [
-  {
-    id: 1,
-    name: 'Sarah Johnson',
-    phone: '+212 666-123456',
-    whatsapp: '+212 666-123456',
-    identification: 'AB123456',
-    weddingDate: '2024-08-15',
-    weddingCity: 'Casablanca',
-    email: 'sarah@example.com'
-  },
-  {
-    id: 2,
-    name: 'Emily Davis',
-    phone: '+212 666-789012',
-    whatsapp: '+212 666-789012',
-    identification: 'CD789012',
-    weddingDate: '2024-09-20',
-    weddingCity: 'Rabat',
-    email: 'emily@example.com'
-  },
-  {
-    id: 3,
-    name: 'Maria Rodriguez',
-    phone: '+212 666-345678',
-    whatsapp: '+212 666-345678',
-    identification: 'EF345678',
-    weddingDate: '2024-10-05',
-    weddingCity: 'Marrakech',
-    email: 'maria@example.com'
-  }
-]
-
-// Add dummy items data
-const dummyItems = [
-  {
-    id: 1,
-    name: 'Classic White Lace Gown',
-    category: 'Wedding Dresses',
-    photo: 'https://images.unsplash.com/photo-1494955870715-979ca4f13bf0',
-    rentalCost: 200,
-    description: 'Beautiful classic lace wedding gown',
-    status: 'Available'
-  },
-  {
-    id: 2,
-    name: 'Crystal Tiara',
-    category: 'Accessories',
-    photo: 'https://images.unsplash.com/photo-1458538977777-0549b2370168',
-    rentalCost: 50,
-    description: 'Elegant crystal tiara',
-    status: 'Available'
-  },
-  // ... more items
-]
+import { useState, useEffect } from "react";
+import {
+  Cross2Icon,
+  PlusIcon,
+  MagnifyingGlassIcon,
+} from "@radix-ui/react-icons";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { addBaseURL } from "../../utils/updateURL";
+import { handleUpdateReservation } from "../../actions/reservation";
+import { useDispatch } from "react-redux";
+import { updateReservation } from "../../store/reducers/reservationSlice";
 
 const EditReservation = ({ isOpen, onClose, reservation }) => {
-  const navigate = useNavigate()
-  const [step, setStep] = useState(1)
-  const [selectedClient, setSelectedClient] = useState(null)
-  const [selectedItems, setSelectedItems] = useState([])
+  const dispatch = useDispatch()
+
+  const items = useSelector((state) => state.item.items);
+  const clients = useSelector((state) => state.customer.customers);
+  const categories = useSelector((state) => state.category.categories);
+
+  const navigate = useNavigate();
+  const [step, setStep] = useState(1);
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [formData, setFormData] = useState({
-    type: 'Final',
-    status: 'Draft',
-    pickupDate: '',
-    returnDate: '',
+    type: "Final",
+    status: "Draft",
+    pickupDate: "",
+    returnDate: "",
     additionalCost: 0,
     travelCost: 0,
     securityDepositPercentage: 30,
     advancePercentage: 50,
-    notes: '',
+    notes: "",
     bufferBefore: 3,
-    bufferAfter: 3
-  })
+    bufferAfter: 3,
+  });
 
   // Add state for financial input type
   const [financialInputType, setFinancialInputType] = useState({
-    securityDeposit: 'percentage', // or 'amount'
-    advance: 'percentage' // or 'amount'
-  })
+    securityDeposit: "percentage", // or 'amount'
+    advance: "percentage", // or 'amount'
+  });
 
   // Add state for item selection
-  const [isItemModalOpen, setIsItemModalOpen] = useState(false)
-  const [itemSearchTerm, setItemSearchTerm] = useState('')
-  const [availableItems, setAvailableItems] = useState(dummyItems)
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  const [itemSearchTerm, setItemSearchTerm] = useState("");
+  const [availableItems, setAvailableItems] = useState(items);
 
   // Filter available items based on search and dates
-  const filteredItems = availableItems.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
-                         item.category.toLowerCase().includes(itemSearchTerm.toLowerCase())
-    const isAvailable = !selectedItems.some(selected => selected.id === item.id)
-    return matchesSearch && isAvailable
-  })
+  const filteredItems = items.filter((item) => {
+    const categoryName = categories.find(
+      (cat) => cat._id === item.category
+    )?.name;
+    const matchesSearch =
+      item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
+      categoryName.toLowerCase().includes(itemSearchTerm.toLowerCase());
+    const isAvailable = !selectedItems.some(
+      (selected) => selected._id === item._id
+    );
+    return matchesSearch && isAvailable;
+  });
 
   // Load reservation data when component mounts
   useEffect(() => {
     if (reservation) {
-      setSelectedClient(reservation.customer)
-      setSelectedItems(reservation.items)
+      setSelectedClient(reservation.client);
+      setSelectedItems(reservation.items);
       setFormData({
         type: reservation.type,
         status: reservation.status,
-        pickupDate: reservation.pickupDate,
-        returnDate: reservation.returnDate,
+        pickupDate: new Date(reservation.pickupDate)
+          .toISOString()
+          .split("T")[0],
+        returnDate: new Date(reservation.returnDate)
+          .toISOString()
+          .split("T")[0],
         additionalCost: reservation.additionalCost,
         travelCost: reservation.travelCost,
         securityDepositPercentage: reservation.securityDepositPercentage,
         advancePercentage: reservation.advancePercentage,
         notes: reservation.notes,
         bufferBefore: reservation.bufferBefore,
-        bufferAfter: reservation.bufferAfter
-      })
+        bufferAfter: reservation.bufferAfter,
+      });
     }
-  }, [reservation])
+  }, [reservation]);
 
   const calculateFinancials = () => {
-    const itemsTotal = selectedItems.reduce((sum, item) => sum + item.rentalCost, 0)
-    const additionalCosts = Number(formData.additionalCost) + Number(formData.travelCost)
-    const subtotal = itemsTotal + additionalCosts
-    const securityDeposit = itemsTotal * (formData.securityDepositPercentage / 100)
-    const advance = subtotal * (formData.advancePercentage / 100)
-    const total = subtotal + securityDeposit
+    const itemsTotal = selectedItems.reduce(
+      (sum, item) => sum + item.rentalCost,
+      0
+    );
+    const additionalCosts =
+      Number(formData.additionalCost) + Number(formData.travelCost);
+    const subtotal = itemsTotal + additionalCosts;
+    const securityDeposit =
+      itemsTotal * (formData.securityDepositPercentage / 100);
+    const advance = subtotal * (formData.advancePercentage / 100);
+    const total = subtotal + securityDeposit;
 
     return {
       itemsTotal,
       subtotal,
       securityDeposit,
       advance,
-      total
-    }
-  }
+      total,
+    };
+  };
 
   const validateStep = (currentStep) => {
     switch (currentStep) {
       case 1:
-        return selectedClient && formData.type
+        return selectedClient && formData.type;
       case 2:
-        return formData.pickupDate && 
-               formData.returnDate && 
-               selectedItems.length > 0
+        return (
+          formData.pickupDate && formData.returnDate && selectedItems.length > 0
+        );
       case 3:
-        const financials = calculateFinancials()
-        return financials.total > 0 && formData.status
+        const financials = calculateFinancials();
+        return financials.total > 0 && formData.status;
       default:
-        return false
+        return false;
     }
-  }
+  };
 
   const handleSubmit = async () => {
-    const financials = calculateFinancials()
-    
+    const financials = calculateFinancials();
+
     try {
       const reservationData = {
-        id: reservation.id,
-        clientId: selectedClient.id,
+        client: selectedClient._id,
         type: formData.type,
         status: formData.status,
         pickupDate: formData.pickupDate,
         returnDate: formData.returnDate,
-        items: selectedItems.map(item => ({
-          id: item.id,
-          name: item.name,
-          rentalCost: item.rentalCost
-        })),
-        financials: {
-          itemsTotal: financials.itemsTotal,
-          additionalCost: Number(formData.additionalCost),
-          travelCost: Number(formData.travelCost),
-          subtotal: financials.subtotal,
-          securityDeposit: financials.securityDeposit,
-          securityDepositPercentage: formData.securityDepositPercentage,
-          advance: financials.advance,
-          advancePercentage: formData.advancePercentage,
-          total: financials.total
-        },
-        customer: {
-          id: selectedClient.id,
-          name: selectedClient.name,
-          phone: selectedClient.phone,
-          weddingDate: selectedClient.weddingDate
-        },
+        items: selectedItems.map((item) => item._id),
+        additionalCost: Number(formData.additionalCost),
+        travelCost: Number(formData.travelCost),
+        securityDepositPercentage: formData.securityDepositPercentage,
+        advancePercentage: formData.advancePercentage,
+        total: financials.total,
         notes: formData.notes,
         bufferBefore: formData.bufferBefore,
-        bufferAfter: formData.bufferAfter
-      }
+        bufferAfter: formData.bufferAfter,
+      };
 
-      // Mock API call for testing
-      const mockApiCall = () => {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve({
-              success: true,
-              data: reservationData
-            })
-          }, 1000)
-        })
-      }
-
-      const result = await mockApiCall()
-      
-      if (result.success) {
-        onClose()
-        navigate('/reservations')
-      } else {
-        throw new Error('Failed to update reservation')
-      }
+      handleUpdateReservation(reservation._id, reservationData, (updatedReservation) => {
+        dispatch(updateReservation(updatedReservation))
+        onClose();
+        navigate("/reservations");
+      });
     } catch (error) {
-      console.error('Error updating reservation:', error)
-      alert('Failed to update reservation. Please try again.')
+      console.error("Error updating reservation:", error);
+      alert("Failed to update reservation. Please try again.");
     }
-  }
+  };
 
   const renderClientSelection = () => (
     <div className="space-y-6">
@@ -223,16 +164,16 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         </label>
         <div className="relative">
           <select
-            value={selectedClient?.id || ''}
+            value={selectedClient?.id || ""}
             onChange={(e) => {
-              const client = dummyClients.find(c => c.id === Number(e.target.value))
-              setSelectedClient(client)
+              const client = clients.find((c) => c._id === e.target.value);
+              setSelectedClient(client);
             }}
             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select a client</option>
-            {dummyClients.map(client => (
-              <option key={client.id} value={client.id}>
+            {clients.map((client) => (
+              <option key={client._id} value={client._id}>
                 {client.name} - {client.phone}
               </option>
             ))}
@@ -244,8 +185,12 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         <div className="bg-white/5 p-4 rounded-lg space-y-2">
           <p className="text-white font-medium">{selectedClient.name}</p>
           <p className="text-sm text-gray-400">{selectedClient.phone}</p>
-          <p className="text-sm text-gray-400">Wedding Date: {selectedClient.weddingDate}</p>
-          <p className="text-sm text-gray-400">City: {selectedClient.weddingCity}</p>
+          <p className="text-sm text-gray-400">
+            Wedding Date: {selectedClient.weddingDate}
+          </p>
+          <p className="text-sm text-gray-400">
+            City: {selectedClient.weddingCity}
+          </p>
         </div>
       )}
 
@@ -263,7 +208,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         </select>
       </div>
     </div>
-  )
+  );
 
   const renderItemSelection = () => (
     <div className="space-y-6">
@@ -282,10 +227,13 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
 
       <div className="space-y-4">
         {selectedItems.map((item) => (
-          <div key={item.id} className="flex items-center justify-between bg-white/5 p-4 rounded-lg">
+          <div
+            key={item.id}
+            className="flex items-center justify-between bg-white/5 p-4 rounded-lg"
+          >
             <div className="flex items-center gap-4">
               <img
-                src={item.photo}
+                src={addBaseURL(item.primaryPhoto)}
                 alt={item.name}
                 className="h-16 w-16 object-cover rounded-lg"
               />
@@ -295,7 +243,9 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
               </div>
             </div>
             <button
-              onClick={() => setSelectedItems(selectedItems.filter(i => i.id !== item.id))}
+              onClick={() =>
+                setSelectedItems(selectedItems.filter((i) => i.id !== item.id))
+              }
               className="text-red-400 hover:text-red-300 transition-colors"
             >
               Remove
@@ -336,13 +286,13 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
                 <button
                   key={item.id}
                   onClick={() => {
-                    setSelectedItems([...selectedItems, item])
-                    setIsItemModalOpen(false)
+                    setSelectedItems([...selectedItems, item]);
+                    setIsItemModalOpen(false);
                   }}
                   className="flex items-start gap-4 p-4 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-left"
                 >
                   <img
-                    src={item.photo}
+                    src={addBaseURL(item.primaryPhoto)}
                     alt={item.name}
                     className="h-20 w-20 object-cover rounded-lg"
                   />
@@ -371,7 +321,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             type="date"
             value={formData.pickupDate}
             onChange={(e) => {
-              setFormData({ ...formData, pickupDate: e.target.value })
+              setFormData({ ...formData, pickupDate: e.target.value });
               // Here you would check item availability for new dates
             }}
             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -385,7 +335,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             type="date"
             value={formData.returnDate}
             onChange={(e) => {
-              setFormData({ ...formData, returnDate: e.target.value })
+              setFormData({ ...formData, returnDate: e.target.value });
               // Here you would check item availability for new dates
             }}
             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -393,10 +343,12 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         </div>
       </div>
     </div>
-  )
+  );
 
   const renderFinancialDetails = () => {
-    const financials = calculateFinancials()
+    const financials = calculateFinancials();
+
+    console.log("financials :>> ", financials);
 
     return (
       <div className="space-y-6">
@@ -406,7 +358,9 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
           </label>
           <select
             value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, status: e.target.value })
+            }
             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="Draft">Draft</option>
@@ -423,7 +377,9 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             <input
               type="number"
               value={formData.additionalCost}
-              onChange={(e) => setFormData({ ...formData, additionalCost: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, additionalCost: e.target.value })
+              }
               className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -434,7 +390,9 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             <input
               type="number"
               value={formData.travelCost}
-              onChange={(e) => setFormData({ ...formData, travelCost: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, travelCost: e.target.value })
+              }
               className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -448,27 +406,31 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
               </label>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setFinancialInputType(prev => ({
-                    ...prev,
-                    securityDeposit: 'percentage'
-                  }))}
+                  onClick={() =>
+                    setFinancialInputType((prev) => ({
+                      ...prev,
+                      securityDeposit: "percentage",
+                    }))
+                  }
                   className={`text-xs px-2 py-1 rounded ${
-                    financialInputType.securityDeposit === 'percentage'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-white/5 text-gray-400'
+                    financialInputType.securityDeposit === "percentage"
+                      ? "bg-blue-500 text-white"
+                      : "bg-white/5 text-gray-400"
                   }`}
                 >
                   %
                 </button>
                 <button
-                  onClick={() => setFinancialInputType(prev => ({
-                    ...prev,
-                    securityDeposit: 'amount'
-                  }))}
+                  onClick={() =>
+                    setFinancialInputType((prev) => ({
+                      ...prev,
+                      securityDeposit: "amount",
+                    }))
+                  }
                   className={`text-xs px-2 py-1 rounded ${
-                    financialInputType.securityDeposit === 'amount'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-white/5 text-gray-400'
+                    financialInputType.securityDeposit === "amount"
+                      ? "bg-blue-500 text-white"
+                      : "bg-white/5 text-gray-400"
                   }`}
                 >
                   $
@@ -478,24 +440,24 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             <input
               type="number"
               value={
-                financialInputType.securityDeposit === 'percentage'
+                financialInputType.securityDeposit === "percentage"
                   ? formData.securityDepositPercentage
                   : financials.securityDeposit
               }
               onChange={(e) => {
-                const value = Number(e.target.value)
-                if (financialInputType.securityDeposit === 'percentage') {
-                  setFormData(prev => ({
+                const value = Number(e.target.value);
+                if (financialInputType.securityDeposit === "percentage") {
+                  setFormData((prev) => ({
                     ...prev,
-                    securityDepositPercentage: value
-                  }))
+                    securityDepositPercentage: value,
+                  }));
                 } else {
-                  const itemsTotal = financials.itemsTotal
-                  const percentage = (value / itemsTotal) * 100
-                  setFormData(prev => ({
+                  const itemsTotal = financials.itemsTotal;
+                  const percentage = (value / itemsTotal) * 100;
+                  setFormData((prev) => ({
                     ...prev,
-                    securityDepositPercentage: percentage
-                  }))
+                    securityDepositPercentage: percentage,
+                  }));
                 }
               }}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -508,27 +470,31 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
               </label>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setFinancialInputType(prev => ({
-                    ...prev,
-                    advance: 'percentage'
-                  }))}
+                  onClick={() =>
+                    setFinancialInputType((prev) => ({
+                      ...prev,
+                      advance: "percentage",
+                    }))
+                  }
                   className={`text-xs px-2 py-1 rounded ${
-                    financialInputType.advance === 'percentage'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-white/5 text-gray-400'
+                    financialInputType.advance === "percentage"
+                      ? "bg-blue-500 text-white"
+                      : "bg-white/5 text-gray-400"
                   }`}
                 >
                   %
                 </button>
                 <button
-                  onClick={() => setFinancialInputType(prev => ({
-                    ...prev,
-                    advance: 'amount'
-                  }))}
+                  onClick={() =>
+                    setFinancialInputType((prev) => ({
+                      ...prev,
+                      advance: "amount",
+                    }))
+                  }
                   className={`text-xs px-2 py-1 rounded ${
-                    financialInputType.advance === 'amount'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-white/5 text-gray-400'
+                    financialInputType.advance === "amount"
+                      ? "bg-blue-500 text-white"
+                      : "bg-white/5 text-gray-400"
                   }`}
                 >
                   $
@@ -538,24 +504,24 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             <input
               type="number"
               value={
-                financialInputType.advance === 'percentage'
+                financialInputType.advance === "percentage"
                   ? formData.advancePercentage
                   : financials.advance
               }
               onChange={(e) => {
-                const value = Number(e.target.value)
-                if (financialInputType.advance === 'percentage') {
-                  setFormData(prev => ({
+                const value = Number(e.target.value);
+                if (financialInputType.advance === "percentage") {
+                  setFormData((prev) => ({
                     ...prev,
-                    advancePercentage: value
-                  }))
+                    advancePercentage: value,
+                  }));
                 } else {
-                  const subtotal = financials.subtotal
-                  const percentage = (value / subtotal) * 100
-                  setFormData(prev => ({
+                  const subtotal = financials.subtotal;
+                  const percentage = (value / subtotal) * 100;
+                  setFormData((prev) => ({
                     ...prev,
-                    advancePercentage: percentage
-                  }))
+                    advancePercentage: percentage,
+                  }));
                 }
               }}
               className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -566,25 +532,36 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         <div className="bg-white/5 p-4 rounded-lg space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-gray-400">Items Total:</span>
-            <span className="text-white">${financials.itemsTotal.toLocaleString()}</span>
+            <span className="text-white">
+              ${financials.itemsTotal.toLocaleString()}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-400">Additional Costs:</span>
             <span className="text-white">
-              ${(Number(formData.additionalCost) + Number(formData.travelCost)).toLocaleString()}
+              $
+              {(
+                Number(formData.additionalCost) + Number(formData.travelCost)
+              ).toLocaleString()}
             </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-400">Security Deposit:</span>
-            <span className="text-white">${financials.securityDeposit.toLocaleString()}</span>
+            <span className="text-white">
+              ${financials.securityDeposit.toLocaleString()}
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-400">Advance Payment:</span>
-            <span className="text-white">${financials.advance.toLocaleString()}</span>
+            <span className="text-white">
+              ${financials.advance.toLocaleString()}
+            </span>
           </div>
           <div className="flex justify-between font-medium pt-2 border-t border-white/10">
             <span className="text-gray-400">Total:</span>
-            <span className="text-white">${financials.total.toLocaleString()}</span>
+            <span className="text-white">
+              ${financials.total.toLocaleString()}
+            </span>
           </div>
         </div>
 
@@ -594,35 +571,37 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
           </label>
           <textarea
             value={formData.notes}
-            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, notes: e.target.value })
+            }
             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={3}
           />
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   const renderCurrentStep = () => {
     switch (step) {
       case 1:
-        return renderClientSelection()
+        return renderClientSelection();
       case 2:
-        return renderItemSelection()
+        return renderItemSelection();
       case 3:
-        return renderFinancialDetails()
+        return renderFinancialDetails();
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const steps = [
-    { number: 1, title: 'Client Details' },
-    { number: 2, title: 'Items & Dates' },
-    { number: 3, title: 'Financial Details' }
-  ]
+    { number: 1, title: "Client Details" },
+    { number: 2, title: "Items & Dates" },
+    { number: 3, title: "Financial Details" },
+  ];
 
-  if (!isOpen || !reservation) return null
+  if (!isOpen || !reservation) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-start justify-center overflow-y-auto p-4 z-50">
@@ -647,31 +626,39 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
               <div
                 key={stepItem.number}
                 className={`flex-1 relative ${
-                  index !== steps.length - 1 ? 'after:content-[""] after:absolute after:top-[15px] after:left-[calc(50%+24px)] after:w-[calc(100%-48px)] after:h-[2px]' : ''
+                  index !== steps.length - 1
+                    ? 'after:content-[""] after:absolute after:top-[15px] after:left-[calc(50%+24px)] after:w-[calc(100%-48px)] after:h-[2px]'
+                    : ""
                 }`}
               >
-                <div className={`relative z-10 flex flex-col items-center ${
-                  index !== steps.length - 1 ? 'after:bg-white/10' : ''
-                }`}>
+                <div
+                  className={`relative z-10 flex flex-col items-center ${
+                    index !== steps.length - 1 ? "after:bg-white/10" : ""
+                  }`}
+                >
                   <div
                     className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium mb-2 transition-colors ${
                       step >= stepItem.number
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-white/10 text-gray-400'
+                        ? "bg-blue-500 text-white"
+                        : "bg-white/10 text-gray-400"
                     }`}
                   >
                     {stepItem.number}
                   </div>
-                  <span className={`text-sm font-medium transition-colors ${
-                    step >= stepItem.number ? 'text-white' : 'text-gray-400'
-                  }`}>
+                  <span
+                    className={`text-sm font-medium transition-colors ${
+                      step >= stepItem.number ? "text-white" : "text-gray-400"
+                    }`}
+                  >
                     {stepItem.title}
                   </span>
                 </div>
                 {index !== steps.length - 1 && (
-                  <div className={`absolute top-[15px] left-[calc(50%+24px)] w-[calc(100%-48px)] h-[2px] ${
-                    step > stepItem.number ? 'bg-blue-500' : 'bg-white/10'
-                  }`} />
+                  <div
+                    className={`absolute top-[15px] left-[calc(50%+24px)] w-[calc(100%-48px)] h-[2px] ${
+                      step > stepItem.number ? "bg-blue-500" : "bg-white/10"
+                    }`}
+                  />
                 )}
               </div>
             ))}
@@ -686,20 +673,20 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
           <button
             onClick={() => setStep(Math.max(1, step - 1))}
             className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${
-              step === 1 ? 'invisible' : 'bg-white/10 hover:bg-white/20'
+              step === 1 ? "invisible" : "bg-white/10 hover:bg-white/20"
             }`}
           >
             Previous
           </button>
-          
+
           {step === 3 ? (
             <button
               onClick={handleSubmit}
               disabled={!validateStep(step)}
               className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${
                 validateStep(step)
-                  ? 'bg-blue-500 hover:bg-blue-600'
-                  : 'bg-blue-500/50 cursor-not-allowed'
+                  ? "bg-blue-500 hover:bg-blue-600"
+                  : "bg-blue-500/50 cursor-not-allowed"
               }`}
             >
               Update Reservation
@@ -710,8 +697,8 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
               disabled={!validateStep(step)}
               className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${
                 validateStep(step)
-                  ? 'bg-blue-500 hover:bg-blue-600'
-                  : 'bg-blue-500/50 cursor-not-allowed'
+                  ? "bg-blue-500 hover:bg-blue-600"
+                  : "bg-blue-500/50 cursor-not-allowed"
               }`}
             >
               Next
@@ -720,7 +707,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EditReservation 
+export default EditReservation;

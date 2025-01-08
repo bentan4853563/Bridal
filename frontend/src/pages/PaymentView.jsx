@@ -10,57 +10,12 @@ import {
   FileIcon,
   DownloadIcon
 } from '@radix-ui/react-icons'
-
-// Dummy payment data - replace with API call
-const dummyPayment = {
-  id: 1,
-  customerName: 'Sarah Johnson',
-  customerId: 'CUST-001',
-  reservationId: 'RES-001',
-  reservationType: 'Final',
-  reservationDetails: {
-    pickupDate: '2024-04-15',
-    returnDate: '2024-04-18',
-    totalAmount: 5000,
-    paidAmount: 2000,
-    remainingAmount: 3000,
-    status: 'Confirmed'
-  },
-  amount: 5000,
-  paymentDate: '2024-03-15',
-  paymentMethod: 'Cash',
-  status: 'Paid',
-  reference: 'PAY-001',
-  paymentType: 'Advance',
-  notes: 'Payment for wedding photography package',
-  createdAt: '2024-03-15T10:30:00',
-  updatedAt: '2024-03-15T10:30:00',
-  attachments: [
-    {
-      id: 1,
-      name: 'receipt.pdf',
-      size: '156 KB',
-      url: '/path/to/receipt.pdf'
-    },
-    {
-      id: 2,
-      name: 'payment_proof.jpg',
-      size: '1.2 MB',
-      url: 'https://picsum.photos/200/300',
-      type: 'image/jpeg'
-    },
-    {
-      id: 3,
-      name: 'invoice_scan.jpg',
-      size: '800 KB',
-      url: 'https://picsum.photos/200/200',
-      type: 'image/jpeg'
-    }
-  ]
-}
+import { useSelector } from 'react-redux'
+import { addBaseURL } from '../utils/updateURL'
 
 const PaymentView = () => {
   const navigate = useNavigate()
+  const payments = useSelector(state => state.payment.payments);
   const { id } = useParams()
   const [payment, setPayment] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -68,9 +23,7 @@ const PaymentView = () => {
   useEffect(() => {
     const fetchPayment = async () => {
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 500))
-        setPayment(dummyPayment)
+        setPayment(payments.find((item) => item._id === id))
       } catch (error) {
         console.error('Error fetching payment:', error)
       } finally {
@@ -112,14 +65,18 @@ const PaymentView = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => navigate('/payments', { 
-                state: { activeTab: 'Payments' } 
-              })}
+              onClick={() =>
+                navigate("/payments", {
+                  state: { activeTab: "Payments" },
+                })
+              }
               className="p-2 hover:bg-white/10 rounded-md transition-colors cursor-pointer"
             >
               <ArrowLeftIcon className="h-5 w-5 text-white" />
             </button>
-            <h2 className="text-2xl font-semibold text-white">Payment Details</h2>
+            <h2 className="text-2xl font-semibold text-white">
+              Payment Details
+            </h2>
           </div>
           <button
             onClick={() => navigate(`/payment/${id}/edit`)}
@@ -133,8 +90,12 @@ const PaymentView = () => {
         <div className="bg-white/10 backdrop-blur-lg rounded-lg border border-white/20 p-6 space-y-6">
           {/* Status and Reference */}
           <div className="flex items-center justify-between">
-            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(payment.status)}`}>
-              {payment.status}
+            <span
+              className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                payment.reservation.paymentStatus
+              )}`}
+            >
+              {payment.reservation.paymentStatus}
             </span>
             <span className="text-sm text-gray-400">
               Reference: {payment.reference}
@@ -148,7 +109,7 @@ const PaymentView = () => {
               <p className="text-sm text-gray-400">Customer</p>
               <div className="flex items-center space-x-2">
                 <PersonIcon className="h-4 w-4 text-white/60" />
-                <p className="text-white">{payment.customerName}</p>
+                <p className="text-white">{payment.client.name}</p>
               </div>
               <p className="text-sm text-gray-400">{payment.customerId}</p>
             </div>
@@ -158,40 +119,41 @@ const PaymentView = () => {
               <p className="text-sm text-gray-400">Reservation</p>
               <div className="flex items-center space-x-2">
                 <CalendarIcon className="h-4 w-4 text-white/60" />
-                <p className="text-white">#{payment.reservationId}</p>
+                <p className="text-white">#{payment.reservation._id}</p>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">{payment.reservationType}</span>
-                <span className={`px-2 py-0.5 rounded-full text-xs ${
-                  payment.reservationDetails.status === 'Confirmed'
-                    ? 'bg-green-500/10 text-green-500'
-                    : 'bg-yellow-500/10 text-yellow-500'
-                }`}>
-                  {payment.reservationDetails.status}
+                <span
+                  className={`px-2 py-0.5 rounded-full text-xs ${
+                    payment.reservation.paymentStatus === "Confirmed"
+                      ? "bg-green-500/10 text-green-500"
+                      : "bg-yellow-500/10 text-yellow-500"
+                  }`}
+                >
+                  {payment.reservation.paymentStatus}
                 </span>
               </div>
               <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
                 <div>
                   <div className="text-gray-400">Total</div>
-                  <div className="text-white">
-                    ${payment.reservationDetails.totalAmount}
-                  </div>
+                  <div className="text-white">${payment.reservation.total}</div>
                 </div>
                 <div>
                   <div className="text-gray-400">Paid</div>
                   <div className="text-green-500">
-                    ${payment.reservationDetails.paidAmount}
+                    {/* ${payment.reservation.paidAmount} */}
                   </div>
                 </div>
                 <div>
                   <div className="text-gray-400">Remaining</div>
                   <div className="text-yellow-500">
-                    ${payment.reservationDetails.remainingAmount}
+                    {/* ${payment.reservation.remainingAmount} */}
                   </div>
                 </div>
               </div>
               <div className="mt-2 text-xs text-gray-400">
-                {payment.reservationDetails.pickupDate} - {payment.reservationDetails.returnDate}
+                {payment.reservation.pickupDate.split("T")[0]} -{" "}
+                {payment.reservation.returnDate.split("T")[0]}
               </div>
             </div>
 
@@ -245,7 +207,9 @@ const PaymentView = () => {
 
         {/* Payment History */}
         <div className="bg-white/10 backdrop-blur-lg rounded-lg border border-white/20 p-6">
-          <h3 className="text-lg font-medium text-white mb-4">Payment History</h3>
+          <h3 className="text-lg font-medium text-white mb-4">
+            Payment History
+          </h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between text-sm">
               <div className="flex items-center space-x-2">
@@ -271,14 +235,18 @@ const PaymentView = () => {
         {/* Attachments */}
         <div className="bg-white/10 backdrop-blur-lg rounded-lg border border-white/20 p-6">
           <h3 className="text-lg font-medium text-white mb-4">Attachments</h3>
-          {payment.attachments.length > 0 ? (
+          {payment.attachments?.length > 0 ? (
             <div className="grid grid-cols-1 gap-3">
               {payment.attachments.map((file) => (
-                <div key={file.id} className="flex items-center gap-4 rounded-lg border border-white/20 bg-white/5 p-4">
-                  {file.type?.startsWith('image/') || file.url?.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+                <div
+                  key={file.id}
+                  className="flex items-center gap-4 rounded-lg border border-white/20 bg-white/5 p-4"
+                >
+                  {file.type?.startsWith("image/") ||
+                  file.url?.match(/\.(jpg|jpeg|png|gif)$/i) ? (
                     <div className="h-10 w-10 flex-shrink-0 rounded-lg border border-white/10 bg-white/5">
                       <img
-                        src={file.url}
+                        src={addBaseURL(file.url)}
                         alt={file.name}
                         className="h-full w-full rounded-lg object-cover"
                       />
@@ -288,10 +256,12 @@ const PaymentView = () => {
                       <FileIcon className="h-5 w-5 text-white/60" />
                     </div>
                   )}
-                  
+
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-white truncate">{file.name}</p>
-                    <p className="text-xs text-gray-400">{file.size}</p>
+                    <p className="text-xs text-gray-400">
+                      {(file.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
                   </div>
 
                   <a
@@ -310,7 +280,7 @@ const PaymentView = () => {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default PaymentView 

@@ -14,17 +14,14 @@ const EditCustomerForm = ({
     name: customer.name,
     surname: customer.surname,
     address: customer.address,
-    city: customer.city,
+    weddingCity: customer.weddingCity,
     phone: customer.phone,
     whatsapp: customer.whatsapp,
     weddingDate: customer.weddingDate,
     weddingTime: customer.weddingTime,
     weddingLocation: customer.weddingLocation,
     type: customer.type,
-    attachments: customer.attachments.map((file) => ({
-      ...file,
-      link: `${import.meta.env.VITE_BACKEND_URL}${file.link}`,
-    })),
+    attachments: customer.attachments,
   });
 
   const [newFiles, setNewFiles] = useState([]);
@@ -46,8 +43,10 @@ const EditCustomerForm = ({
     for (const key in formData) {
       // Check if the value is an array (attachments)
       if (Array.isArray(formData[key])) {
-        formData[key].forEach((file) => {
-          formDataToSend.append("attachments", file.link); // Sending as string
+        formData[key].forEach((file, index) => {
+          formDataToSend.append(`attachments[${index}][name]`, file.name); 
+          formDataToSend.append(`attachments[${index}][size]`, file.size); 
+          formDataToSend.append(`attachments[${index}][link]`, file.link); 
         });
       } else {
         formDataToSend.append(key, formData[key]);
@@ -129,7 +128,7 @@ const EditCustomerForm = ({
               <Input
                 type="text"
                 name="city"
-                value={formData.city}
+                value={formData.weddingCity}
                 onChange={handleChange}
                 required
               />

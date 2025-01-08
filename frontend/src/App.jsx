@@ -6,6 +6,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { ToastContainer } from "react-toastify"; // Import ToastContainer
+import "react-toastify/dist/ReactToastify.css"; // Import styles
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -29,6 +31,10 @@ import { handleGetCustomers } from "./actions/customer";
 import { handleGetCategories } from "./actions/category";
 import { handleGetAllProducts } from "./actions/product";
 import { setItems } from "./store/reducers/itemSlice";
+import { handleGetReservations } from "./actions/reservation";
+import { setReservations } from "./store/reducers/reservationSlice";
+import { handleGetPayments } from "./actions/payment";
+import { setPayments } from "./store/reducers/paymentSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -38,9 +44,14 @@ function App() {
       const items = await handleGetAllProducts();
       const customers = await handleGetCustomers();
       const categories = await handleGetCategories();
+      const reservations = await handleGetReservations();
+      const payments = await handleGetPayments()
+
       dispatch(setCustomers(customers));
       dispatch(setCategories(categories));
       dispatch(setItems(items));
+      dispatch(setReservations(reservations));
+      dispatch(setPayments(payments))
     };
 
     loadCustomers();
@@ -48,6 +59,11 @@ function App() {
 
   return (
     <Router>
+      <ToastContainer
+        position="top-right"
+        draggable
+        theme="dark"
+      />
       <Routes>
         <Route path="/" element={<Login />} />
 
@@ -78,7 +94,6 @@ function App() {
           }
         >
           <Route path="/home" element={null} />{" "}
-          {/* Dashboard content is handled in the Dashboard component */}
           <Route path="/customers" element={<Customers />} />
           <Route path="/payments" element={<Payments />} />
           <Route path="/reservations" element={<Reservations />} />

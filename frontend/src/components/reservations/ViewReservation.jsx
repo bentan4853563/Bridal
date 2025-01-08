@@ -1,9 +1,22 @@
 import { useState } from 'react'
 import { Cross2Icon, DownloadIcon, PlusIcon } from '@radix-ui/react-icons'
 import { format } from 'date-fns'
+import { addBaseURL } from '../../utils/updateURL'
+import { useSelector } from 'react-redux'
+import { useEffect } from 'react'
 
 const ViewReservation = ({ isOpen, onClose, reservation }) => {
+  const payments = useSelector(state => state.payment.payments)
+  const [associatedPayments, setAssociatedPayments] = useState([])
   const [activeTab, setActiveTab] = useState('general')
+
+  useEffect(() => {
+    if(reservation && payments.length) {
+      setAssociatedPayments(
+        payments.filter((item) => item.reservation._id === reservation._id)
+      );
+    }
+  }, [reservation, payments])
 
   if (!isOpen || !reservation) return null
 
@@ -115,29 +128,29 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
             <div className="space-y-2">
               <div>
                 <label className="text-sm text-gray-400">Full Name</label>
-                <p className="text-white font-medium">{reservation.customer.name}</p>
+                <p className="text-white font-medium">{reservation.client.name}</p>
               </div>
               <div>
                 <label className="text-sm text-gray-400">Phone Number</label>
-                <p className="text-white font-medium">{reservation.customer.phone}</p>
+                <p className="text-white font-medium">{reservation.client.phone}</p>
               </div>
               <div>
                 <label className="text-sm text-gray-400">WhatsApp</label>
-                <p className="text-white font-medium">{reservation.customer.whatsapp || 'Not provided'}</p>
+                <p className="text-white font-medium">{reservation.client.whatsapp || 'Not provided'}</p>
               </div>
             </div>
             <div className="space-y-2">
               <div>
                 <label className="text-sm text-gray-400">Wedding Date</label>
-                <p className="text-white font-medium">{reservation.customer.weddingDate}</p>
+                <p className="text-white font-medium">{reservation.client.weddingDate}</p>
               </div>
               <div>
                 <label className="text-sm text-gray-400">Wedding City</label>
-                <p className="text-white font-medium">{reservation.customer.weddingCity}</p>
+                <p className="text-white font-medium">{reservation.client.weddingCity}</p>
               </div>
               <div>
                 <label className="text-sm text-gray-400">Email</label>
-                <p className="text-white font-medium">{reservation.customer.email || 'Not provided'}</p>
+                <p className="text-white font-medium">{reservation.client.email || 'Not provided'}</p>
               </div>
             </div>
           </div>
@@ -284,7 +297,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
           className="flex items-center gap-4 bg-white/5 rounded-lg p-4"
         >
           <img
-            src={item.photo}
+            src={addBaseURL(item.primaryPhoto)}
             alt={item.name}
             className="h-16 w-16 rounded-lg object-cover"
           />
@@ -320,16 +333,16 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">
-            {reservation.payments?.map((payment) => (
-              <tr key={payment.id}>
+            {associatedPayments?.map((payment) => (
+              <tr key={payment._id}>
                 <td className="p-4 text-white">
-                  {format(new Date(payment.date), 'PP')}
+                  {format(new Date(payment.paymentDate), 'PP')}
                 </td>
                 <td className="p-4 text-white">
                   ${payment.amount.toLocaleString()}
                 </td>
-                <td className="p-4 text-white">{payment.type}</td>
-                <td className="p-4 text-white">{payment.method}</td>
+                <td className="p-4 text-white">{payment.paymentType}</td>
+                <td className="p-4 text-white">{payment.paymentMethod}</td>
               </tr>
             ))}
           </tbody>
@@ -348,7 +361,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
               Reservation #{reservation.id}
             </h2>
             <p className="text-sm text-gray-400">
-              {reservation.customerName}
+              {reservation.clientName}
             </p>
           </div>
           <div className="flex items-center gap-2">

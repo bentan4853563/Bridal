@@ -2,12 +2,14 @@ import axios from "axios";
 import axiosInstance, { axiosFormdataInstance } from "./api";
 import { toast } from "react-toastify";
 
-export const handleCreateProduct = async (
-  formData,
-  onSuccess
-) => {
+export const handleCreateProduct = async (formData, onSuccess) => {
   try {
-    const response = await axiosFormdataInstance.post("/api/products/create", formData);
+    const response = await axiosFormdataInstance.post(
+      "/api/products/create",
+      formData
+    );
+
+    toast.success("Item added successfully!");
 
     onSuccess(response.data);
   } catch (error) {
@@ -19,11 +21,7 @@ export const handleCreateProduct = async (
   }
 };
 
-export const handleUpdateProduct = async (
-  id,
-  formData,
-  onSuccess
-) => {
+export const handleUpdateProduct = async (id, formData, onSuccess) => {
   try {
     const response = await axios.put(
       `${import.meta.env.VITE_BACKEND_URL}/api/products/update/${id}`,
@@ -34,6 +32,8 @@ export const handleUpdateProduct = async (
         },
       }
     );
+    toast.success("Item updated successfully!");
+
     onSuccess(response.data);
   } catch (error) {
     if (error.response && error.response.data.errors) {
@@ -44,10 +44,7 @@ export const handleUpdateProduct = async (
   }
 };
 
-export const handleAddStockItem = async (
-  id,
-  quantity
-) => {
+export const handleAddStockItem = async (id, quantity) => {
   try {
     const response = await axiosInstance.put(`/api/products/add-stock/${id}`, {
       quantity,
@@ -110,12 +107,11 @@ export const handleGetProductData = async (id) => {
   }
 };
 
-export const handleDeleteProduct = async (
-  id,
-  onSuccess
-) => {
+export const handleDeleteProduct = async (id, onSuccess) => {
   try {
     await axiosInstance.delete(`/api/products/delete/${id}`);
+    toast.success("Item removed successfully!");
+
     onSuccess();
   } catch (error) {
     if (error.response && error.response.data.errors) {

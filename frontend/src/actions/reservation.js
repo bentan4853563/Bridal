@@ -1,13 +1,10 @@
 import axiosInstance from "./api";
 import { toast } from "react-toastify";
 
-export const handleReserve = async (
-  formData,
-  onSuccess
-) => {
+export const handleReserve = async (formData, onSuccess) => {
   try {
-    await axiosInstance.post("/api/orders/reserve", formData);
-    onSuccess();
+    const newReservation = await axiosInstance.post("/api/reservations/reserve", formData);
+    onSuccess(newReservation.data);
   } catch (error) {
     if (error.response && error.response.data.errors) {
       toast.error(error.response.data.errors[0].detail);
@@ -17,43 +14,9 @@ export const handleReserve = async (
   }
 };
 
-export const handleGetOrders = async (page, limit) => {
+export const handleGetReservations = async () => {
   try {
-    const response = await axiosInstance.get(
-      `/api/orders/list?page=${page}&limit=${limit}`  
-    );
-    return response.data.orders;
-  } catch (error) {
-    if (error.response && error.response.data.errors) {
-      toast.error(error.response.data.errors[0].detail);
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-    }
-  }
-};
-
-export const handleGetAllOrders = async () => {
-  try {
-    const response = await axiosInstance.get(
-      "/api/orders/all"
-    );
-    return response.data.orders;
-  } catch (error) {
-    if (error.response && error.response.data.errors) {
-      toast.error(error.response.data.errors[0].detail);
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-    }
-  }
-};
-
-export const handleGetOrdersByCustomer = async(id, p0, pageSize) => {
-  try {
-    const response = await axiosInstance.post(
-      `/api/orders/list-by-customer`, {id}
-    );
-
-    console.log('p0, pageSize :>> ', p0, pageSize);
+    const response = await axiosInstance.get("/api/reservations/list");
     return response.data;
   } catch (error) {
     if (error.response && error.response.data.errors) {
@@ -64,9 +27,38 @@ export const handleGetOrdersByCustomer = async(id, p0, pageSize) => {
   }
 };
 
-export const handleOrderPay = async (id) => {
+export const handleGetAllReservations = async () => {
   try {
-    const response = await axiosInstance.post("/api/orders/pay", { id });
+    const response = await axiosInstance.get("/api/reservations/all");
+    return response.data.reservations;
+  } catch (error) {
+    if (error.response && error.response.data.errors) {
+      toast.error(error.response.data.errors[0].detail);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+
+export const handleGetReservationsByCustomer = async (id) => {
+  try {
+    const response = await axiosInstance.post(
+      `/api/reservations/list-by-customer`,
+      { id }
+    );
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data.errors) {
+      toast.error(error.response.data.errors[0].detail);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+
+export const handleReservationPay = async (id) => {
+  try {
+    const response = await axiosInstance.post("/api/reservations/pay", { id });
     toast.success("Success!");
     return response.data;
   } catch (error) {
@@ -78,15 +70,11 @@ export const handleOrderPay = async (id) => {
   }
 };
 
-export const handleUpdateCustomer = async (
-  id,
-  formData,
-  onSuccess
-) => {
+export const handleUpdateReservation = async (id, formData, onSuccess) => {
   try {
-    await axiosInstance.put(`/api/customers/update/${id}`, formData);
-
-    onSuccess();
+    const response = await axiosInstance.put(`/api/reservations/update/${id}`, formData);
+    toast.success(response.data.message)
+    onSuccess(response.data.reservation);
   } catch (error) {
     if (error.response && error.response.data.errors) {
       toast.error(error.response.data.errors[0].detail);
@@ -96,13 +84,10 @@ export const handleUpdateCustomer = async (
   }
 };
 
-export const handleGetOrderById = async (
-  id,
-) => {
+export const handleGetReservationById = async (id) => {
   try {
-    const response = await axiosInstance.get(`/api/orders/one/${id}`);
-
-    return response.data
+    const response = await axiosInstance.get(`/api/reservations/one/${id}`);
+    return response.data;
   } catch (error) {
     if (error.response && error.response.data.errors) {
       toast.error(error.response.data.errors[0].detail);
@@ -130,7 +115,6 @@ export const handleGetCustomers = async (page, limit) => {
 export const handleGetAllCustomers = async () => {
   try {
     const response = await axiosInstance.get("/api/customers/all");
-
     return response.data;
   } catch (error) {
     if (error.response && error.response.data.errors) {
@@ -144,7 +128,6 @@ export const handleGetAllCustomers = async () => {
 export const handleGetCustomerData = async (id) => {
   try {
     const response = await axiosInstance.get(`/api/customers/one?id=${id}`);
-
     return response.data;
   } catch (error) {
     if (error.response && error.response.data.errors) {
@@ -155,10 +138,7 @@ export const handleGetCustomerData = async (id) => {
   }
 };
 
-export const handleDeleteCustomer = async (
-  id,
-  onSuccess
-) => {
+export const handleDeleteCustomer = async (id, onSuccess) => {
   try {
     await axiosInstance.delete(`/api/customers/delete/${id}`);
     onSuccess();
@@ -171,13 +151,13 @@ export const handleDeleteCustomer = async (
   }
 };
 
-export const handleDeleteOrder = async (
-  id,
-) => {
+export const handleDeleteReservation = async (id, onSuccess) => {
   try {
-    const response = await axiosInstance.delete(`/api/orders/delete/${id}`);
-    toast.success("Deleted order successfully")
-    return response.data
+    const response = await axiosInstance.delete(
+      `/api/reservations/delete/${id}`
+    );
+    toast.success("Deleted reservation successfully");
+    onSuccess()
   } catch (error) {
     if (error.response && error.response.data.errors) {
       toast.error(error.response.data.errors[0].detail);

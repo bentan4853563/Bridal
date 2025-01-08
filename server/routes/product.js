@@ -1,12 +1,10 @@
 const express = require('express');
 const multer = require('multer');
 const router = express.Router();
-const path = require('path');
 
 const Product = require('../models/product');
 
 const front_url = process.env.FRONT_URL;
-const base_url = process.env.BASE_URL;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

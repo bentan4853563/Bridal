@@ -73,7 +73,7 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
             <Input
               type="text"
               name="city"
-              value={formData.city}
+              value={formData.weddingCity}
               onChange={handleChange}
               required
             />

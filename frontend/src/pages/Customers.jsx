@@ -148,7 +148,7 @@ const Customers = () => {
                     {customer.weddingDate}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    {customer.city}
+                    {customer.weddingCity}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                     <div className="flex space-x-2">

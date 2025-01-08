@@ -15,10 +15,10 @@ const CustomerPayments = ({ payments }) => {
         <tbody className="divide-y divide-white/10">
           {payments.map((payment) => (
             <tr key={payment.id} className="hover:bg-white/5">
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{payment.date}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{payment.paymentDate.split('T')[0]}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-white">${payment.amount}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{payment.method}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{payment.status}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{payment.paymentMethod}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{payment.reservation.paymentStatus}</td>
             </tr>
           ))}
         </tbody>

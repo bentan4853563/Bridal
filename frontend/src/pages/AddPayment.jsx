@@ -1,36 +1,21 @@
 import { useState, useCallback } from 'react'
 import { Cross2Icon, MagnifyingGlassIcon, UploadIcon, FileIcon, Cross1Icon } from '@radix-ui/react-icons'
-
-// Dummy data for customers and reservations (replace with your actual data)
-const dummyCustomers = [
-  {
-    id: 1,
-    name: 'Sarah Johnson',
-    identification: 'AB123456',
-    phone: '+212 666-123456',
-  },
-  // Add more customers...
-]
-
-const dummyReservations = [
-  {
-    id: 1,
-    customerId: 1,
-    totalAmount: 5000,
-    paidAmount: 2000,
-    remainingAmount: 3000,
-    type: 'Final',
-    status: 'Confirmed'
-  },
-  // Add more reservations...
-]
+import { useRef } from 'react'
+import { useSelector } from 'react-redux'
+import { handleCreatePayment } from '../actions/payment'
+import { useDispatch } from 'react-redux'
+import { addPayment } from '../store/reducers/paymentSlice'
 
 const AddPayment = ({ isOpen, onClose }) => {
+  const dispatch = useDispatch()
+  const customers = useSelector(state => state.customer.customers)
+  const reservations = useSelector(state => state.reservation.reservations)
+
   const [formData, setFormData] = useState({
-    customerId: '',
-    reservationId: '',
+    client: '',
+    reservation: '',
     amount: '',
-    paymentDate: new Date().toISOString().split('T')[0], // Today's date as default
+    paymentDate: new Date().toISOString().split('T')[0], 
     paymentMethod: '',
     paymentType: '',
     reference: '',
@@ -44,37 +29,40 @@ const AddPayment = ({ isOpen, onClose }) => {
   const [selectedReservation, setSelectedReservation] = useState(null)
 
   // Filter customers based on search
-  const filteredCustomers = customerSearch.length >= 2
-    ? dummyCustomers.filter(customer =>
-        customer.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
-        customer.identification.toLowerCase().includes(customerSearch.toLowerCase()) ||
-        customer.phone.includes(customerSearch)
-      )
-    : []
+  const filteredCustomers =
+    customerSearch.length >= 2
+      ? customers.filter(
+          (customer) =>
+            customer.name
+              .toLowerCase()
+              .includes(customerSearch.toLowerCase()) ||
+            customer.phone.includes(customerSearch)
+        )
+      : [];
 
   // Get reservations for selected customer
   const customerReservations = selectedCustomer
-    ? dummyReservations.filter(res => res.customerId === selectedCustomer.id)
-    : []
+    ? reservations.filter((res) => res.client?._id === selectedCustomer._id)
+    : [];
 
   const handleCustomerSelect = (customer) => {
     setSelectedCustomer(customer)
-    setFormData(prev => ({ ...prev, customerId: customer.id }))
+    setFormData(prev => ({ ...prev, client: customer._id }))
     setCustomerSearch(customer.name)
     setShowCustomerDropdown(false)
     setSelectedReservation(null)
-    setFormData(prev => ({ ...prev, reservationId: '' }))
+    setFormData(prev => ({ ...prev, reservation: '' }))
   }
 
   const handleReservationSelect = (reservation) => {
     setSelectedReservation(reservation)
-    setFormData(prev => ({ ...prev, reservationId: reservation.id }))
+    setFormData(prev => ({ ...prev, reservation: reservation._id }))
   }
 
   // File upload states
   const [isDragging, setIsDragging] = useState(false)
   const [files, setFiles] = useState([])
-  const fileInputRef = React.useRef(null)
+  const fileInputRef = useRef(null)
 
   const handleDragOver = (e) => {
     e.preventDefault()
@@ -124,9 +112,9 @@ const AddPayment = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     // Validate required fields
-    if (!formData.customerId || !formData.reservationId || !formData.amount || 
+    if (!formData.client || !formData.reservation || !formData.amount || 
         !formData.paymentDate || !formData.paymentMethod || !formData.paymentType) {
       alert('Please fill in all required fields')
       return
@@ -146,16 +134,10 @@ const AddPayment = ({ isOpen, onClose }) => {
         formDataToSubmit.append('files', file)
       })
 
-      // TODO: Replace with your actual API call
-      console.log('Submitting payment:', {
-        ...formData,
-        customerName: selectedCustomer?.name,
-        reservationDetails: selectedReservation,
-        files: files.map(f => f.name)
-      })
-      
-      // Close modal after successful submission
-      onClose()
+      handleCreatePayment(formDataToSubmit, (newPay) => {
+        dispatch(addPayment(newPay));
+        onClose()
+      })      
     } catch (error) {
       console.error('Error submitting payment:', error)
       alert('Error submitting payment. Please try again.')
@@ -370,14 +352,14 @@ const AddPayment = ({ isOpen, onClose }) => {
                     <div className="absolute z-10 w-full mt-1 bg-gray-800 border border-white/10 rounded-lg shadow-lg max-h-60 overflow-auto">
                       {filteredCustomers.map((customer) => (
                         <button
-                          key={customer.id}
+                          key={customer._id}
                           type="button"
                           onClick={() => handleCustomerSelect(customer)}
                           className="w-full px-4 py-2 text-left hover:bg-white/5 text-white text-sm"
                         >
                           <div className="font-medium">{customer.name}</div>
                           <div className="text-xs text-gray-400">
-                            {customer.phone} • {customer.identification}
+                            {customer.phone} 
                           </div>
                         </button>
                       ))}
@@ -393,18 +375,18 @@ const AddPayment = ({ isOpen, onClose }) => {
                   <div className="grid grid-cols-1 gap-2">
                     {customerReservations.map((reservation) => (
                       <button
-                        key={reservation.id}
+                        key={reservation._id}
                         type="button"
                         onClick={() => handleReservationSelect(reservation)}
                         className={`text-left p-3 rounded-lg border ${
-                          selectedReservation?.id === reservation.id
+                          selectedReservation?._id === reservation._id
                             ? 'border-blue-500 bg-blue-500/10'
                             : 'border-white/10 hover:border-white/20'
                         }`}
                       >
                         <div className="flex justify-between items-center">
                           <span className="text-sm text-white">
-                            Reservation #{reservation.id}
+                            Reservation #{reservation._id}
                           </span>
                           <span className={`px-2 py-1 rounded-full text-xs ${
                             reservation.status === 'Confirmed'
@@ -420,7 +402,7 @@ const AddPayment = ({ isOpen, onClose }) => {
                         <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
                           <div>
                             <div className="text-gray-400">Total</div>
-                            <div className="text-white">${reservation.totalAmount}</div>
+                            <div className="text-white">${reservation.total}</div>
                           </div>
                           <div>
                             <div className="text-gray-400">Paid</div>

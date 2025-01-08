@@ -18,7 +18,7 @@ const CustomerDetails = ({ customer }) => {
         </div>
         <div>
           <label className="text-sm text-gray-400">City</label>
-          <p className="text-white">{customer.city}</p>
+          <p className="text-white">{customer.weddingCity}</p>
         </div>
       </div>
       <div className="space-y-4">

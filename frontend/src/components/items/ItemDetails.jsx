@@ -33,13 +33,13 @@ const ItemDetails = ({ item }) => {
 
         {/* Secondary Photos Grid */}
         <div className="grid grid-cols-4 gap-4">
-          {item.secondaryPhotos?.map((photo, index) => (
+          {item.secondaryImages?.map((photo, index) => (
             <div
               key={index}
               className="aspect-square rounded-lg overflow-hidden bg-white/5 border border-white/10 shadow-md hover:shadow-lg transition-shadow duration-300"
             >
               <img
-                src={photo}
+                src={addBaseURL(photo)}
                 alt={`${item.name} - ${index + 1}`}
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
               />

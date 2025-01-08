@@ -9,7 +9,7 @@ const { getSecret } = require('./secrets');
 const usersRoute = require('./routes/users');
 const customerRoute = require('./routes/customers')
 const productRoute = require('./routes/product');
-const orderRoute = require('./routes/orders');
+const reservationRoute = require('./routes/reservation');
 const categoryRoute = require('./routes/category');
 const subCategoryRoute = require('./routes/subCategory');
 const paymentRoute = require('./routes/payment');
@@ -36,7 +36,7 @@ app.use('/api/users', usersRoute);
 app.use('/api/customers', customerRoute);
 app.use('/api/payments', paymentRoute);
 app.use('/api/products', productRoute);
-app.use('/api/orders', orderRoute);
+app.use('/api/reservations', reservationRoute);
 app.use('/api/category', categoryRoute);
 app.use('/api/sub-category', subCategoryRoute);
 

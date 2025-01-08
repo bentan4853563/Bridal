@@ -15,7 +15,7 @@ const reservationSlice = createSlice({
     },
     updateReservation(state, action) {
       const index = state.reservations.findIndex(
-        (reservation) => reservation.id === action.payload.id
+        (reservation) => reservation._id === action.payload._id
       );
       if (index !== -1) {
         state.reservations[index] = action.payload;
@@ -23,7 +23,7 @@ const reservationSlice = createSlice({
     },
     deleteReservation(state, action) {
       state.reservations = state.reservations.filter(
-        (reservation) => reservation.id !== action.payload
+        (reservation) => reservation._id !== action.payload
       );
     },
   },

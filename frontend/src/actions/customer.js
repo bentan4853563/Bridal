@@ -3,7 +3,11 @@ import { toast } from "react-toastify";
 
 export const handleCreateCustomer = async (formData, onSuccess) => {
   try {
-    const response = await axiosInstance.post("/api/customers/create", formData);
+    const response = await axiosInstance.post(
+      "/api/customers/create",
+      formData
+    );
+    toast.success("Customer added successfully!");
     onSuccess(response.data);
   } catch (error) {
     if (error.response && error.response.data.errors) {
@@ -14,14 +18,13 @@ export const handleCreateCustomer = async (formData, onSuccess) => {
   }
 };
 
-export const handleUpdateCustomer = async (
-  id,
-  formData,
-  onSuccess
-) => {
+export const handleUpdateCustomer = async (id, formData, onSuccess) => {
   try {
-    const response = await axiosFormdataInstance.put(`/api/customers/update/${id}`, formData);
-
+    const response = await axiosFormdataInstance.put(
+      `/api/customers/update/${id}`,
+      formData
+    );
+    toast.success("Customer updated successfully!");
     onSuccess(response.data);
   } catch (error) {
     if (error.response && error.response.data.errors) {
@@ -36,7 +39,6 @@ export const handleGetCustomers = async () => {
   try {
     const response = await axiosInstance.get("/api/customers");
     if (response.data) {
-      console.log('response.data :>> ', response.data);
       return response.data;
     }
   } catch (error) {
@@ -51,7 +53,6 @@ export const handleGetCustomers = async () => {
 export const handleGetAllCustomers = async () => {
   try {
     const response = await axiosInstance.get("/api/customers/all");
-
     return response.data;
   } catch (error) {
     if (error.response && error.response.data.errors) {
@@ -65,7 +66,6 @@ export const handleGetAllCustomers = async () => {
 export const handleGetCustomerData = async (id) => {
   try {
     const response = await axiosInstance.get(`/api/customers/one?id=${id}`);
-
     return response.data;
   } catch (error) {
     if (error.response && error.response.data.errors) {
@@ -76,12 +76,10 @@ export const handleGetCustomerData = async (id) => {
   }
 };
 
-export const handleDeleteCustomer = async (
-  id,
-  onSuccess
-) => {
+export const handleDeleteCustomer = async (id, onSuccess) => {
   try {
     await axiosInstance.delete(`/api/customers/delete/${id}`);
+    toast.success("Customer deleted successfully!");
     onSuccess();
   } catch (error) {
     if (error.response && error.response.data.errors) {

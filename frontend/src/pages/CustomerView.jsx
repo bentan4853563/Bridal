@@ -7,20 +7,27 @@ import CustomerDetails from "../components/customers/views/CustomerDetails";
 import CustomerReservations from "../components/customers/views/CustomerReservations";
 import CustomerPayments from "../components/customers/views/CustomerPayments";
 import CustomerAttachments from "../components/customers/views/CustomerAttachments";
-
-// Dummy data imports (move to a separate file or API call)
-import {
-  reservationsData,
-  paymentsData,
-  attachmentsData,
-} from "../data/dummyData";
+import { useEffect } from "react";
 
 const CustomerView = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState("details");
   const customers = useSelector((state) => state.customer.customers);
+  const reservations = useSelector(state => state.reservation.reservations);
+  const payments = useSelector(state => state.payment.payments);
   const customerData = customers.find((customer) => customer._id === id);
+  const reservationsData = reservations.filter(
+    (item) => item.client._id === id
+  );
+  const paymentsData = payments.filter((item) => item.client._id === id);
+  // const [reservationsData, setReservationsData] = useState([])
+
+  // useEffect(() => {
+  //   setReservationsData(reservations.filter(item => item.client._id === id))
+  // }, [id, reservations])
+
+  console.log('paymentsData :>> ', paymentsData);
 
   const handleBack = () => {
     navigate("/customers", {

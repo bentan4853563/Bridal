@@ -7,7 +7,6 @@ const Category = require('../models/category');
 router.get('/all', async (req, res) => {
   try {
     const categories = await Category.find();
-    console.log('categories :>> ', categories);
     res.json(categories);
   } catch (error) {
     console.error('Error creating customer:', error);

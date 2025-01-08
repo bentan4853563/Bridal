@@ -115,20 +115,6 @@ router.put(
       const { id } = req.params;
       const updatedData = req.body;
 
-      // Fetch the existing customer
-      const existingCustomer = await Customer.findById(id);
-      if (!existingCustomer) {
-        return res.status(404).json({ message: 'Customer not found' });
-      }
-
-      // Initialize attachments if not provided
-      updatedData.attachments = updatedData.attachments || [];
-
-      // Filter existing attachments
-      const attachments = existingCustomer.attachments.filter(file =>
-        updatedData.attachments.some(link => link.includes(file.link))
-      );
-
       // Update secondary photos if provided
       if (req.files.newFiles && req.files.newFiles.length > 0) {
         const newAttachments = req.files.newFiles.map((file) => ({
@@ -138,10 +124,12 @@ router.put(
         }));
 
         // Combine existing attachments with new ones
-        updatedData.attachments = [...attachments, ...newAttachments];
+        updatedData.attachments = [
+          ...(updatedData.attachments || []),
+          ...newAttachments,
+        ];
       } else {
-        // If no new files are uploaded, keep existing attachments
-        updatedData.attachments = attachments;
+        updatedData.attachments = [...(updatedData.attachments || [])];
       }
 
       // Update the customer with the new data
@@ -157,11 +145,12 @@ router.put(
       res.json(updatedCustomer);
     } catch (error) {
       console.error('Error updating customer:', error);
-      res.status(400).json({ message: 'Failed to update customer', error: error.message });
+      res
+        .status(400)
+        .json({ message: 'Failed to update customer', error: error.message });
     }
   }
 );
-
 
 // Delete a customer
 router.delete('/delete/:id', async (req, res) => {

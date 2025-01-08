@@ -15,7 +15,7 @@ const paymentSlice = createSlice({
     },
     updatePayment(state, action) {
       const index = state.payments.findIndex(
-        (payment) => payment.id === action.payload.id
+        (payment) => payment._id === action.payload._id
       );
       if (index !== -1) {
         state.payments[index] = action.payload;
@@ -23,7 +23,7 @@ const paymentSlice = createSlice({
     },
     deletePayment(state, action) {
       state.payments = state.payments.filter(
-        (payment) => payment.id !== action.payload
+        (payment) => payment._id !== action.payload
       );
     },
   },

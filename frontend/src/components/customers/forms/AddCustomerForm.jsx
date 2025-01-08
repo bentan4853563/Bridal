@@ -4,18 +4,18 @@ import { Button } from '../../ui/Button'
 
 const AddCustomerForm = ({ onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    surname: '',
-    address: '',
-    city: '',
-    phone: '',
-    whatsapp: '',
-    email: '',
-    weddingDate: '',
-    weddingTime: '',
-    weddingLocation: '',
-    type: 'Client'
-  })
+    name: "",
+    surname: "",
+    address: "",
+    weddingCity: "",
+    phone: "",
+    whatsapp: "",
+    email: "",
+    weddingDate: "",
+    weddingTime: "",
+    weddingLocation: "",
+    type: "Client",
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -72,7 +72,7 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
             <label className="text-sm font-medium text-gray-200">City</label>
             <Input
               type="text"
-              name="city"
+              name="weddingCity"
               value={formData.weddingCity}
               onChange={handleChange}
               required
@@ -93,7 +93,9 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-200">WhatsApp</label>
+            <label className="text-sm font-medium text-gray-200">
+              WhatsApp
+            </label>
             <Input
               type="tel"
               name="whatsapp"
@@ -104,7 +106,9 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-200">Wedding Date</label>
+              <label className="text-sm font-medium text-gray-200">
+                Wedding Date
+              </label>
               <Input
                 type="date"
                 name="weddingDate"
@@ -115,7 +119,9 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-200">Wedding Time</label>
+              <label className="text-sm font-medium text-gray-200">
+                Wedding Time
+              </label>
               <Input
                 type="time"
                 name="weddingTime"
@@ -127,7 +133,9 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-200">Wedding Location</label>
+            <label className="text-sm font-medium text-gray-200">
+              Wedding Location
+            </label>
             <Input
               type="text"
               name="weddingLocation"
@@ -154,19 +162,13 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
       </div>
 
       <div className="flex justify-end space-x-4 mt-6">
-        <Button
-          type="button"
-          variant="secondary"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">
-          Add Customer
-        </Button>
+        <Button type="submit">Add Customer</Button>
       </div>
     </form>
-  )
+  );
 }
 
 export default AddCustomerForm 

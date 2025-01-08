@@ -348,8 +348,6 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
   const renderFinancialDetails = () => {
     const financials = calculateFinancials();
 
-    console.log("financials :>> ", financials);
-
     return (
       <div className="space-y-6">
         <div>

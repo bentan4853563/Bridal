@@ -56,7 +56,6 @@ export const handleUpdatePayment = async (id, paymentData, onSuccess) => {
     );
     if (response.status === 200) {
       toast.success("Payment updated successfully!");
-      console.log("response.data.payment :>> ", response.data.payment);
       onSuccess(response.data.payment);
     }
   } catch (error) {

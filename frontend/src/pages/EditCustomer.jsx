@@ -39,8 +39,6 @@ const EditCustomer = () => {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       try {
-        // TODO: Implement API call to delete customer
-        console.log("Deleting customer:", id);
         navigate("/customers", {
           state: { activeTab: "Customers" },
         });

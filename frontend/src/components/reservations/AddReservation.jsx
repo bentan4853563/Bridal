@@ -326,8 +326,6 @@ const AddReservation = ({ isOpen, onClose }) => {
     }));
   }, [selectedItems]);
 
-  console.log("formData :>> ", formData);
-
   // Add effect to update pickup and return dates when buffer times or wedding date changes
   useEffect(() => {
     if (selectedClient?.weddingDate) {

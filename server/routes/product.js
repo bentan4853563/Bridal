@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const router = express.Router();
+require('dotenv').config();
 
 const Product = require('../models/product');
 

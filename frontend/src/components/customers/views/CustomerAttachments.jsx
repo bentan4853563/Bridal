@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useDownloader from "react-use-downloader";
 import {
   Cross2Icon,
   ChevronLeftIcon,
@@ -8,6 +9,7 @@ import {
   FileIcon,
 } from "@radix-ui/react-icons";
 import FileUpload from "../../shared/FileUpload";
+import { handleDownload } from "../../../utils/fileDownload";
 
 const CustomerAttachments = ({
   attachments,
@@ -19,36 +21,18 @@ const CustomerAttachments = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
 
-  const fetchFile = (file) => {
-    axios({
-          url: file.link,
-          method: "GET",
-          headers: headers,
-          responseType: "blob" // important
-      }).then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement("a");
-          link.href = url;
-          link.setAttribute(
-              "download",
-              `${this.props.file.name}.${this.props.file.mime}`
-          );
-          document.body.appendChild(link);
-          link.click();
-  
-          // Clean up and remove the link
-          link.parentNode.removeChild(link);
-      });
-  }
-
-
   const imageFiles = attachments?.filter((file) =>
     file.link.includes("images\\")
   );
   const documentFiles = attachments?.filter((file) =>
     file.link.includes("documents\\")
   );
-  console.log('attachments, imageFiles, documentFiles :>> ', attachments, imageFiles, documentFiles);
+  console.log(
+    "attachments, imageFiles, documentFiles :>> ",
+    attachments,
+    imageFiles,
+    documentFiles
+  );
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prev) =>
@@ -129,11 +113,10 @@ const CustomerAttachments = ({
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <a href={file.link} target="_blank" rel="noopener noreferrer" download
-                      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                      <DownloadIcon className="h-4 w-4 text-white/60" />
-                    </a>
+                    <DownloadIcon
+                      onClick={() => handleDownload(file.link)}
+                      className="h-4 w-4 text-white/60 cursor-pointer"
+                    />
                     {!readOnly && (
                       <button
                         onClick={() => onDeleteFile(file.id)}

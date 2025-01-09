@@ -15,10 +15,11 @@ import { handleUpdatePayment } from "../actions/payment";
 import { updatePayment } from "../store/reducers/paymentSlice";
 import { addBaseURL } from "../utils/updateURL";
 import { useDispatch } from "react-redux";
+import { handleDownload } from "../utils/fileDownload";
 
 const EditPayment = () => {
   const { id } = useParams();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const payments = useSelector((state) => state.payment.payments);
@@ -412,11 +413,10 @@ const EditPayment = () => {
                               </p>
                             </div>
                             <div className="flex items-center gap-2">
-                              <a href={addBaseURL(file.url)} target="_blank" rel="noopener noreferrer" download
-                      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                                <DownloadIcon className="h-4 w-4 text-blue-400" />
-                              </a>
+                              {/* <DownloadIcon
+                                onClick={() => handleDownload(addBaseURL(file.url))}
+                                className="h-4 w-4 text-blue-400 cursor-pointer"
+                              /> */}
                               <button
                                 type="button"
                                 onClick={() => {

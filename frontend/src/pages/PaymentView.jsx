@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { 
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
   ArrowLeftIcon,
   PersonIcon,
   CardStackIcon,
@@ -8,44 +8,46 @@ import {
   ClockIcon,
   ImageIcon,
   FileIcon,
-  DownloadIcon
-} from '@radix-ui/react-icons'
-import { useSelector } from 'react-redux'
-import { addBaseURL } from '../utils/updateURL'
+  DownloadIcon,
+} from "@radix-ui/react-icons";
+import { useSelector } from "react-redux";
+import { addBaseURL } from "../utils/updateURL";
+import { handleDownload } from "../utils/fileDownload";
 
 const PaymentView = () => {
-  const navigate = useNavigate()
-  const payments = useSelector(state => state.payment.payments);
-  const { id } = useParams()
-  const [payment, setPayment] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate();
+
+  const payments = useSelector((state) => state.payment.payments);
+  const { id } = useParams();
+  const [payment, setPayment] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchPayment = async () => {
       try {
-        setPayment(payments.find((item) => item._id === id))
+        setPayment(payments.find((item) => item._id === id));
       } catch (error) {
-        console.error('Error fetching payment:', error)
+        console.error("Error fetching payment:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchPayment()
-  }, [id])
+    fetchPayment();
+  }, [id]);
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
-      case 'paid':
-        return 'bg-green-500/10 text-green-500'
-      case 'pending':
-        return 'bg-yellow-500/10 text-yellow-500'
-      case 'cancelled':
-        return 'bg-red-500/10 text-red-500'
+      case "paid":
+        return "bg-green-500/10 text-green-500";
+      case "pending":
+        return "bg-yellow-500/10 text-yellow-500";
+      case "cancelled":
+        return "bg-red-500/10 text-red-500";
       default:
-        return 'bg-gray-500/10 text-gray-500'
+        return "bg-gray-500/10 text-gray-500";
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -55,7 +57,7 @@ const PaymentView = () => {
           <span>Loading payment details...</span>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -264,11 +266,10 @@ const PaymentView = () => {
                     </p>
                   </div>
 
-                  <a href={addBaseURL(file.url)} target="_blank" rel="noopener noreferrer" download
-                      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                    <DownloadIcon className="h-4 w-4 text-blue-400" />
-                  </a>
+                  <DownloadIcon
+                    onClick={() => handleDownload(addBaseURL(file.url))}
+                    className="h-4 w-4 text-blue-400 cursor-pointer"
+                  />
                 </div>
               ))}
             </div>
@@ -279,6 +280,6 @@ const PaymentView = () => {
       </div>
     </div>
   );
-}
+};
 
-export default PaymentView 
+export default PaymentView;

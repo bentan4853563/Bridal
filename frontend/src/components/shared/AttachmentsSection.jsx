@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FileIcon, DownloadIcon, TrashIcon } from "@radix-ui/react-icons";
 import FileUpload from "./FileUpload";
 import { addBaseURL } from "../../utils/updateURL";
+import { handleDownload } from "../../utils/fileDownload";
 
 const AttachmentsSection = ({
   existingFiles = [],
@@ -53,11 +54,10 @@ const AttachmentsSection = ({
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                <a href={file.link} target="_blank" rel="noopener noreferrer" download
-                      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                    <DownloadIcon className="h-4 w-4 text-white/60" />
-                  </a>
+                  <DownloadIcon
+                    onClick={() => handleDownload(addBaseURL(file.link))}
+                    className="h-4 w-4 text-white/60"
+                  />
 
                   {onRemoveExisting && (
                     <button

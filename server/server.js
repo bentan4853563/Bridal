@@ -1,20 +1,23 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const cors = require('cors')
-const path = require('path')
+const cors = require('cors');
+const path = require('path');
+const morgan = require('morgan');
+const helmet = require('helmet');
+require('dotenv').config()
 
-const { getSecret } = require('./secrets');
 const usersRoute = require('./routes/users');
-const customerRoute = require('./routes/customers')
+const customerRoute = require('./routes/customers');
 const productRoute = require('./routes/product');
 const reservationRoute = require('./routes/reservation');
 const categoryRoute = require('./routes/category');
 const paymentRoute = require('./routes/payment');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(getSecret('dbUri')).then(
+mongoose.connect(process.env.DB_URI).then(
   () => {
     console.log('Connected to mongoDB');
   },
@@ -22,14 +25,22 @@ mongoose.connect(getSecret('dbUri')).then(
 );
 mongoose.set('debug', true);
 
-
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(morgan('combined'));
+app.use(helmet());
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(cors())
-app.use(express.static(path.join(__dirname, 'uploads')))
+app.use(
+  cors({
+    origin: 'https://app.thebridalhouse.ma',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  })
+);
+app.use(express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, 'build'))); // Serve your frontend build
 
 app.use('/api/users', usersRoute);
 app.use('/api/customers', customerRoute);
@@ -37,6 +48,21 @@ app.use('/api/payments', paymentRoute);
 app.use('/api/products', productRoute);
 app.use('/api/reservations', reservationRoute);
 app.use('/api/category', categoryRoute);
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+  console.log('Shutting down gracefully...');
+  mongoose.connection.close(() => {
+    console.log('MongoDB connection closed');
+    process.exit(0);
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

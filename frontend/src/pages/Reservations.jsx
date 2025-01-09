@@ -21,8 +21,6 @@ import DeleteConfirmationModal from "../components/settings/DeleteConfirmationMo
 
 const Reservations = () => {
   const dispatch = useDispatch();
-  const items = useSelector((state) => state.item.items);
-  const clients = useSelector((state) => state.customer.customers);
   const reservations = useSelector((state) => state.reservation.reservations);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,6 +30,7 @@ const Reservations = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
+
 
   // Filter reservations based on search term
   const filteredReservations = reservations?.filter(

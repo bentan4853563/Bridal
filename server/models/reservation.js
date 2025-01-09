@@ -42,10 +42,6 @@ const reservationSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    securityDeposit: {
-      type: Number,
-      default: 0,
-    },
     securityDepositPercentage: {
       type: Number,
       default: 30,

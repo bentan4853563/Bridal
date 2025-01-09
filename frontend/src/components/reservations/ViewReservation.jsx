@@ -34,8 +34,8 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
     const travelCost = reservation.travelCost ?? 0
     
     const subtotal = itemsTotal + additionalCost + travelCost
-    const securityDeposit = reservation.securityDeposit ?? (subtotal * 0.3)
-    const advance = reservation.advance ?? (subtotal * 0.5)
+    const securityDeposit = reservation.securityDeposit ?? (subtotal * reservation?.securityDepositPercentage / 100)
+    const advance = reservation.advance ?? (subtotal * reservation?.advancePercentage / 100)
     const total = reservation.total ?? (subtotal + securityDeposit)
 
     return {

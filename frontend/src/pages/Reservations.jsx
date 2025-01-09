@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   PlusIcon,
   Pencil1Icon,
@@ -17,7 +17,6 @@ import { addBaseURL } from "../utils/updateURL";
 import { handleDeleteReservation } from "../actions/reservation";
 import { deleteReservation } from "../store/reducers/reservationSlice";
 import { useDispatch } from "react-redux";
-import DeleteConfirmationModal from "../components/settings/DeleteConfirmationModal";
 
 const Reservations = () => {
   const dispatch = useDispatch();
@@ -187,7 +186,11 @@ const Reservations = () => {
                   </td>
                   <td className="p-4 text-white">{reservation.client?.name}</td>
                   <td className="p-4">
-                    <div className="flex items-center gap-3">
+                    <Link
+                      to={`/items/${mainItem._id}`}
+                      target="_blank"
+                      className="flex items-center gap-3"
+                    >
                       <img
                         src={addBaseURL(mainItem.primaryPhoto)}
                         alt={mainItem.name}
@@ -203,10 +206,12 @@ const Reservations = () => {
                           </span>
                         )}
                       </div>
-                    </div>
+                    </Link>
                   </td>
                   <td className="p-4 text-white">
-                    {new Date(reservation.client.weddingDate).toLocaleDateString()}
+                    {new Date(
+                      reservation.client.weddingDate
+                    ).toLocaleDateString()}
                   </td>
                   <td className="p-4 text-white">
                     {new Date(reservation.pickupDate).toLocaleDateString()}

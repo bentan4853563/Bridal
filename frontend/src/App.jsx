@@ -10,9 +10,11 @@ import { ToastContainer } from "react-toastify"; // Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // Import styles
 
 import Login from "./pages/Login";
+import Items from "./pages/Items";
+import Payments from "./pages/Payments";
+import Settings from "./pages/Settings";
 import Dashboard from "./pages/Dashboard";
 import Customers from "./pages/Customers";
-import Payments from "./pages/Payments";
 import AddCustomer from "./pages/AddCustomer";
 import EditCustomer from "./pages/EditCustomer";
 import CustomerView from "./pages/CustomerView";
@@ -20,9 +22,7 @@ import AddPayment from "./pages/AddPayment";
 import EditPayment from "./pages/EditPayment";
 import PaymentView from "./pages/PaymentView";
 import Reservations from "./pages/Reservations";
-import Items from "./pages/Items";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Settings from "./pages/Settings";
 import Documentation from "./pages/Documentation";
 
 import { setUsers } from "./store/reducers/userSlice";
@@ -65,11 +65,7 @@ function App() {
 
   return (
     <Router>
-      <ToastContainer
-        position="top-right"
-        draggable
-        theme="dark"
-      />
+      <ToastContainer position="top-right" draggable theme="dark" />
       <Routes>
         <Route path="/" element={<Login />} />
 
@@ -104,6 +100,7 @@ function App() {
           <Route path="/payments" element={<Payments />} />
           <Route path="/reservations" element={<Reservations />} />
           <Route path="/items" element={<Items />} />
+          <Route path="/items/:id" element={<Items />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/documentation" element={<Documentation />} />
           {/* Customer routes */}

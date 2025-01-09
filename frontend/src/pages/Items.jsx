@@ -8,7 +8,7 @@ import {
 } from "@radix-ui/react-icons";
 import ItemForm from "../components/items/ItemForm";
 import DeleteConfirmationModal from "../components/settings/DeleteConfirmationModal";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import Pagination from "../components/Pagination";
 import ItemView from "../components/items/ItemView";
 import { useSelector } from "react-redux";
@@ -20,6 +20,7 @@ import { addItem, deleteItem, updateItem } from "../store/reducers/itemSlice";
 const Items = () => {
   const location = useLocation();
   const dispatch = useDispatch();
+  const {id} = useParams()
   const items = useSelector((state) => state.item.items);
   const categories = useSelector((state) => state.category.categories);
 
@@ -40,11 +41,23 @@ const Items = () => {
   // Add this useEffect to handle navigation from Quick Actions
   useEffect(() => {
     if (location.state?.showAddModal) {
+      console.log("location.state :>> ", location.state);
       setShowAddModal(true);
       // Clear the state after showing modal
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  // Effect to open the modal if an ID is present in the URL
+  useEffect(() => {
+    if (id) {
+      const item = items.find((item) => item._id === id);
+      if (item) {
+        setSelectedItem(item);
+        setShowViewModal(true);
+      }
+    }
+  }, [id, items]);
 
   // Handle adding new item
   const handleAddItem = (formData) => {
@@ -59,7 +72,7 @@ const Items = () => {
       dispatch(updateItem(updatedItem));
       setShowEditModal(false);
       setEditingItem(null);
-    })
+    });
   };
 
   // Handle deleting item
@@ -226,7 +239,10 @@ const Items = () => {
                 </div>
                 <div className="flex flex-wrap gap-2 pt-2">
                   <span className="px-2 py-1 bg-white/5 rounded-full text-xs text-white">
-                    {categories?.filter((cat) => cat._id == item.category)[0]?.name}
+                    {
+                      categories?.filter((cat) => cat._id == item.category)[0]
+                        ?.name
+                    }
                   </span>
                   <span className="px-2 py-1 bg-white/5 rounded-full text-xs text-white">
                     {item.subCategory}

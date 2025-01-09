@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   PlusIcon,
   Pencil1Icon,
@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 const Reservations = () => {
   const dispatch = useDispatch();
   const reservations = useSelector((state) => state.reservation.reservations);
+  const payments = useSelector((state) => state.payment.payments);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +30,6 @@ const Reservations = () => {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
-
 
   // Filter reservations based on search term
   const filteredReservations = reservations?.filter(
@@ -52,7 +52,10 @@ const Reservations = () => {
   // Update getPaymentStatus to calculate based on payments
   const getPaymentStatus = (reservation) => {
     const financials = calculateFinancials(reservation);
-    const totalPaid = reservation.payments?.reduce(
+    const associatedPayments = payments.filter(
+      (item) => item.reservation._id === reservation._id
+    );
+    const totalPaid = associatedPayments?.reduce(
       (sum, payment) => sum + payment.amount,
       0
     );
@@ -98,7 +101,7 @@ const Reservations = () => {
   const deleteReservationData = async (id) => {
     if (window.confirm("Are you sure you want to delete this reservation?")) {
       handleDeleteReservation(id, () => {
-        console.log('id :>> ', id);
+        console.log("id :>> ", id);
         dispatch(deleteReservation(id));
       });
     }
@@ -186,11 +189,7 @@ const Reservations = () => {
                   </td>
                   <td className="p-4 text-white">{reservation.client?.name}</td>
                   <td className="p-4">
-                    <Link
-                      to={`/items/${mainItem._id}`}
-                      target="_blank"
-                      className="flex items-center gap-3"
-                    >
+                    <div className="flex items-center gap-3">
                       <img
                         src={addBaseURL(mainItem.primaryPhoto)}
                         alt={mainItem.name}
@@ -206,7 +205,7 @@ const Reservations = () => {
                           </span>
                         )}
                       </div>
-                    </Link>
+                    </div>
                   </td>
                   <td className="p-4 text-white">
                     {new Date(
@@ -214,10 +213,26 @@ const Reservations = () => {
                     ).toLocaleDateString()}
                   </td>
                   <td className="p-4 text-white">
-                    {new Date(reservation.pickupDate).toLocaleDateString()}
+                    {new Date(reservation.pickupDate).toLocaleString("en-US", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      hour12: true, // Change to false for 24-hour format
+                    })}
                   </td>
                   <td className="p-4 text-white">
-                    {new Date(reservation.returnDate).toLocaleDateString()}
+                    {new Date(reservation.returnDate).toLocaleString("en-US", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      hour12: true, // Change to false for 24-hour format
+                    })}
                   </td>
                   <td className="p-4 text-white">
                     ${financials.total.toLocaleString()}

@@ -14,6 +14,10 @@ const CustomerDetails = ({ customer }) => {
             <p className="text-white">{customer?.surname}</p>
           </div>
           <div>
+            <label className="text-sm text-gray-400">Email</label>
+            <p className="text-white">{customer?.email}</p>
+          </div>
+          <div>
             <label className="text-sm text-gray-400">Address</label>
             <p className="text-white">{customer?.address}</p>
           </div>

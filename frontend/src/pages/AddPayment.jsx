@@ -442,7 +442,7 @@ const AddPayment = ({ isOpen, onClose, reservation }) => {
                   <input
                     type="text"
                     readOnly
-                    value={reservation.client.name}
+                    value={`${reservation.client.name} ${reservation.client.surname}`}
                     placeholder="Search customer by name, ID, or phone..."
                     className="w-full pl-4 pr-4 py-2 rounded-md border border-white/20 bg-white/10 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30"
                   />

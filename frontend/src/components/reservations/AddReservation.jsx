@@ -83,8 +83,8 @@ const AddReservation = ({ isOpen, onClose }) => {
     <div className="bg-white/5 rounded-lg p-4 space-y-4">
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-lg font-medium text-white">{client.name}</h3>
-          <p className="text-sm text-gray-400">ID: {client.identification}</p>
+          <h3 className="text-lg font-medium text-white">{client.name}{" "}{client.surname}</h3>
+          {/* <p className="text-sm text-gray-400">ID: {client.identification}</p> */}
         </div>
         <button
           onClick={() => {
@@ -150,9 +150,9 @@ const AddReservation = ({ isOpen, onClose }) => {
                 onClick={() => handleClientSelect(client)}
                 className="w-full px-4 py-2 text-left hover:bg-white/5 text-white text-sm"
               >
-                <div className="font-medium">{client.name}</div>
+                <div className="font-medium">{client.name}{" "}{client.surname}</div>
                 <div className="text-xs text-gray-400">
-                  {client.phone} • {client.identification}
+                  {client.phone} •
                 </div>
               </button>
             ))}
@@ -395,13 +395,15 @@ const AddReservation = ({ isOpen, onClose }) => {
             <div>
               <p className="text-sm text-gray-400">Pickup Date</p>
               <p className="text-lg font-medium text-white">
-                {format(new Date(formData.pickupDate), "PPP")}
+                {/* {format(new Date(formData.pickupDate), "PPP")} */}
+                {formData.pickupDate ? format(new Date(formData.pickupDate), "PPP - HH:mm") : ''}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-400">Return Date</p>
               <p className="text-lg font-medium text-white">
-                {format(new Date(formData.returnDate), "PPP")}
+                {/* {format(new Date(formData.returnDate), "PPP")} */}
+                {formData.pickupDate ? format(new Date(formData.pickupDate), "PPP - HH:mm") : ''}
               </p>
             </div>
           </div>
@@ -742,6 +744,7 @@ const AddReservation = ({ isOpen, onClose }) => {
       handleReserve(reservationData, (newReservation) => {
         dispatch(addReservation(newReservation))
         onClose()
+        setStep(1)
       });
     } catch (error) {
       console.error("Error creating reservation:", error);
@@ -839,7 +842,7 @@ const AddReservation = ({ isOpen, onClose }) => {
             <option value="">Select a client</option>
             {clients?.map((client) => (
               <option key={client._id} value={client._id}>
-                {client.name} - {client.phone}
+                {client.name} {" "} {client.surname} - {client.phone}
               </option>
             ))}
           </select>
@@ -848,7 +851,7 @@ const AddReservation = ({ isOpen, onClose }) => {
 
       {selectedClient && (
         <div className="bg-white/5 p-4 rounded-lg space-y-2">
-          <p className="text-white font-medium">{selectedClient.name}</p>
+          <p className="text-white font-medium">{selectedClient.name}{" "}{selectedClient.surname}</p>
           <p className="text-sm text-gray-400">{selectedClient.phone}</p>
           <p className="text-sm text-gray-400">
             Wedding Date: {selectedClient.weddingDate}

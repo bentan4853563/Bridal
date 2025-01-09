@@ -13,6 +13,7 @@ const EditCustomerForm = ({
   const [formData, setFormData] = useState({
     name: customer.name,
     surname: customer.surname,
+    email: customer.email,
     address: customer.address,
     weddingCity: customer.weddingCity,
     phone: customer.phone,
@@ -104,6 +105,19 @@ const EditCustomerForm = ({
                 type="text"
                 name="surname"
                 value={formData.surname}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-200">
+                Email
+              </label>
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
                 onChange={handleChange}
                 required
               />

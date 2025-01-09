@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Input } from '../../ui/Input'
 import { Button } from '../../ui/Button'
 
@@ -51,6 +51,17 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
               type="text"
               name="surname"
               value={formData.surname}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-200">Surname</label>
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
               required
             />

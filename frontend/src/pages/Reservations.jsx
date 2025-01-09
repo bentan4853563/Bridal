@@ -218,7 +218,7 @@ const Reservations = () => {
                       hour: "2-digit",
                       minute: "2-digit",
                       second: "2-digit",
-                      hour12: true, // Change to false for 24-hour format
+                      hour12: false, // Change to false for 24-hour format
                     })}
                   </td>
                   <td className="p-4 text-white">
@@ -229,7 +229,7 @@ const Reservations = () => {
                       hour: "2-digit",
                       minute: "2-digit",
                       second: "2-digit",
-                      hour12: true, // Change to false for 24-hour format
+                      hour12: false, // Change to false for 24-hour format
                     })}
                   </td>
                   <td className="p-4 text-white">

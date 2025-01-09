@@ -9,7 +9,7 @@ const CustomerPayments = ({ payments }) => {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Date</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Amount</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Method</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+            {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th> */}
           </tr>
         </thead>
         <tbody className="divide-y divide-white/10">
@@ -18,7 +18,7 @@ const CustomerPayments = ({ payments }) => {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{payment.paymentDate.split('T')[0]}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-white">${payment.amount}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{payment.paymentMethod}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{payment.reservation.paymentStatus}</td>
+              {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{payment.reservation.paymentStatus}</td> */}
             </tr>
           ))}
         </tbody>

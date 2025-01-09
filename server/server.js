@@ -11,7 +11,6 @@ const customerRoute = require('./routes/customers')
 const productRoute = require('./routes/product');
 const reservationRoute = require('./routes/reservation');
 const categoryRoute = require('./routes/category');
-const subCategoryRoute = require('./routes/subCategory');
 const paymentRoute = require('./routes/payment');
 
 mongoose.Promise = global.Promise;
@@ -38,7 +37,6 @@ app.use('/api/payments', paymentRoute);
 app.use('/api/products', productRoute);
 app.use('/api/reservations', reservationRoute);
 app.use('/api/category', categoryRoute);
-app.use('/api/sub-category', subCategoryRoute);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);

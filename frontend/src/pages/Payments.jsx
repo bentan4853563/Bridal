@@ -105,6 +105,9 @@ const Payments = () => {
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/20">
+              <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
+                  Id
+                </th>
                 <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
                   Reference
                 </th>
@@ -123,20 +126,23 @@ const Payments = () => {
                 <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
                   Type
                 </th>
-                <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
+                {/* <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
                   Status
-                </th>
+                </th> */}
                 <th className="text-right text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
-              {currentItems?.map((payment) => (
+              {currentItems?.map((payment, index) => (
                 <tr
                   key={payment.id}
                   className="hover:bg-white/5 transition-colors"
                 >
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                    #{index + 1}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                     {payment.reference}
                   </td>
@@ -155,7 +161,7 @@ const Payments = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                     {payment.paymentType}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                  {/* <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
                         payment.reservation.paymentStatus
@@ -163,7 +169,7 @@ const Payments = () => {
                     >
                       {payment.reservation.paymentStatus}
                     </span>
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                     <div className="flex justify-end space-x-2">
                       <button

@@ -1,5 +1,6 @@
 // src/store/store.js
 import { configureStore } from "@reduxjs/toolkit";
+import userReducer from "./reducers/userSlice";
 import customerReducer from "./reducers/customerSlice";
 import itemReducer from "./reducers/itemSlice";
 import categoryReducer from "./reducers/categorySlice";
@@ -8,6 +9,7 @@ import paymentReducer from "./reducers/paymentSlice";
 
 const store = configureStore({
   reducer: {
+    user: userReducer,
     customer: customerReducer,
     item: itemReducer,
     category: categoryReducer,

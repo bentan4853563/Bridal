@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-require('dotenv').config()
+require('dotenv').config();
 
 const User = require('../models/user');
 const Session = require('../models/session');
@@ -46,10 +46,10 @@ router.post('/signup', async (req, res) => {
     const session = await initSession(userId);
 
     res.json({
-        title: 'User Registration Successful',
-        detail: 'Successfully registered new user',
-        csrfToken: session.csrfToken,
-      });
+      title: 'User Registration Successful',
+      detail: 'Successfully registered new user',
+      csrfToken: session.csrfToken,
+    });
   } catch (err) {
     res.status(400).json({
       errors: [
@@ -62,65 +62,67 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!isEmail(email)) {
+
+    // Validate input
+    if (!email || !password) {
       return res.status(400).json({
         errors: [
           {
-            title: 'Bad Request',
-            detail: 'Email must be a valid email address',
+            title: 'Validation Error',
+            detail: 'Email and password are required.',
           },
         ],
       });
     }
-    if (typeof password !== 'string') {
-      return res.status(400).json({
-        errors: [
-          {
-            title: 'Bad Request',
-            detail: 'Password must be a string',
-          },
-        ],
-      });
-    }
+
+    // Check if user exists
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new Error();
-    }
-    const userId = user._id;
-    
-    const passwordValidated = await bcrypt.compare(password, user.password);
-    if (!passwordValidated) {
-      throw new Error();
-    }
-
-    const session = await initSession(userId);
-    console.log('session :>> ', session);
-
-    res
-      .cookie('token', session.token, {
-        httpOnly: true,
-        sameSite: true,
-        maxAge: 1209600000,
-        secure: process.env.NODE_ENV === 'production',
-      })
-      .json({
-        title: 'Login Successful',
-        detail: 'Successfully validated user credentials',
-        csrfToken: session.csrfToken,
+      return res.status(400).json({
+        errors: [
+          {
+            title: 'Login Error',
+            detail: 'Invalid email or password.',
+          },
+        ],
       });
+    }
+
+    // Compare the password with the hashed password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        errors: [
+          {
+            title: 'Login Error',
+            detail: 'Invalid email or password.',
+          },
+        ],
+      });
+    }
+
+    // Successful login
+    res.status(200).json({
+      message: 'Login Successful',
+      detail: 'Welcome back!',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+      },
+    });
   } catch (err) {
-    res.status(401).json({
+    console.error(err); // Log the error for debugging
+    res.status(500).json({
       errors: [
-        {
-          title: 'Invalid Credentials',
-          detail: 'Check email and password combination',
-          errorMessage: err.message,
-        },
+        { title: 'Server Error', detail: 'An unexpected error occurred.' },
       ],
     });
   }
@@ -178,7 +180,6 @@ router.post('/reset-password', async (req, res) => {
 
   res.send('Password has been reset');
 });
-
 
 router.get('/me', authenticate, async (req, res) => {
   try {
@@ -255,6 +256,165 @@ router.put('/logout', authenticate, csrfCheck, async (req, res) => {
           detail: 'Something went wrong during the logout process.',
           errorMessage: err.message,
         },
+      ],
+    });
+  }
+});
+
+router.post('/create', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({
+        errors: [
+          {
+            title: 'Validation Error',
+            detail: 'Email and password are required.',
+          },
+        ],
+      });
+    }
+
+    // // Check if user already exists
+    const existingUser = await User.findOne({email: req.body.email});
+
+    if (existingUser) {
+      return res.status(400).json({
+        errors: [
+          {
+            title: 'Registration Error',
+            detail: 'Email is already registered.',
+          },
+        ],
+      });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ ...req.body, password: hashedPassword });
+    const savedUser = await user.save();
+
+    res.status(201).json({
+      title: 'User Created',
+      detail: 'User added successfully!',
+      user: savedUser,
+    });
+  } catch (err) {
+    res.status(500).json({
+      errors: [
+        { title: 'Server Error', detail: 'An unexpected error occurred.' },
+      ],
+    });
+  }
+});
+
+// Update User
+router.put('/update/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { email, password } = req.body;
+
+    console.log('req.body :>> ', req.body);
+
+    // Validate input
+    if (!email || !password) {
+      return res.status(400).json({
+        errors: [
+          {
+            title: 'Validation Error',
+            detail: 'Email and password are required.',
+          },
+        ],
+      });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { ...req.body, password: hashedPassword },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        errors: [{ title: 'Not Found', detail: 'User not found.' }],
+      });
+    }
+
+    res.json({
+      title: 'User Updated',
+      detail: 'User updated successfully!',
+      user: updatedUser,
+    });
+  } catch (err) {
+    res.status(500).json({
+      errors: [
+        { title: 'Server Error', detail: 'An unexpected error occurred.' },
+      ],
+    });
+  }
+});
+
+// Get All Users
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find();
+    console.log('users :>> ', users);
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({
+      errors: [
+        { title: 'Server Error', detail: 'An unexpected error occurred.' },
+      ],
+    });
+  }
+});
+
+// Get User by ID
+router.get('/one', authenticate, async (req, res) => {
+  try {
+    const userId = req.query.id;
+    const user = await User.findById(userId, { password: 0 }); // Exclude password from response
+
+    if (!user) {
+      return res.status(404).json({
+        errors: [{ title: 'Not Found', detail: 'User not found.' }],
+      });
+    }
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({
+      errors: [
+        { title: 'Server Error', detail: 'An unexpected error occurred.' },
+      ],
+    });
+  }
+});
+
+// Delete User
+router.delete('/delete/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        errors: [{ title: 'Not Found', detail: 'User not found.' }],
+      });
+    }
+
+    res.json({
+      title: 'User Deleted',
+      detail: 'User deleted successfully!',
+    });
+  } catch (err) {
+    res.status(500).json({
+      errors: [
+        { title: 'Server Error', detail: 'An unexpected error occurred.' },
       ],
     });
   }

@@ -1,81 +1,59 @@
-import { useState } from 'react'
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   PlusIcon,
   EnvelopeClosedIcon,
   Pencil1Icon,
   TrashIcon,
-} from '@radix-ui/react-icons'
-import UserForm from './UserForm'
-import DeleteConfirmationModal from './DeleteConfirmationModal'
+} from "@radix-ui/react-icons";
+import UserForm from "./UserForm";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+
+import { addUser, deleteUser, updateUser } from "../../store/reducers/userSlice";
+import { handleCreateUser, handleDeleteUser, handleUpdateUser } from "../../actions/user";
 
 const Users = () => {
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      name: 'Admin User',
-      email: 'admin@example.com',
-      role: 'Admin',
-      status: 'Active'
-    },
-    {
-      id: 2,
-      name: 'John Doe',
-      email: 'john@example.com',
-      role: 'User',
-      status: 'Active'
-    }
-  ])
+  const dispatch = useDispatch()
 
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [showEditModal, setShowEditModal] = useState(false)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [editingUser, setEditingUser] = useState(null)
-  const [itemToDelete, setItemToDelete] = useState(null)
+  const users = useSelector((state) => state.user.users);
 
-  const handleAddUser = (formData) => {
-    const newUser = {
-      id: Date.now(),
-      name: formData.name,
-      email: formData.email,
-      role: formData.role,
-      status: formData.status
-    }
-    setUsers([...users, newUser])
-    setShowAddModal(false)
-  }
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
-  const handleEditUser = (formData) => {
-    const updatedUsers = users?.map(user => {
-      if (user.id === editingUser.id) {
-        return {
-          ...user,
-          name: formData.name,
-          email: formData.email,
-          role: formData.role,
-          status: formData.status
-        }
-      }
-      return user
+  const handleUserAddData = (formData) => {
+    handleCreateUser(formData, (newUser) => {
+      dispatch(addUser(newUser));
+      setShowAddModal(false);
+    });
+  };
+
+  const handleEditUserData = (formData) => {
+    handleUpdateUser(editingUser._id, formData, (updatedUser) => {
+      dispatch(updateUser(updatedUser))
+      setShowEditModal(false);
+      setEditingUser(null);
     })
-    setUsers(updatedUsers)
-    setShowEditModal(false)
-    setEditingUser(null)
-  }
+  };
 
-  const handleDeleteUser = (userId) => {
+  const handleDeleteUserData = (user) => {
     setItemToDelete({
-      type: 'user',
-      id: userId,
-      name: users.find(u => u.id === userId)?.name
-    })
-    setShowDeleteModal(true)
-  }
+      id: user._id,
+      type: "user",
+      name: user.name,
+    });
+    setShowDeleteModal(true);
+  };
 
   const handleConfirmDelete = () => {
-    setUsers(users?.filter(user => user.id !== itemToDelete.id))
-    setShowDeleteModal(false)
-    setItemToDelete(null)
-  }
+    handleDeleteUser(itemToDelete.id, () => {
+      dispatch(deleteUser(itemToDelete.id));
+      setShowDeleteModal(false);
+      setItemToDelete(null);
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -97,9 +75,7 @@ const Users = () => {
             className="bg-white/10 rounded-lg p-4 flex items-center justify-between"
           >
             <div className="space-y-1">
-              <h3 className="text-lg font-medium text-white">
-                {user.name}
-              </h3>
+              <h3 className="text-lg font-medium text-white">{user.name}</h3>
               <div className="flex items-center gap-2 text-sm text-gray-400">
                 <EnvelopeClosedIcon className="h-4 w-4" />
                 {user.email}
@@ -108,11 +84,13 @@ const Users = () => {
                 <span className="inline-block px-2 py-1 bg-white/5 rounded-full text-xs text-white">
                   {user.role}
                 </span>
-                <span className={`inline-block px-2 py-1 rounded-full text-xs ${
-                  user.status === 'Active' 
-                    ? 'bg-green-500/10 text-green-400'
-                    : 'bg-red-500/10 text-red-400'
-                }`}>
+                <span
+                  className={`inline-block px-2 py-1 rounded-full text-xs ${
+                    user.status === "Active"
+                      ? "bg-green-500/10 text-green-400"
+                      : "bg-red-500/10 text-red-400"
+                  }`}
+                >
                   {user.status}
                 </span>
               </div>
@@ -120,15 +98,15 @@ const Users = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => {
-                  setEditingUser(user)
-                  setShowEditModal(true)
+                  setEditingUser(user);
+                  setShowEditModal(true);
                 }}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors"
               >
                 <Pencil1Icon className="h-4 w-4 text-blue-400" />
               </button>
               <button
-                onClick={() => handleDeleteUser(user.id)}
+                onClick={() => handleDeleteUserData(user)}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors"
               >
                 <TrashIcon className="h-4 w-4 text-red-400" />
@@ -143,11 +121,11 @@ const Users = () => {
         <UserForm
           isOpen={showAddModal || showEditModal}
           onClose={() => {
-            setShowAddModal(false)
-            setShowEditModal(false)
-            setEditingUser(null)
+            setShowAddModal(false);
+            setShowEditModal(false);
+            setEditingUser(null);
           }}
-          onSubmit={showAddModal ? handleAddUser : handleEditUser}
+          onSubmit={showAddModal ? handleUserAddData : handleEditUserData}
           initialData={editingUser}
         />
       )}
@@ -156,15 +134,15 @@ const Users = () => {
       <DeleteConfirmationModal
         isOpen={showDeleteModal}
         onClose={() => {
-          setShowDeleteModal(false)
-          setItemToDelete(null)
+          setShowDeleteModal(false);
+          setItemToDelete(null);
         }}
         onConfirm={handleConfirmDelete}
-        itemType="user"
+        itemType={itemToDelete?.type}
         itemName={itemToDelete?.name}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Users 
+export default Users;

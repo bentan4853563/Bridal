@@ -26,7 +26,11 @@ const DeleteConfirmationModal = ({
 
         <div className="space-y-4">
           <p className="text-sm text-gray-400">
-            {itemType === "category" ? (
+            {itemType === "user" ? (
+              <>
+                Are you sure you want to delete {itemName} user?
+              </>
+            ) : itemType === "category" ? (
               <>
                 Are you sure you want to delete the category "{itemName}" and
                 all its subcategories? This action cannot be undone.

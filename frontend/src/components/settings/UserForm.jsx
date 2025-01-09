@@ -87,7 +87,13 @@ const UserForm = ({ isOpen, onClose, onSubmit, initialData }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (validateForm()) {
-      onSubmit(formData)
+      onSubmit({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+        status: formData.status,
+      });
       setFormData({
         name: '',
         email: '',
@@ -158,7 +164,7 @@ const UserForm = ({ isOpen, onClose, onSubmit, initialData }) => {
           {/* Password Field */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-200">
-              Password {initialData && '(Leave blank to keep current)'}
+              Password
             </label>
             <input
               type="password"

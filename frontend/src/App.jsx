@@ -25,16 +25,19 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Settings from "./pages/Settings";
 import Documentation from "./pages/Documentation";
 
+import { setUsers } from "./store/reducers/userSlice";
+import { setItems } from "./store/reducers/itemSlice";
+import { setPayments } from "./store/reducers/paymentSlice";
 import { setCustomers } from "./store/reducers/customerSlice";
 import { setCategories } from "./store/reducers/categorySlice";
+import { setReservations } from "./store/reducers/reservationSlice";
+
+import { handleGetUsers } from "./actions/user";
+import { handleGetPayments } from "./actions/payment";
 import { handleGetCustomers } from "./actions/customer";
 import { handleGetCategories } from "./actions/category";
 import { handleGetAllProducts } from "./actions/product";
-import { setItems } from "./store/reducers/itemSlice";
 import { handleGetReservations } from "./actions/reservation";
-import { setReservations } from "./store/reducers/reservationSlice";
-import { handleGetPayments } from "./actions/payment";
-import { setPayments } from "./store/reducers/paymentSlice";
 
 function App() {
   const dispatch = useDispatch();
@@ -42,16 +45,19 @@ function App() {
   useEffect(() => {
     const loadCustomers = async () => {
       const items = await handleGetAllProducts();
+      const users = await handleGetUsers();
       const customers = await handleGetCustomers();
       const categories = await handleGetCategories();
       const reservations = await handleGetReservations();
       const payments = await handleGetPayments()
 
       dispatch(setCustomers(customers));
+      dispatch(setCustomers(customers));
       dispatch(setCategories(categories));
       dispatch(setItems(items));
       dispatch(setReservations(reservations));
       dispatch(setPayments(payments))
+      dispatch(setUsers(users))
     };
 
     loadCustomers();

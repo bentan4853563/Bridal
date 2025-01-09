@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { EyeOpenIcon, EyeClosedIcon } from '@radix-ui/react-icons';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
+import { useNavigate } from "react-router-dom";
 
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import { handleLogin } from "../actions/auth";
 
 const Input = React.forwardRef(({ className, type, ...props }, ref) => {
   return (
@@ -12,10 +13,10 @@ const Input = React.forwardRef(({ className, type, ...props }, ref) => {
       ref={ref}
       {...props}
     />
-  )
+  );
 });
 
-Input.displayName = 'Input';
+Input.displayName = "Input";
 
 Input.propTypes = {
   className: PropTypes.string,
@@ -29,10 +30,10 @@ const Button = React.forwardRef(({ className, ...props }, ref) => {
       ref={ref}
       {...props}
     />
-  )
+  );
 });
 
-Button.displayName = 'Button';
+Button.displayName = "Button";
 
 Button.propTypes = {
   className: PropTypes.string,
@@ -41,35 +42,31 @@ Button.propTypes = {
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
-  // Default credentials
-  const DEFAULT_EMAIL = 'admin@bridalhouse.com';
-  const DEFAULT_PASSWORD = 'admin123';
+  const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.email === DEFAULT_EMAIL && formData.password === DEFAULT_PASSWORD) {
-      localStorage.setItem('isAuthenticated', 'true');
-      navigate('/home');
-    } else {
-      setError('Invalid credentials');
-    }
+    handleLogin(formData, () => {
+      navigate("/home");
+      localStorage.setItem("isAuthenticated", "true");
+    });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat relative"
-         style={{
-           backgroundImage: `url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80')`
-         }}>
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat relative"
+      style={{
+        backgroundImage: `url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2940&q=80')`,
+      }}
+    >
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]"></div>
-      
+
       <div className="w-full max-w-md mx-auto p-8 relative z-10">
         <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/20">
           <div className="space-y-2 text-center">
@@ -83,9 +80,7 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6 mt-8">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-200">
-                Email
-              </label>
+              <label className="text-sm font-medium text-gray-200">Email</label>
               <Input
                 type="email"
                 placeholder="Enter your email"
@@ -104,7 +99,7 @@ const Login = () => {
               </label>
               <div className="relative">
                 <Input
-                  type={showPassword ? 'text' : 'password'}
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                   value={formData.password}
@@ -154,13 +149,13 @@ const Login = () => {
                   Signing in...
                 </div>
               ) : (
-                'Sign in'
+                "Sign in"
               )}
             </Button>
           </form>
         </div>
       </div>
-      
+
       {error && (
         <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-md">
           {error}

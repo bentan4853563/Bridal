@@ -6,6 +6,7 @@ require('dotenv').config();
 const Customer = require('../models/customer');
 const router = express.Router();
 
+// Storage to save attachements
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Determine the folder based on file type
@@ -21,7 +22,6 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + '-' + file.originalname);
   },
 });
-
 const upload = multer({ storage: storage });
 
 // Create a new customer
@@ -39,6 +39,7 @@ router.post('/create', async (req, res) => {
   }
 });
 
+// Read All Customers
 router.get('/', async (req, res) => {
   try {
     const customers = await Customer.find();
@@ -49,60 +50,6 @@ router.get('/', async (req, res) => {
     res
       .status(500)
       .json({ message: 'Failed to fetch customers', error: error.message });
-  }
-});
-
-router.get('/list', async (req, res) => {
-  try {
-    const page = parseInt(req.params.page) || 1;
-    const limit = parseInt(req.params.limit) || 10;
-    const skip = (page - 1) * limit;
-
-    const customers = await Customer.find().skip(skip).limit(limit);
-
-    const totalCustomers = await Customer.countDocuments();
-    const totalPages = Math.ceil(totalCustomers / limit);
-
-    res.json({
-      customers,
-      currentPage: page,
-      totalPages,
-      totalCustomers,
-    });
-  } catch (error) {
-    console.error('Error fetching customers:', error);
-    res
-      .status(500)
-      .json({ message: 'Failed to fetch customers', error: error.message });
-  }
-});
-
-router.get('/all', async (req, res) => {
-  try {
-    const customers = await Customer.find();
-
-    res.json(customers);
-  } catch (error) {
-    console.error('Error fetching customers:', error);
-    res
-      .status(500)
-      .json({ message: 'Failed to fetch customers', error: error.message });
-  }
-});
-
-// Get a customer by ID
-router.get('/one', async (req, res) => {
-  try {
-    const customer = await Customer.findById(req.query.id);
-    if (!customer) {
-      return res.status(404).json({ message: 'Customer not found' });
-    }
-    res.json(customer);
-  } catch (error) {
-    console.error('Error fetching customer by ID:', error);
-    res
-      .status(500)
-      .json({ message: 'Failed to fetch customer', error: error.message });
   }
 });
 
@@ -151,6 +98,22 @@ router.put(
     }
   }
 );
+
+// Get a customer by ID
+router.get('/one', async (req, res) => {
+  try {
+    const customer = await Customer.findById(req.query.id);
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
+    res.json(customer);
+  } catch (error) {
+    console.error('Error fetching customer by ID:', error);
+    res
+      .status(500)
+      .json({ message: 'Failed to fetch customer', error: error.message });
+  }
+});
 
 // Delete a customer
 router.delete('/delete/:id', async (req, res) => {

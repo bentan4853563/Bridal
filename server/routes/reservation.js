@@ -3,18 +3,15 @@ const router = express.Router();
 
 const Reservation = require('../models/reservation'); // Reservation model
 
-// Create a new reservation
+// Create a new Reservation
 router.post('/reserve', async (req, res) => {
   try {
     // Create a new reservation instance
     const newReservation = new Reservation(req.body);
-
     const savedReservation = await newReservation.save();
-
     const reservationData = await Reservation.findById(savedReservation._id)
       .populate('client')
       .populate('items');
-
     res.status(201).json(reservationData);
   } catch (error) {
     console.error('Error creating reservation:', error);
@@ -24,7 +21,7 @@ router.post('/reserve', async (req, res) => {
   }
 });
 
-// Get a list of reservations with pagination
+// Get all Reservations
 router.get('/list', async (req, res) => {
   try {
     const reservations = await Reservation.find()

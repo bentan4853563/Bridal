@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 import { useDispatch } from 'react-redux';
-
 import { Dialog } from "@headlessui/react";
 import { Cross2Icon } from '@radix-ui/react-icons'
 import { handleCreateCustomer } from '../actions/customer';

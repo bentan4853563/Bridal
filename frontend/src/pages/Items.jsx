@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useLocation, useParams } from "react-router-dom";
 import {
   PlusIcon,
   Pencil1Icon,
@@ -6,16 +8,16 @@ import {
   EyeOpenIcon,
   EyeNoneIcon,
 } from "@radix-ui/react-icons";
-import ItemForm from "../components/items/ItemForm";
+
+import { addBaseURL } from "../utils/updateURL";
+
 import DeleteConfirmationModal from "../components/settings/DeleteConfirmationModal";
-import { useLocation, useParams } from "react-router-dom";
+import { addItem, deleteItem, updateItem } from "../store/reducers/itemSlice";
+import { handleCreateProduct, handleDeleteProduct, handleUpdateProduct } from "../actions/product";
+
+import ItemForm from "../components/items/ItemForm";
 import Pagination from "../components/Pagination";
 import ItemView from "../components/items/ItemView";
-import { useSelector } from "react-redux";
-import { addBaseURL } from "../utils/updateURL";
-import { handleCreateProduct, handleDeleteProduct, handleUpdateProduct } from "../actions/product";
-import { useDispatch } from "react-redux";
-import { addItem, deleteItem, updateItem } from "../store/reducers/itemSlice";
 
 const Items = () => {
   const location = useLocation();

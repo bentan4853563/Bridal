@@ -4,6 +4,22 @@ const router = express.Router();
 
 const Category = require('../models/category');
 
+// Create New Category
+router.post('/add', async (req, res) => {
+  try {
+    const categoryData = new Category(req.body);
+    const newCategory = await categoryData.save();
+    res.json(newCategory);
+  } catch (error) {
+    console.error('Error creating customer:', error);
+    res.status(400).json({
+      message: 'Failed to create customer',
+      error: error.message,
+    });
+  }
+});
+
+// Read All Categories
 router.get('/all', async (req, res) => {
   try {
     const categories = await Category.find();
@@ -16,24 +32,9 @@ router.get('/all', async (req, res) => {
   }
 });
 
-router.post('/add', async (req, res) => {
-  try {
-    const categoryData = new Category(req.body);
-    const newCategory = await categoryData.save();
-    console.log('newCategory :>> ', newCategory);
-    res.json(newCategory);
-  } catch (error) {
-    console.error('Error creating customer:', error);
-    res.status(400).json({
-      message: 'Failed to create customer',
-      error: error.message,
-    });
-  }
-});
-
+// Update a Category
 router.put('/update/:id', async (req, res) => {
   try {
-    console.log('req.body :>> ', req.body);
     const updatedCategory = await Category.findByIdAndUpdate(
       req.params.id,
       req.body,
@@ -49,6 +50,21 @@ router.put('/update/:id', async (req, res) => {
   }
 });
 
+// Delete a Category
+router.delete('/delete/:id', async (req, res) => {
+  try {
+    const deletedCategory = await Category.findByIdAndDelete(req.params.id);
+
+    res.json(deletedCategory);
+  } catch (error) {
+    console.error('Error creating customer:', error);
+    res
+      .status(400)
+      .json({ message: 'Failed to create customer', error: error.message });
+  }
+});
+
+// Add a Subcategory
 router.put('/add-subcategory/:id', async (req, res) => {
   try {
     const { subCategory } = req.body;
@@ -82,8 +98,7 @@ router.put('/add-subcategory/:id', async (req, res) => {
   }
 });
 
-
-// update subcategory
+// Update a Subcategory
 router.put('/update-subcategory/:id', async (req, res) => {
   try {
     const { oldname, newname } = req.body;
@@ -114,7 +129,7 @@ router.put('/update-subcategory/:id', async (req, res) => {
   }
 });
 
-// delete subcategory
+// Delete a Subcategory
 router.put('/delete-subcategory/:id', async (req, res) => {
   try {
     const { subCategory } = req.body;
@@ -138,47 +153,6 @@ router.put('/delete-subcategory/:id', async (req, res) => {
     res
       .status(400)
       .json({ message: 'Failed to delete subcategory', error: error.message });
-  }
-});
-
-router.post('/subcategory/add', async (req, res) => {
-  try {
-    const { name, parentId } = req.body;
-
-    // Find the parent category
-    const category = await Category.findById(parentId);
-    if (!category) {
-      return res.status(404).json({ message: 'Parent category not found' });
-    }
-
-    // Update the parent category's subCategories array
-    const updatedCategory = await Category.findByIdAndUpdate(
-      parentId,
-      { $push: { subCategories: name } }, // Use $push to add the new subcategory
-      { new: true } // Return the updated document
-    );
-
-    console.log('updatedCategory :>> ', updatedCategory);
-    res.json(updatedCategory);
-  } catch (error) {
-    console.error('Error creating subcategory:', error);
-    res.status(400).json({
-      message: 'Failed to create subcategory',
-      error: error.message,
-    });
-  }
-});
-
-router.delete('/delete/:id', async (req, res) => {
-  try {
-    const deletedCategory = await Category.findByIdAndDelete(req.params.id);
-
-    res.json(deletedCategory);
-  } catch (error) {
-    console.error('Error creating customer:', error);
-    res
-      .status(400)
-      .json({ message: 'Failed to create customer', error: error.message });
   }
 });
 

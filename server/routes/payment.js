@@ -3,8 +3,6 @@ const router = express.Router();
 const Payment = require('../models/payment'); // Adjust the import according to your project structure
 const multer = require('multer');
 
-const front_url = process.env.FRONT_URL;
-
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/payment');
@@ -13,9 +11,9 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + '-' + file.originalname);
   },
 });
-
 const upload = multer({ storage: storage });
 
+// Create a Payment
 router.post(
   '/create',
   upload.fields([{ name: 'files', maxCount: 10 }]),
@@ -67,7 +65,27 @@ router.post(
   }
 );
 
-// Update a payment
+// Read all Payments
+router.get('/all', async (req, res) => {
+  try {
+    const payments = await Payment.find()
+      .populate({
+        path: 'client',
+      })
+      .populate({
+        path: 'reservation',
+      });
+
+    res.json(payments);
+  } catch (error) {
+    console.error('Error fetching payments:', error);
+    res
+      .status(500)
+      .json({ message: 'Failed to fetch payments', error: error.message });
+  }
+});
+
+// Update a Payment
 router.put(
   '/update/:id',
   upload.fields([{ name: 'newFiles', maxCount: 10 }]),
@@ -120,25 +138,7 @@ router.put(
   }
 );
 
-router.get('/all', async (req, res) => {
-  try {
-    const payments = await Payment.find()
-      .populate({
-        path: 'client',
-      })
-      .populate({
-        path: 'reservation',
-      });
-
-    res.json(payments);
-  } catch (error) {
-    console.error('Error fetching payments:', error);
-    res
-      .status(500)
-      .json({ message: 'Failed to fetch payments', error: error.message });
-  }
-});
-
+// Get Payment by ID
 router.get('/get-by-id/:id', async (req, res) => {
   try {
     const payments = await Payment.findById(req.params.id)
@@ -161,6 +161,7 @@ router.get('/get-by-id/:id', async (req, res) => {
   }
 });
 
+// Delete a Payment
 router.delete('/:id', async (req, res) => {
   try {
     await Payment.findByIdAndDelete(req.params.id);

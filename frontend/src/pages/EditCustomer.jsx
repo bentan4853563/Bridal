@@ -1,20 +1,19 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from 'react-router-dom'
 import CustomerHeader from '../components/customers/CustomerHeader'
 import EditCustomerForm from '../components/customers/forms/EditCustomerForm'
 
-// Dummy data imports (move to a separate file or API call)
-import { attachmentsData } from '../data/dummyData'
 import { handleUpdateCustomer } from '../actions/customer'
 import { updateCustomer } from '../store/reducers/customerSlice';
 
 const EditCustomer = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const customers = useSelector((state) => state.customer.customers); // Get customers from Redux
-  const { id } = useParams();
+  
   const [isSaving, setIsSaving] = useState(false);
+  const customers = useSelector((state) => state.customer.customers); // Get customers from Redux
 
   const customerData = customers.find((customer) => customer._id === id);
 
@@ -57,14 +56,16 @@ const EditCustomer = () => {
           showEditButton={false}
         />
 
-        {customerData && <EditCustomerForm
-          customer={customerData}
-          existingFiles={attachmentsData}
-          onSubmit={handleSubmit}
-          onCancel={handleBack}
-          onDelete={handleDelete}
-          isSaving={isSaving}
-        />}
+        {customerData && (
+          <EditCustomerForm
+            customer={customerData}
+            existingFiles={customerData.attachments}
+            onSubmit={handleSubmit}
+            onCancel={handleBack}
+            onDelete={handleDelete}
+            isSaving={isSaving}
+          />
+        )}
       </div>
     </div>
   );

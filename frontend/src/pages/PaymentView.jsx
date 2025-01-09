@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
@@ -6,7 +6,6 @@ import {
   CardStackIcon,
   CalendarIcon,
   ClockIcon,
-  ImageIcon,
   FileIcon,
   DownloadIcon,
 } from "@radix-ui/react-icons";

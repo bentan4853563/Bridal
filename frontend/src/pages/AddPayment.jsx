@@ -1,4 +1,6 @@
-import { useState, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import PropTypes from "prop-types";
 import {
   Cross2Icon,
   MagnifyingGlassIcon,
@@ -6,12 +8,9 @@ import {
   FileIcon,
   Cross1Icon,
 } from "@radix-ui/react-icons";
-import { useRef } from "react";
-import { useSelector } from "react-redux";
+
 import { handleCreatePayment } from "../actions/payment";
-import { useDispatch } from "react-redux";
 import { addPayment } from "../store/reducers/paymentSlice";
-import { useEffect } from "react";
 
 const AddPayment = ({ isOpen, onClose, reservation }) => {
   const dispatch = useDispatch();
@@ -657,6 +656,13 @@ const AddPayment = ({ isOpen, onClose, reservation }) => {
       </div>
     </div>
   );
+};
+
+// Define prop types
+AddPayment.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  reservation: PropTypes.object
 };
 
 export default AddPayment;

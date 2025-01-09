@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Categories from '../components/settings/Categories'
 import Users from '../components/settings/Users'
 

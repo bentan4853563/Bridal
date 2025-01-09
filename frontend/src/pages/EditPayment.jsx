@@ -1,21 +1,16 @@
-import { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import {
   ArrowLeftIcon,
-  Cross2Icon,
-  ImageIcon,
   FileIcon,
-  DownloadIcon,
   TrashIcon,
   UploadIcon,
   MagnifyingGlassIcon,
 } from "@radix-ui/react-icons";
-import { useSelector } from "react-redux";
+
 import { handleUpdatePayment } from "../actions/payment";
 import { updatePayment } from "../store/reducers/paymentSlice";
-import { addBaseURL } from "../utils/updateURL";
-import { useDispatch } from "react-redux";
-import { handleDownload } from "../utils/fileDownload";
 
 const EditPayment = () => {
   const { id } = useParams();
@@ -27,6 +22,7 @@ const EditPayment = () => {
   const reservations = useSelector((state) => state.reservation.reservations);
 
   const [isSaving, setIsSaving] = useState(false);
+
   const [formData, setFormData] = useState({
     customer: "",
     reservation: "",
@@ -141,9 +137,11 @@ const EditPayment = () => {
       formDataToSubmit.append("newFiles", file);
     });
 
+    setIsSaving(true);
     handleUpdatePayment(id, formDataToSubmit, (updatedPayment) => {
       dispatch(updatePayment(updatedPayment));
       navigate("/payments");
+      setIsSaving(false);
     });
   };
 

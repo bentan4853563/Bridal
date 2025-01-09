@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   PlusIcon,
@@ -12,7 +12,6 @@ import AddPayment from "./AddPayment";
 import Pagination from "../components/Pagination";
 import { handleDeletePayment } from "../actions/payment";
 import { deletePayment } from "../store/reducers/paymentSlice";
-import { useDispatch } from "react-redux";
 
 const Payments = () => {
   const navigate = useNavigate();

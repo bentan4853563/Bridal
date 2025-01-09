@@ -1,25 +1,22 @@
-import { useState } from "react";
-import useDownloader from "react-use-downloader";
+import React, { useState } from "react";
 import {
   Cross2Icon,
   ChevronLeftIcon,
   ChevronRightIcon,
   DownloadIcon,
-  TrashIcon,
+  // TrashIcon,
   FileIcon,
 } from "@radix-ui/react-icons";
-import FileUpload from "../../shared/FileUpload";
+// import FileUpload from "../../shared/FileUpload";
 import { handleDownload } from "../../../utils/fileDownload";
+import PropTypes from "prop-types";
 
 const CustomerAttachments = ({
   attachments,
-  onAddFiles,
-  onDeleteFile,
-  readOnly = false,
+  // readOnly = false,
 }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
 
   const imageFiles = attachments?.filter((file) =>
     file.link.includes("images\\")
@@ -46,19 +43,14 @@ const CustomerAttachments = ({
     );
   };
 
-  const handleFilesAdded = async (files) => {
-    setIsUploading(true);
-    try {
-      const validFiles = files?.filter((file) => file.size <= 10 * 1024 * 1024);
-      await onAddFiles(validFiles);
-    } finally {
-      setIsUploading(false);
-    }
-  };
+  // const handleFilesAdded = async (files) => {
+  //   const validFiles = files?.filter((file) => file.size <= 10 * 1024 * 1024);
+  //   await onAddFiles(validFiles);
+  // };
 
   return (
     <div className="space-y-6">
-      {!readOnly && <FileUpload onFilesAdded={handleFilesAdded} />}
+      {/* {!readOnly && <FileUpload onFilesAdded={handleFilesAdded} />} */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Images Section */}
@@ -117,14 +109,14 @@ const CustomerAttachments = ({
                       onClick={() => handleDownload(file.link)}
                       className="h-4 w-4 text-white/60 cursor-pointer"
                     />
-                    {!readOnly && (
+                    {/* {!readOnly && (
                       <button
                         onClick={() => onDeleteFile(file.id)}
                         className="p-2 hover:bg-white/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                       >
                         <TrashIcon className="h-4 w-4 text-red-400" />
                       </button>
-                    )}
+                    )} */}
                   </div>
                 </div>
               ))}
@@ -179,6 +171,13 @@ const CustomerAttachments = ({
       )}
     </div>
   );
+};
+
+CustomerAttachments.propTypes = {
+  attachments: PropTypes.array,
+  onAddFiles: PropTypes.func,
+  onDeleteFile: PropTypes.func,
+  readOnly: PropTypes.bool,
 };
 
 export default CustomerAttachments;

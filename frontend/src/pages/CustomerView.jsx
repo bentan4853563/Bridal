@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomerHeader from "../components/customers/CustomerHeader";
@@ -7,7 +7,6 @@ import CustomerDetails from "../components/customers/views/CustomerDetails";
 import CustomerReservations from "../components/customers/views/CustomerReservations";
 import CustomerPayments from "../components/customers/views/CustomerPayments";
 import CustomerAttachments from "../components/customers/views/CustomerAttachments";
-import { useEffect } from "react";
 
 const CustomerView = () => {
   const navigate = useNavigate();
@@ -21,13 +20,6 @@ const CustomerView = () => {
     (item) => item.client._id === id
   );
   const paymentsData = payments?.filter((item) => item.client._id === id);
-  // const [reservationsData, setReservationsData] = useState([])
-
-  // useEffect(() => {
-  //   setReservationsData(reservations?.filter(item => item.client._id === id))
-  // }, [id, reservations])
-
-  console.log('paymentsData :>> ', paymentsData);
 
   const handleBack = () => {
     navigate("/customers", {
@@ -53,7 +45,6 @@ const CustomerView = () => {
             attachments={customerData.attachments?.map(
               (file) => ({...file, link: `${import.meta.env.VITE_BACKEND_URL}${file.link}`})
             )}
-            readOnly
           />
         );
       default:

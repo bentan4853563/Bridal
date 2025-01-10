@@ -160,6 +160,9 @@ const Reservations = () => {
                 Return Date
               </th>
               <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                Availability Date
+              </th>
+              <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
                 Total
               </th>
               <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
@@ -211,26 +214,40 @@ const Reservations = () => {
                     ).toLocaleDateString()}
                   </td>
                   <td className="p-4 text-white">
-                    {new Date(reservation.pickupDate).toLocaleString("en-US", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
+                    {new Date(reservation.pickupDate).toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
                       hour12: false, // Change to false for 24-hour format
                     })}
                   </td>
                   <td className="p-4 text-white">
-                    {new Date(reservation.returnDate).toLocaleString("en-US", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
+                    {new Date(reservation.returnDate).toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
                       hour12: false, // Change to false for 24-hour format
                     })}
+                  </td>
+                  <td className="p-4 text-white">
+                    {new Date(reservation.availabilityDate).toLocaleString(
+                      'en-US',
+                      {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false, // Change to false for 24-hour format
+                      }
+                    )}
                   </td>
                   <td className="p-4 text-white">
                     ${financials.total.toLocaleString()}
@@ -238,9 +255,9 @@ const Reservations = () => {
                   <td className="p-4">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        reservation.type === "Final"
-                          ? "bg-purple-500/10 text-purple-400"
-                          : "bg-blue-500/10 text-blue-400"
+                        reservation.type === 'Final'
+                          ? 'bg-purple-500/10 text-purple-400'
+                          : 'bg-blue-500/10 text-blue-400'
                       }`}
                     >
                       {reservation.type}
@@ -249,11 +266,11 @@ const Reservations = () => {
                   <td className="p-4">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        paymentStatus === "Paid"
-                          ? "bg-green-500/10 text-green-400"
-                          : paymentStatus === "Partial"
-                          ? "bg-yellow-500/10 text-yellow-400"
-                          : "bg-red-500/10 text-red-400"
+                        paymentStatus === 'Paid'
+                          ? 'bg-green-500/10 text-green-400'
+                          : paymentStatus === 'Partial'
+                          ? 'bg-yellow-500/10 text-yellow-400'
+                          : 'bg-red-500/10 text-red-400'
                       }`}
                     >
                       {paymentStatus}

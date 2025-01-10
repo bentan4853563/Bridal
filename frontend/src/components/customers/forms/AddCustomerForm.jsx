@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { Input } from '../../ui/Input'
+import PropTypes from 'prop-types';
+import { Input } from '../../ui/Input';
 import { Button } from '../../ui/Button'
 
 const AddCustomerForm = ({ onSubmit, onCancel }) => {
@@ -181,5 +182,10 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
     </form>
   );
 }
+
+AddCustomerForm.propTypes = {
+  onSubmit: PropTypes.func,
+  onCancel: PropTypes.func,
+};
 
 export default AddCustomerForm 

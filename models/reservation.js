@@ -29,6 +29,9 @@ const reservationSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    availabilityDate: {
+      type: Date,
+    },
     status: {
       type: String,
       enum: ['Draft', 'Confirmed', 'Cancelled'], // Example statuses
@@ -52,7 +55,7 @@ const reservationSchema = new mongoose.Schema(
     },
     total: {
       type: Number,
-      default: 0
+      default: 0,
     },
     notes: {
       type: String,
@@ -62,6 +65,9 @@ const reservationSchema = new mongoose.Schema(
       type: Number,
     },
     bufferBefore: {
+      type: Number,
+    },
+    availability: {
       type: Number,
     },
   },

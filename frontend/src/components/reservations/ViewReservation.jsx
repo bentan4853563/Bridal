@@ -1,17 +1,18 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { format } from "date-fns";
-import { Cross2Icon, DownloadIcon, PlusIcon } from "@radix-ui/react-icons";
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { format } from 'date-fns';
+import { Cross2Icon, DownloadIcon, PlusIcon } from '@radix-ui/react-icons';
 
-import { addBaseURL } from "../../utils/updateURL";
-import AddPayment from "../../pages/AddPayment";
+import { addBaseURL } from '../../utils/updateURL';
+import AddPayment from '../../pages/AddPayment';
 
 const ViewReservation = ({ isOpen, onClose, reservation }) => {
   const payments = useSelector((state) => state.payment.payments);
   const [associatedPayments, setAssociatedPayments] = useState([]);
-  const [activeTab, setActiveTab] = useState("general");
-  const [showAddModal, setShowAddModal] = useState(false)
+  const [activeTab, setActiveTab] = useState('general');
+  const [showAddModal, setShowAddModal] = useState(false);
 
   useEffect(() => {
     if (reservation && payments.length) {
@@ -24,9 +25,9 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
   if (!isOpen || !reservation) return null;
 
   const tabs = [
-    { id: "general", label: "General Info" },
-    { id: "items", label: "Reserved Items" },
-    { id: "payments", label: "Associated Payments" },
+    { id: 'general', label: 'General Info' },
+    { id: 'items', label: 'Reserved Items' },
+    { id: 'payments', label: 'Associated Payments' },
   ];
 
   const calculateFinancials = () => {
@@ -58,10 +59,12 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
 
   const calculatePaymentDetails = () => {
     const financials = calculateFinancials();
-    const associatedPayments = payments.filter((item) => item.reservation._id === reservation._id)
+    const associatedPayments = payments.filter(
+      (item) => item.reservation._id === reservation._id
+    );
     const totalPaid =
       associatedPayments?.reduce((sum, payment) => {
-        if (payment.type !== "Refund") {
+        if (payment.type !== 'Refund') {
           return sum + payment.amount;
         }
         return sum;
@@ -70,18 +73,18 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
     const remaining = financials.total - totalPaid;
     const percentage = (totalPaid / financials.total) * 100;
 
-    let paymentStatus = "Unpaid";
+    let paymentStatus = 'Unpaid';
     if (totalPaid >= financials.total) {
-      paymentStatus = "Paid";
+      paymentStatus = 'Paid';
     } else if (totalPaid > 0) {
-      paymentStatus = "Partial";
+      paymentStatus = 'Partial';
     }
 
     const hasRefund = reservation.payments?.some(
-      (payment) => payment.type === "Refund"
+      (payment) => payment.type === 'Refund'
     );
     if (hasRefund) {
-      paymentStatus = "Refunded";
+      paymentStatus = 'Refunded';
     }
 
     return {
@@ -94,33 +97,33 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
 
   const getStatusConfig = (status) => {
     switch (status) {
-      case "Draft":
+      case 'Draft':
         return {
-          color: "bg-gray-500/10",
-          textColor: "text-gray-400",
-          icon: "📝",
-          description: "Reservation is in draft state",
+          color: 'bg-gray-500/10',
+          textColor: 'text-gray-400',
+          icon: '📝',
+          description: 'Reservation is in draft state',
         };
-      case "Confirmed":
+      case 'Confirmed':
         return {
-          color: "bg-green-500/10",
-          textColor: "text-green-400",
-          icon: "✓",
-          description: "Reservation has been confirmed",
+          color: 'bg-green-500/10',
+          textColor: 'text-green-400',
+          icon: '✓',
+          description: 'Reservation has been confirmed',
         };
-      case "Cancelled":
+      case 'Cancelled':
         return {
-          color: "bg-red-500/10",
-          textColor: "text-red-400",
-          icon: "✕",
-          description: "Reservation has been cancelled",
+          color: 'bg-red-500/10',
+          textColor: 'text-red-400',
+          icon: '✕',
+          description: 'Reservation has been cancelled',
         };
       default:
         return {
-          color: "bg-gray-500/10",
-          textColor: "text-gray-400",
-          icon: "•",
-          description: "Status unknown",
+          color: 'bg-gray-500/10',
+          textColor: 'text-gray-400',
+          icon: '•',
+          description: 'Status unknown',
         };
     }
   };
@@ -152,7 +155,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
               <div>
                 <label className="text-sm text-gray-400">WhatsApp</label>
                 <p className="text-white font-medium">
-                  {reservation.client.whatsapp || "Not provided"}
+                  {reservation.client.whatsapp || 'Not provided'}
                 </p>
               </div>
             </div>
@@ -172,7 +175,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
               <div>
                 <label className="text-sm text-gray-400">Email</label>
                 <p className="text-white font-medium">
-                  {reservation.client.email || "Not provided"}
+                  {reservation.client.email || 'Not provided'}
                 </p>
               </div>
             </div>
@@ -213,23 +216,69 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
 
             {/* Dates and Buffer */}
             <div className="space-y-4">
-              <div>
-                <label className="text-sm text-gray-400">Pickup Date</label>
-                <p className="text-white font-medium">
-                  {new Date(reservation.pickupDate).toLocaleDateString()}
-                </p>
+              <div className="grid grid-cols-2">
+                <div>
+                  <label className="text-sm text-gray-400">Pickup Date</label>
+                  <p className="text-white font-medium">
+                    {new Date(reservation.pickupDate).toLocaleDateString()}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-400">Pickup Time</label>
+                  <p className="text-white font-medium">
+                    {new Date(reservation.pickupDate).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false,
+                    })}
+                  </p>
+                </div>
               </div>
-              <div>
-                <label className="text-sm text-gray-400">Return Date</label>
-                <p className="text-white font-medium">
-                  {new Date(reservation.returnDate).toLocaleDateString()}
-                </p>
+              <div className="grid grid-cols-2">
+                <div>
+                  <label className="text-sm text-gray-400">Return Date</label>
+                  <p className="text-white font-medium">
+                    {new Date(reservation.returnDate).toLocaleDateString()}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-400">Return Time</label>
+                  <p className="text-white font-medium">
+                    {new Date(reservation.returnDate).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false,
+                    })}
+                  </p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2">
+                <div>
+                  <label className="text-sm text-gray-400">
+                    Availability Date
+                  </label>
+                  <p className="text-white font-medium">
+                    {new Date(reservation.availabilityDate).toLocaleDateString()}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm text-gray-400">
+                    Availability Time
+                  </label>
+                  <p className="text-white font-medium">
+                    {new Date(reservation.availabilityDate).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false,
+                    })}
+                  </p>
+                </div>
               </div>
               <div>
                 <label className="text-sm text-gray-400">Buffer Days</label>
                 <p className="text-white font-medium">
-                  Before: {reservation.bufferBefore} days | After:{" "}
-                  {reservation.bufferAfter} days
+                  Before: {reservation.bufferBefore} days | After:{' '}
+                  {reservation.bufferAfter} days | Availability: {reservation.availability} days
                 </p>
               </div>
             </div>
@@ -247,13 +296,13 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
                   <p className="text-white font-medium">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        paymentDetails.paymentStatus === "Paid"
-                          ? "bg-green-500/10 text-green-400"
-                          : paymentDetails.paymentStatus === "Partial"
-                          ? "bg-yellow-500/10 text-yellow-400"
-                          : paymentDetails.paymentStatus === "Refunded"
-                          ? "bg-gray-500/10 text-gray-400"
-                          : "bg-red-500/10 text-red-400"
+                        paymentDetails.paymentStatus === 'Paid'
+                          ? 'bg-green-500/10 text-green-400'
+                          : paymentDetails.paymentStatus === 'Partial'
+                          ? 'bg-yellow-500/10 text-yellow-400'
+                          : paymentDetails.paymentStatus === 'Refunded'
+                          ? 'bg-gray-500/10 text-gray-400'
+                          : 'bg-red-500/10 text-red-400'
                       }`}
                     >
                       {paymentDetails.paymentStatus}
@@ -265,7 +314,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
                       {paymentDetails.percentage.toFixed(1)}%)
                     </p>
                     {paymentDetails.remaining > 0 &&
-                      paymentDetails.paymentStatus !== "Refunded" && (
+                      paymentDetails.paymentStatus !== 'Refunded' && (
                         <p>
                           Remaining: $
                           {paymentDetails.remaining.toLocaleString()}
@@ -351,8 +400,9 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
 
   const renderReservedItems = () => (
     <div className="space-y-4">
-      {reservation.items?.map((item) => (
+      {reservation.items?.map((item, index) => (
         <Link
+          key={index}
           to={`/items/${item._id}`}
           target="_blank"
           className="flex items-center gap-4 bg-white/5 rounded-lg p-4"
@@ -407,7 +457,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
             {associatedPayments?.map((payment) => (
               <tr key={payment._id}>
                 <td className="p-4 text-white">
-                  {format(new Date(payment.paymentDate), "PP")}
+                  {format(new Date(payment.paymentDate), 'PP')}
                 </td>
                 <td className="p-4 text-white">
                   ${payment.amount.toLocaleString()}
@@ -461,8 +511,8 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`py-2 px-1 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === tab.id
-                    ? "border-blue-500 text-blue-500"
-                    : "border-transparent text-gray-400 hover:text-gray-300"
+                    ? 'border-blue-500 text-blue-500'
+                    : 'border-transparent text-gray-400 hover:text-gray-300'
                 }`}
               >
                 {tab.label}
@@ -473,9 +523,9 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
 
         {/* Tab Content */}
         <div className="mt-6">
-          {activeTab === "general" && renderGeneralInfo()}
-          {activeTab === "items" && renderReservedItems()}
-          {activeTab === "payments" && renderPayments()}
+          {activeTab === 'general' && renderGeneralInfo()}
+          {activeTab === 'items' && renderReservedItems()}
+          {activeTab === 'payments' && renderPayments()}
         </div>
 
         {/* Add Payment Modal */}
@@ -489,6 +539,12 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
       </div>
     </div>
   );
+};
+
+ViewReservation.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  reservation: PropTypes.object,
 };
 
 export default ViewReservation;

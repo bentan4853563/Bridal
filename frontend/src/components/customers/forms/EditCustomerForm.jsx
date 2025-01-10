@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Input } from "../../ui/Input";
+import React, { useState } from "react";
+import PropTypes from 'prop-types';
+import { Input } from '../../ui/Input';
 import { Button } from "../../ui/Button";
 import AttachmentsSection from "../../shared/AttachmentsSection";
 
@@ -277,6 +278,14 @@ const EditCustomerForm = ({
       </div>
     </form>
   );
+};
+
+EditCustomerForm.propTypes = {
+  onSubmit: PropTypes.func,
+  onCancel: PropTypes.func,
+  customer: PropTypes.object,
+  onDelete: PropTypes.func,
+  isSaving: PropTypes.bool,
 };
 
 export default EditCustomerForm;

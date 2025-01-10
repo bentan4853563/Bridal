@@ -1,18 +1,21 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import {
   Cross2Icon,
   PlusIcon,
   MagnifyingGlassIcon,
-} from "@radix-ui/react-icons";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { addBaseURL } from "../../utils/updateURL";
-import { handleUpdateReservation } from "../../actions/reservation";
-import { useDispatch } from "react-redux";
-import { updateReservation } from "../../store/reducers/reservationSlice";
+} from '@radix-ui/react-icons';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { format, addDays, subDays } from 'date-fns';
+import { addBaseURL } from '../../utils/updateURL';
+import { handleUpdateReservation } from '../../actions/reservation';
+import { useDispatch } from 'react-redux';
+import { updateReservation } from '../../store/reducers/reservationSlice';
+import { Input } from '../ui/Input';
 
 const EditReservation = ({ isOpen, onClose, reservation }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const items = useSelector((state) => state.item.items);
   const clients = useSelector((state) => state.customer.customers);
@@ -23,29 +26,33 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
   const [selectedClient, setSelectedClient] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [formData, setFormData] = useState({
-    type: "Final",
-    status: "Draft",
-    pickupDate: "",
-    returnDate: "",
+    type: 'Final',
+    status: 'Draft',
+    pickupDate: '',
+    returnDate: '',
+    availabilityDate: '',
+    pickupTime: '00:00',
+    returnTime: '00:00',
+    availabilityTime: '00:00',
     additionalCost: 0,
     travelCost: 0,
     securityDepositPercentage: 30,
     advancePercentage: 50,
-    notes: "",
+    notes: '',
     bufferBefore: 3,
     bufferAfter: 3,
+    availability: 5,
   });
 
   // Add state for financial input type
   const [financialInputType, setFinancialInputType] = useState({
-    securityDeposit: "percentage", // or 'amount'
-    advance: "percentage", // or 'amount'
+    securityDeposit: 'percentage', // or 'amount'
+    advance: 'percentage', // or 'amount'
   });
 
   // Add state for item selection
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
-  const [itemSearchTerm, setItemSearchTerm] = useState("");
-  const [availableItems, setAvailableItems] = useState(items);
+  const [itemSearchTerm, setItemSearchTerm] = useState('');
 
   // Filter available items based on search and dates
   const filteredItems = items?.filter((item) => {
@@ -66,15 +73,35 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
     if (reservation) {
       setSelectedClient(reservation.client);
       setSelectedItems(reservation.items);
-      setFormData({
+      setFormData((prev) => prev, {
         type: reservation.type,
         status: reservation.status,
         pickupDate: new Date(reservation.pickupDate)
           .toISOString()
-          .split("T")[0],
+          .split('T')[0],
         returnDate: new Date(reservation.returnDate)
           .toISOString()
-          .split("T")[0],
+          .split('T')[0],
+        availabilityDate: reservation.availabilityDate
+          ? new Date(reservation.availabilityDate).toISOString().split('T')[0]
+          : '',
+        pickupTime: new Date(reservation.pickupDate).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }),
+        returnTime: new Date(reservation.returnDate).toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        }),
+        availabilityTime: reservation.availabilityDate
+          ? new Date(reservation.availabilityDate).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false,
+            })
+          : '00:00',
         additionalCost: reservation.additionalCost,
         travelCost: reservation.travelCost,
         securityDepositPercentage: reservation.securityDepositPercentage,
@@ -85,6 +112,27 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
       });
     }
   }, [reservation]);
+
+  useEffect(() => {
+    if (selectedClient?.weddingDate) {
+      const weddingDate = new Date(selectedClient.weddingDate);
+      const pickupDate = subDays(weddingDate, formData.bufferBefore);
+      const returnDate = addDays(weddingDate, formData.bufferAfter);
+      const availabilityDate = addDays(weddingDate, formData.availability);
+
+      setFormData((prev) => ({
+        ...prev,
+        pickupDate: format(pickupDate, 'yyyy-MM-dd'),
+        returnDate: format(returnDate, 'yyyy-MM-dd'),
+        availabilityDate: format(availabilityDate, 'yyyy-MM-dd'),
+      }));
+    }
+  }, [
+    selectedClient?.weddingDate,
+    formData.bufferBefore,
+    formData.bufferAfter,
+    formData.availability,
+  ]);
 
   const calculateFinancials = () => {
     const itemsTotal = selectedItems.reduce(
@@ -116,9 +164,10 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         return (
           formData.pickupDate && formData.returnDate && selectedItems.length > 0
         );
-      case 3:
+      case 3: {
         const financials = calculateFinancials();
         return financials.total > 0 && formData.status;
+      }
       default:
         return false;
     }
@@ -134,6 +183,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         status: formData.status,
         pickupDate: formData.pickupDate,
         returnDate: formData.returnDate,
+        availabilityDate: formData.availabilityDate,
         items: selectedItems?.map((item) => item._id),
         additionalCost: Number(formData.additionalCost),
         travelCost: Number(formData.travelCost),
@@ -143,16 +193,40 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         notes: formData.notes,
         bufferBefore: formData.bufferBefore,
         bufferAfter: formData.bufferAfter,
+        availability: formData.availability,
       };
 
-      handleUpdateReservation(reservation._id, reservationData, (updatedReservation) => {
-        dispatch(updateReservation(updatedReservation))
-        onClose();
-        navigate("/reservations");
+      handleUpdateReservation(
+        reservation._id,
+        reservationData,
+        (updatedReservation) => {
+          dispatch(updateReservation(updatedReservation));
+          setStep(1)
+          onClose();
+          navigate('/reservations');
+        }
+      );
+      setFormData({
+        type: 'Final',
+        status: 'Draft',
+        pickupDate: '',
+        returnDate: '',
+        availabilityDate: '',
+        pickupTime: '00:00',
+        returnTime: '00:00',
+        availabilityTime: '00:00',
+        additionalCost: 0,
+        travelCost: 0,
+        securityDepositPercentage: 30,
+        advancePercentage: 50,
+        notes: '',
+        bufferBefore: 3,
+        bufferAfter: 3,
+        availability: 5,
       });
     } catch (error) {
-      console.error("Error updating reservation:", error);
-      alert("Failed to update reservation. Please try again.");
+      console.error('Error updating reservation:', error);
+      alert('Failed to update reservation. Please try again.');
     }
   };
 
@@ -164,7 +238,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         </label>
         <div className="relative">
           <select
-            value={selectedClient?.id || ""}
+            value={selectedClient?.id || ''}
             onChange={(e) => {
               const client = clients.find((c) => c._id === e.target.value);
               setSelectedClient(client);
@@ -312,34 +386,133 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
       )}
 
       {/* Date Selection */}
-      <div className="grid grid-cols-2 gap-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Pickup Date
-          </label>
-          <input
-            type="date"
-            value={formData.pickupDate}
-            onChange={(e) => {
-              setFormData({ ...formData, pickupDate: e.target.value });
-              // Here you would check item availability for new dates
-            }}
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+      <div className="grid grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <div>
+            <p className="text-sm text-gray-400">Pickup Date</p>
+            <p className="text-lg font-medium text-white">
+              {/* {format(new Date(formData.pickupDate), "PPP")} */}
+              {formData.pickupDate
+                ? format(new Date(formData.pickupDate), 'PPP')
+                : ''}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-400">Pickup Time</p>
+            <Input
+              type="time"
+              name="weddingTime"
+              value={formData.pickupTime}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  pickupTime: e.target.value,
+                }))
+              }
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-200">
+              Days Before Wedding
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={formData.bufferBefore}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  bufferBefore: parseInt(e.target.value),
+                })
+              }
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+            />
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-2">
-            Return Date
-          </label>
-          <input
-            type="date"
-            value={formData.returnDate}
-            onChange={(e) => {
-              setFormData({ ...formData, returnDate: e.target.value });
-              // Here you would check item availability for new dates
-            }}
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <div className="space-y-2">
+          <div>
+            <p className="text-sm text-gray-400">Return Date</p>
+            <p className="text-lg font-medium text-white">
+              {formData.pickupDate
+                ? format(new Date(formData.pickupDate), 'PPP')
+                : ''}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-400">Return Time</p>
+            <Input
+              type="time"
+              name="weddingTime"
+              value={formData.returnTime}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  returnTime: e.target.value,
+                }))
+              }
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-200">
+              Days After Wedding
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={formData.bufferAfter}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  bufferAfter: parseInt(e.target.value),
+                })
+              }
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div>
+            <p className="text-sm text-gray-400">Availability Date</p>
+            <p className="text-lg font-medium text-white">
+              {formData.availabilityDate
+                ? format(new Date(formData.availabilityDate), 'PPP')
+                : ''}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-400">Availability Time</p>
+            <Input
+              type="time"
+              name="weddingTime"
+              value={formData.availabilityTime}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  availabilityTime: e.target.value,
+                }))
+              }
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-200">
+              Availability Duaration
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={formData.availability}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  availability: parseInt(e.target.value),
+                })
+              }
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -407,13 +580,13 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
                   onClick={() =>
                     setFinancialInputType((prev) => ({
                       ...prev,
-                      securityDeposit: "percentage",
+                      securityDeposit: 'percentage',
                     }))
                   }
                   className={`text-xs px-2 py-1 rounded ${
-                    financialInputType.securityDeposit === "percentage"
-                      ? "bg-blue-500 text-white"
-                      : "bg-white/5 text-gray-400"
+                    financialInputType.securityDeposit === 'percentage'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-white/5 text-gray-400'
                   }`}
                 >
                   %
@@ -422,13 +595,13 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
                   onClick={() =>
                     setFinancialInputType((prev) => ({
                       ...prev,
-                      securityDeposit: "amount",
+                      securityDeposit: 'amount',
                     }))
                   }
                   className={`text-xs px-2 py-1 rounded ${
-                    financialInputType.securityDeposit === "amount"
-                      ? "bg-blue-500 text-white"
-                      : "bg-white/5 text-gray-400"
+                    financialInputType.securityDeposit === 'amount'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-white/5 text-gray-400'
                   }`}
                 >
                   $
@@ -438,13 +611,13 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             <input
               type="number"
               value={
-                financialInputType.securityDeposit === "percentage"
+                financialInputType.securityDeposit === 'percentage'
                   ? formData.securityDepositPercentage
                   : financials.securityDeposit
               }
               onChange={(e) => {
                 const value = Number(e.target.value);
-                if (financialInputType.securityDeposit === "percentage") {
+                if (financialInputType.securityDeposit === 'percentage') {
                   setFormData((prev) => ({
                     ...prev,
                     securityDepositPercentage: value,
@@ -471,13 +644,13 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
                   onClick={() =>
                     setFinancialInputType((prev) => ({
                       ...prev,
-                      advance: "percentage",
+                      advance: 'percentage',
                     }))
                   }
                   className={`text-xs px-2 py-1 rounded ${
-                    financialInputType.advance === "percentage"
-                      ? "bg-blue-500 text-white"
-                      : "bg-white/5 text-gray-400"
+                    financialInputType.advance === 'percentage'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-white/5 text-gray-400'
                   }`}
                 >
                   %
@@ -486,13 +659,13 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
                   onClick={() =>
                     setFinancialInputType((prev) => ({
                       ...prev,
-                      advance: "amount",
+                      advance: 'amount',
                     }))
                   }
                   className={`text-xs px-2 py-1 rounded ${
-                    financialInputType.advance === "amount"
-                      ? "bg-blue-500 text-white"
-                      : "bg-white/5 text-gray-400"
+                    financialInputType.advance === 'amount'
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-white/5 text-gray-400'
                   }`}
                 >
                   $
@@ -502,13 +675,13 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             <input
               type="number"
               value={
-                financialInputType.advance === "percentage"
+                financialInputType.advance === 'percentage'
                   ? formData.advancePercentage
                   : financials.advance
               }
               onChange={(e) => {
                 const value = Number(e.target.value);
-                if (financialInputType.advance === "percentage") {
+                if (financialInputType.advance === 'percentage') {
                   setFormData((prev) => ({
                     ...prev,
                     advancePercentage: value,
@@ -594,9 +767,9 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
   };
 
   const steps = [
-    { number: 1, title: "Client Details" },
-    { number: 2, title: "Items & Dates" },
-    { number: 3, title: "Financial Details" },
+    { number: 1, title: 'Client Details' },
+    { number: 2, title: 'Items & Dates' },
+    { number: 3, title: 'Financial Details' },
   ];
 
   if (!isOpen || !reservation) return null;
@@ -626,26 +799,26 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
                 className={`flex-1 relative ${
                   index !== steps.length - 1
                     ? 'after:content-[""] after:absolute after:top-[15px] after:left-[calc(50%+24px)] after:w-[calc(100%-48px)] after:h-[2px]'
-                    : ""
+                    : ''
                 }`}
               >
                 <div
                   className={`relative z-10 flex flex-col items-center ${
-                    index !== steps.length - 1 ? "after:bg-white/10" : ""
+                    index !== steps.length - 1 ? 'after:bg-white/10' : ''
                   }`}
                 >
                   <div
                     className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium mb-2 transition-colors ${
                       step >= stepItem.number
-                        ? "bg-blue-500 text-white"
-                        : "bg-white/10 text-gray-400"
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-white/10 text-gray-400'
                     }`}
                   >
                     {stepItem.number}
                   </div>
                   <span
                     className={`text-sm font-medium transition-colors ${
-                      step >= stepItem.number ? "text-white" : "text-gray-400"
+                      step >= stepItem.number ? 'text-white' : 'text-gray-400'
                     }`}
                   >
                     {stepItem.title}
@@ -654,7 +827,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
                 {index !== steps.length - 1 && (
                   <div
                     className={`absolute top-[15px] left-[calc(50%+24px)] w-[calc(100%-48px)] h-[2px] ${
-                      step > stepItem.number ? "bg-blue-500" : "bg-white/10"
+                      step > stepItem.number ? 'bg-blue-500' : 'bg-white/10'
                     }`}
                   />
                 )}
@@ -671,7 +844,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
           <button
             onClick={() => setStep(Math.max(1, step - 1))}
             className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${
-              step === 1 ? "invisible" : "bg-white/10 hover:bg-white/20"
+              step === 1 ? 'invisible' : 'bg-white/10 hover:bg-white/20'
             }`}
           >
             Previous
@@ -683,8 +856,8 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
               disabled={!validateStep(step)}
               className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${
                 validateStep(step)
-                  ? "bg-blue-500 hover:bg-blue-600"
-                  : "bg-blue-500/50 cursor-not-allowed"
+                  ? 'bg-blue-500 hover:bg-blue-600'
+                  : 'bg-blue-500/50 cursor-not-allowed'
               }`}
             >
               Update Reservation
@@ -695,8 +868,8 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
               disabled={!validateStep(step)}
               className={`px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${
                 validateStep(step)
-                  ? "bg-blue-500 hover:bg-blue-600"
-                  : "bg-blue-500/50 cursor-not-allowed"
+                  ? 'bg-blue-500 hover:bg-blue-600'
+                  : 'bg-blue-500/50 cursor-not-allowed'
               }`}
             >
               Next
@@ -706,6 +879,12 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
       </div>
     </div>
   );
+};
+
+EditReservation.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  reservation: PropTypes.object,
 };
 
 export default EditReservation;

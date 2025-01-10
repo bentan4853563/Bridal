@@ -180,7 +180,7 @@ const Reservations = () => {
               const mainItem = reservation.items[0]; // Get first item for display
 
               return (
-                <tr key={reservation.id} className="hover:bg-white/5">
+                <tr key={reservation._id} className="hover:bg-white/5">
                   <td className="p-4 text-white">#{index + 1}</td>
                   <td className="p-4 text-white">
                     {new Date(reservation.createdAt).toLocaleDateString()}
@@ -260,7 +260,7 @@ const Reservations = () => {
                     </span>
                   </td>
                   <td className="p-4">
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex items-center justify-end">
                       <button
                         onClick={() => handleViewReservation(reservation)}
                         className="p-1 hover:bg-white/10 rounded-lg transition-colors"

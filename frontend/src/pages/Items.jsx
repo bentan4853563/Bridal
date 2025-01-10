@@ -176,7 +176,7 @@ const Items = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {currentItems?.map((item) => (
             <div
-              key={item.id}
+              key={item._id}
               className="bg-white/10 rounded-lg overflow-hidden group"
             >
               {/* Item Image */}

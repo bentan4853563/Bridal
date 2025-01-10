@@ -18,7 +18,6 @@ import Customers from "./pages/Customers";
 import AddCustomer from "./pages/AddCustomer";
 import EditCustomer from "./pages/EditCustomer";
 import CustomerView from "./pages/CustomerView";
-import AddPayment from "./pages/AddPayment";
 import EditPayment from "./pages/EditPayment";
 import PaymentView from "./pages/PaymentView";
 import Reservations from "./pages/Reservations";
@@ -110,7 +109,6 @@ function App() {
           {/* Payment routes */}
           <Route path="/payment/:id" element={<PaymentView />} />
           <Route path="/payment/:id/edit" element={<EditPayment />} />
-          <Route path="/add-payment" element={<AddPayment />} />
         </Route>
 
         {/* Catch all route */}

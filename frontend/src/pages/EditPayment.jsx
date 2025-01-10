@@ -221,7 +221,7 @@ const EditPayment = () => {
                             : "border-white/10 hover:border-white/20"
                         }`}
                       >
-                        <div className="flex justify-between items-center">
+                        {/* <div className="flex justify-between items-center">
                           <span className="text-sm text-white">
                             Reservation #{reservation._id}
                           </span>
@@ -234,7 +234,7 @@ const EditPayment = () => {
                           >
                             {reservation.paymentStatus}
                           </span>
-                        </div>
+                        </div> */}
                         <div className="mt-1 text-xs text-gray-400">
                           {reservation.pickupDate.split("T")[0]} -{" "}
                           {reservation.returnDate.split("T")[0]}

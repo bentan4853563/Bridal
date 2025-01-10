@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
-import { Cross2Icon, ImageIcon, VideoIcon } from "@radix-ui/react-icons";
+import React, { useState, useEffect } from "react";
+import PropTypes from 'prop-types';
+import { Cross2Icon, ImageIcon, VideoIcon } from '@radix-ui/react-icons';
 import { addBaseURL, removeBaseURL } from "../../utils/updateURL";
 
 const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
@@ -434,6 +435,15 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
       </div>
     </div>
   );
+};
+
+ItemForm.propTypes = {
+  payments: PropTypes.array,
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  onSubmit: PropTypes.func,
+  initialData: PropTypes.object,
+  categories: PropTypes.array,
 };
 
 export default ItemForm;

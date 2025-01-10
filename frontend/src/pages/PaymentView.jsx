@@ -35,18 +35,18 @@ const PaymentView = () => {
     fetchPayment();
   }, [id]);
 
-  const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case "paid":
-        return "bg-green-500/10 text-green-500";
-      case "pending":
-        return "bg-yellow-500/10 text-yellow-500";
-      case "cancelled":
-        return "bg-red-500/10 text-red-500";
-      default:
-        return "bg-gray-500/10 text-gray-500";
-    }
-  };
+  // const getStatusColor = (status) => {
+  //   switch (status.toLowerCase()) {
+  //     case "paid":
+  //       return "bg-green-500/10 text-green-500";
+  //     case "pending":
+  //       return "bg-yellow-500/10 text-yellow-500";
+  //     case "cancelled":
+  //       return "bg-red-500/10 text-red-500";
+  //     default:
+  //       return "bg-gray-500/10 text-gray-500";
+  //   }
+  // };
 
   if (isLoading) {
     return (
@@ -90,7 +90,7 @@ const PaymentView = () => {
         {/* Payment Information */}
         <div className="bg-white/10 backdrop-blur-lg rounded-lg border border-white/20 p-6 space-y-6">
           {/* Status and Reference */}
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <span
               className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                 payment.reservation.paymentStatus
@@ -101,7 +101,7 @@ const PaymentView = () => {
             <span className="text-sm text-gray-400">
               Reference: {payment.reference}
             </span>
-          </div>
+          </div> */}
 
           {/* Main Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -122,7 +122,7 @@ const PaymentView = () => {
                 <CalendarIcon className="h-4 w-4 text-white/60" />
                 <p className="text-white">#{payment.reservation._id}</p>
               </div>
-              <div className="flex items-center justify-between text-sm">
+              {/* <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">{payment.reservationType}</span>
                 <span
                   className={`px-2 py-0.5 rounded-full text-xs ${
@@ -133,7 +133,7 @@ const PaymentView = () => {
                 >
                   {payment.reservation.paymentStatus}
                 </span>
-              </div>
+              </div> */}
               <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
                 <div>
                   <div className="text-gray-400">Total</div>

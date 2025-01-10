@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
-const { Schema, Types } = mongoose; // Import Schema and Types
+const { Schema } = mongoose; // Import Schema and Types
+const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const PaymentSchema = new Schema(
   {
-    client: { type: Types.ObjectId, ref: 'Customer', required: true },
-    reservation: { type: Types.ObjectId, ref: 'Reservation', required: true },
+    client: { type: ObjectId, ref: 'Customer', required: true },
+    reservation: { type: ObjectId, ref: 'Reservation', required: true },
     paymentDate: { type: Date },
     amount: { type: Number },
     paymentMethod: {

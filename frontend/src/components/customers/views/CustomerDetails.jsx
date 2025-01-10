@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 const CustomerDetails = ({ customer }) => {
   return (
@@ -52,5 +53,10 @@ const CustomerDetails = ({ customer }) => {
     </>
   )
 }
+
+// Define prop types
+CustomerDetails.propTypes = {
+  customer: PropTypes.object, 
+};
 
 export default CustomerDetails 

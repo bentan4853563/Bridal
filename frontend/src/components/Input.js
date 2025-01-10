@@ -17,8 +17,8 @@ Input.displayName = "Input";
 
 // Define prop types
 Input.propTypes = {
-  className: PropTypes.string, // Validate className as a string
-  type: PropTypes.string, // Validate type as a string
+  className: PropTypes.string, 
+  type: PropTypes.string, 
 };
 
 export default Input;

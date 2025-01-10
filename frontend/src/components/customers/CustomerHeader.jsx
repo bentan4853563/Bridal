@@ -1,5 +1,6 @@
 import React from 'react'
-import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import PropTypes from "prop-types";
+import { ArrowLeftIcon } from '@radix-ui/react-icons';
 import { Button } from '../ui/Button'
 
 const CustomerHeader = ({ title, onBack, onEdit, showEditButton = true }) => {
@@ -22,5 +23,15 @@ const CustomerHeader = ({ title, onBack, onEdit, showEditButton = true }) => {
     </div>
   )
 }
+
+// Define prop types
+CustomerHeader.propTypes = {
+  className: PropTypes.string,
+  type: PropTypes.string,
+  title: PropTypes.string,
+  onBack: PropTypes.func,
+  onEdit: PropTypes.func,
+  showEditButton: PropTypes.func,
+};
 
 export default CustomerHeader 

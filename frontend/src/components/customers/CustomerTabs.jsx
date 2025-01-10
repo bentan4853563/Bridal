@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types';
 
 const TabButton = ({ active, children, onClick }) => (
   <button
@@ -15,6 +16,13 @@ const TabButton = ({ active, children, onClick }) => (
     )}
   </button>
 )
+
+// Define prop types
+TabButton.propTypes = {
+  active: PropTypes.bool,
+  children: PropTypes.string,
+  onClick: PropTypes.func,
+};
 
 const CustomerTabs = ({ activeTab, onTabChange }) => {
   const tabs = [
@@ -40,5 +48,11 @@ const CustomerTabs = ({ activeTab, onTabChange }) => {
     </div>
   )
 }
+
+// Define prop types
+CustomerTabs.propTypes = {
+  activeTab: PropTypes.string,
+  onTabChange: PropTypes.func,
+};
 
 export default CustomerTabs 

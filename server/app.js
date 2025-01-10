@@ -40,7 +40,7 @@ app.use(
   })
 );
 app.use(express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(path.join(__dirname, 'build'))); // Serve your frontend build
+app.use(express.static(path.join(__dirname, 'dist'))); // Serve your frontend build
 
 app.use('/api/users', usersRoute);
 app.use('/api/customers', customerRoute);

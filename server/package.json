@@ -2,7 +2,7 @@
   "name": "bridal-server",
   "version": "1.0.0",
   "description": "node + express server for Bridal",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
     "start": "nodemon server.js"
   },

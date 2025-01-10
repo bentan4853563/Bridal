@@ -17,12 +17,19 @@ const categoryRoute = require('./routes/category');
 const paymentRoute = require('./routes/payment');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DB_URI).then(
-  () => {
-    console.log('Connected to mongoDB');
-  },
-  (err) => console.log('Error connecting to mongoDB', err)
-);
+
+mongoose
+  .connect(process.env.DB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(
+    () => {
+      console.log('Connected to mongoDB');
+    },
+    (err) => console.log('Error connecting to mongoDB', err)
+  );
+
 mongoose.set('debug', true);
 
 const app = express();
@@ -31,11 +38,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: 'http://localhost:5173', // Replace with your frontend URL
-  })
-);
+app.use(cors());
 
 app.use(express.static(path.join(__dirname, 'uploads')));
 // app.use(express.static(path.join(__dirname, 'dist')));

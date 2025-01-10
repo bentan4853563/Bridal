@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const { Schema, Types } = mongoose;
-
 // Define the schema for your model
 const ProductSchema = new mongoose.Schema(
   {
@@ -27,7 +25,7 @@ const ProductSchema = new mongoose.Schema(
       required: true, // Rental cost is required
     },
     category: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
     },
     subCategory: {

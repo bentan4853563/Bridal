@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { Cross2Icon } from '@radix-ui/react-icons'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types';
+import { Cross2Icon } from '@radix-ui/react-icons';
 import ItemDetails from './ItemDetails'
 import ItemAvailability from './ItemAvailability'
 
@@ -57,5 +57,11 @@ const ItemView = ({ isOpen, onClose, item }) => {
     </div>
   )
 }
+
+ItemView.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  item: PropTypes.object,
+};
 
 export default ItemView

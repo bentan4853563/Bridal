@@ -24,6 +24,9 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       required: true, // Rental cost is required
     },
+    buyCost: {
+      type: Number,
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',

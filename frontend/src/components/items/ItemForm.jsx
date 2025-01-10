@@ -1,26 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Cross2Icon, ImageIcon, VideoIcon } from '@radix-ui/react-icons';
-import { addBaseURL, removeBaseURL } from "../../utils/updateURL";
+import { addBaseURL, removeBaseURL } from '../../utils/updateURL';
 
 const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    primaryPhoto: "",
+    name: '',
+    primaryPhoto: '',
     secondaryImages: [],
     videoUrls: [],
-    rentalCost: "",
-    category: "",
-    subCategory: "",
+    rentalCost: '',
+    buyCost: '',
+    category: '',
+    subCategory: '',
     quantity: 0,
-    status: "Draft",
+    status: 'Draft',
   });
 
   const [errors, setErrors] = useState({});
   const [availableSubCategories, setAvailableSubCategories] = useState([]);
 
   const [primaryPhoto, setPrimaryPhoto] = useState(null);
-  const [primaryPhotoPreview, setPrimaryPhotoPreview] = useState("");
+  const [primaryPhotoPreview, setPrimaryPhotoPreview] = useState('');
   const [secondaryPhotos, setSecondaryPhotos] = useState([]);
   const [secondaryPhotosPreviews, setSecondaryPhotosPreviews] = useState([]);
   const [videos, setVideos] = useState([]);
@@ -54,19 +55,19 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
-    if (type === "file") {
-      if (name === "primaryPhoto") {
+    if (type === 'file') {
+      if (name === 'primaryPhoto') {
         const file = e.target.files[0];
         if (file) {
           setPrimaryPhoto(file);
           setPrimaryPhotoPreview(URL.createObjectURL(file));
         }
-      } else if (name === "secondaryPhotos") {
+      } else if (name === 'secondaryPhotos') {
         const files = Array.from(e.target.files);
         const previews = files?.map((file) => URL.createObjectURL(file));
         setSecondaryPhotos((exists) => [...exists, ...files]);
         setSecondaryPhotosPreviews((exists) => [...exists, ...previews]);
-      } else if (name === "videos") {
+      } else if (name === 'videos') {
         const files = Array.from(e.target.files);
         setVideos((exists) => [...exists, ...files]);
         const previews = files?.map((file) => URL.createObjectURL(file));
@@ -80,7 +81,7 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
     }
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -97,16 +98,17 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (primaryPhoto === null && primaryPhotoPreview === "")
-      newErrors.primaryPhoto = "Primary photo is required";
-    if (!formData.rentalCost) newErrors.rentalCost = "Rental cost is required";
-    if (!formData.category) newErrors.category = "Category is required";
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (primaryPhoto === null && primaryPhotoPreview === '')
+      newErrors.primaryPhoto = 'Primary photo is required';
+    if (!formData.rentalCost) newErrors.rentalCost = 'Rental cost is required';
+    if (!formData.buyCost) newErrors.buyCost = 'Rental cost is required';
+    if (!formData.category) newErrors.category = 'Category is required';
     if (!formData.subCategory)
-      newErrors.subCategory = "Sub-category is required";
-    if (!formData.quantity) newErrors.quantity = "Quantity is required";
+      newErrors.subCategory = 'Sub-category is required';
+    if (!formData.quantity) newErrors.quantity = 'Quantity is required';
     if (formData.quantity < 0)
-      newErrors.quantity = "Quantity cannot be negative";
+      newErrors.quantity = 'Quantity cannot be negative';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -116,25 +118,26 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
     e.preventDefault();
     if (validateForm()) {
       const formDataToSubmit = new FormData();
-      formDataToSubmit.append("name", formData.name);
-      formDataToSubmit.append("rentalCost", formData.rentalCost);
-      formDataToSubmit.append("category", formData.category);
-      formDataToSubmit.append("subCategory", formData.subCategory);
-      formDataToSubmit.append("quantity", formData.quantity);
-      formDataToSubmit.append("status", formData.status);
-      formDataToSubmit.append("primaryPhoto", formData.primaryPhoto);
+      formDataToSubmit.append('name', formData.name);
+      formDataToSubmit.append('rentalCost', formData.rentalCost);
+      formDataToSubmit.append('buyCost', formData.buyCost);
+      formDataToSubmit.append('category', formData.category);
+      formDataToSubmit.append('subCategory', formData.subCategory);
+      formDataToSubmit.append('quantity', formData.quantity);
+      formDataToSubmit.append('status', formData.status);
+      formDataToSubmit.append('primaryPhoto', formData.primaryPhoto);
       secondaryPhotosPreviews.forEach((preview) =>
-        formDataToSubmit.append("secondaryImages", removeBaseURL(preview))
+        formDataToSubmit.append('secondaryImages', removeBaseURL(preview))
       );
       videoPreviews.forEach((video) =>
-        formDataToSubmit.append("videoUrls", removeBaseURL(video))
+        formDataToSubmit.append('videoUrls', removeBaseURL(video))
       );
 
-      formDataToSubmit.append("newPrimaryPhoto", primaryPhoto);
+      formDataToSubmit.append('newPrimaryPhoto', primaryPhoto);
       secondaryPhotos.forEach((photo) =>
-        formDataToSubmit.append("newSecondPhotos", photo)
+        formDataToSubmit.append('newSecondPhotos', photo)
       );
-      videos.forEach((video) => formDataToSubmit.append("newVideos", video));
+      videos.forEach((video) => formDataToSubmit.append('newVideos', video));
 
       onSubmit(formDataToSubmit);
     }
@@ -147,7 +150,7 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
       <div className="bg-gray-800 rounded-xl p-6 w-full max-w-2xl m-4">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-medium text-white">
-            {initialData ? "Edit Item" : "Add Item"}
+            {initialData ? 'Edit Item' : 'Add Item'}
           </h3>
           <button
             onClick={onClose}
@@ -159,23 +162,22 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Basic Information */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-200">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className={`w-full rounded-md border ${
+                errors.name ? 'border-red-500' : 'border-white/20'
+              } bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20`}
+            />
+            {errors.name && (
+              <p className="text-xs text-red-400">{errors.name}</p>
+            )}
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-200">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className={`w-full rounded-md border ${
-                  errors.name ? "border-red-500" : "border-white/20"
-                } bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20`}
-              />
-              {errors.name && (
-                <p className="text-xs text-red-400">{errors.name}</p>
-              )}
-            </div>
-
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-200">
                 Rental Cost/Day ($)
@@ -188,11 +190,30 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
                 min="0"
                 step="0.01"
                 className={`w-full rounded-md border ${
-                  errors.rentalCost ? "border-red-500" : "border-white/20"
+                  errors.rentalCost ? 'border-red-500' : 'border-white/20'
                 } bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20`}
               />
               {errors.rentalCost && (
                 <p className="text-xs text-red-400">{errors.rentalCost}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-200">
+                Buy Cost($)
+              </label>
+              <input
+                type="number"
+                name="buyCost"
+                value={formData.buyCost}
+                onChange={handleChange}
+                min="0"
+                step="0.01"
+                className={`w-full rounded-md border ${
+                  errors.buyCost ? 'border-red-500' : 'border-white/20'
+                } bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20`}
+              />
+              {errors.buyCost && (
+                <p className="text-xs text-red-400">{errors.buyCost}</p>
               )}
             </div>
           </div>
@@ -208,7 +229,7 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
                 value={formData.category}
                 onChange={handleChange}
                 className={`w-full rounded-md border ${
-                  errors.category ? "border-red-500" : "border-white/20"
+                  errors.category ? 'border-red-500' : 'border-white/20'
                 } bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20`}
               >
                 <option value="">Select Category</option>
@@ -233,7 +254,7 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
                 onChange={handleChange}
                 disabled={!formData.category}
                 className={`w-full rounded-md border ${
-                  errors.subCategory ? "border-red-500" : "border-white/20"
+                  errors.subCategory ? 'border-red-500' : 'border-white/20'
                 } bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20`}
               >
                 <option value="">Select Sub-category</option>
@@ -262,7 +283,7 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
                 onChange={handleChange}
                 min="0"
                 className={`w-full rounded-md border ${
-                  errors.quantity ? "border-red-500" : "border-white/20"
+                  errors.quantity ? 'border-red-500' : 'border-white/20'
                 } bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20`}
               />
               {errors.quantity && (
@@ -305,7 +326,7 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
                       type="button"
                       onClick={() => {
                         setPrimaryPhoto(null);
-                        setPrimaryPhotoPreview("");
+                        setPrimaryPhotoPreview('');
                       }}
                       className="absolute -top-2 -right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600"
                     >
@@ -428,7 +449,7 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
               type="submit"
               className="flex-1 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white text-sm font-medium transition-colors"
             >
-              {initialData ? "Save Changes" : "Add Item"}
+              {initialData ? 'Save Changes' : 'Add Item'}
             </button>
           </div>
         </form>

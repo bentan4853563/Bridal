@@ -29,8 +29,15 @@ router.post(
   async (req, res) => {
     try {
       // Extract form data
-      const { name, rentalCost, category, subCategory, quantity, status } =
-        req.body;
+      const {
+        name,
+        rentalCost,
+        buyCost,
+        category,
+        subCategory,
+        quantity,
+        status,
+      } = req.body;
 
       // Prepare file paths
       const primaryPhoto = req.files['newPrimaryPhoto'][0].path.replace(
@@ -50,6 +57,7 @@ router.post(
       const newProduct = new Product({
         name,
         rentalCost,
+        buyCost,
         category,
         subCategory,
         quantity,
@@ -139,8 +147,9 @@ router.put(
           file.path.replace('uploads', '')
         );
         const existingImages =
-          updatedData.secondaryImages
-            ?.filter((url) => !url.includes(front_url)) || [];
+          updatedData.secondaryImages?.filter(
+            (url) => !url.includes(front_url)
+          ) || [];
         updatedData.secondaryImages = [
           ...existingImages,
           ...newSecondaryImages,

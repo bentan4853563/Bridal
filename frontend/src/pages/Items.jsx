@@ -217,7 +217,7 @@ const Items = () => {
                   <h3 className="text-lg font-medium text-white">
                     {item.name}
                   </h3>
-                  {item.status === "Published" ? (
+                  {item.status === 'Published' ? (
                     <EyeOpenIcon className="h-5 w-5 text-green-400" />
                   ) : (
                     <EyeNoneIcon className="h-5 w-5 text-yellow-400" />
@@ -226,28 +226,34 @@ const Items = () => {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Rental Cost/Day</span>
                   <span className="text-white font-medium">
-                    ${item.rentalCost}
+                    ${item?.rentalCost}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Buy Cost</span>
+                  <span className="text-white font-medium">
+                    ${item?.buyCost}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">In Stock</span>
                   <span
                     className={`font-medium ${
-                      item.quantity > 0 ? "text-green-400" : "text-red-400"
+                      item?.quantity > 0 ? 'text-green-400' : 'text-red-400'
                     }`}
                   >
-                    {item.quantity} units
+                    {item?.quantity} units
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2 pt-2">
                   <span className="px-2 py-1 bg-white/5 rounded-full text-xs text-white">
                     {
-                      categories?.filter((cat) => cat._id == item.category)[0]
+                      categories?.filter((cat) => cat._id == item?.category)[0]
                         ?.name
                     }
                   </span>
                   <span className="px-2 py-1 bg-white/5 rounded-full text-xs text-white">
-                    {item.subCategory}
+                    {item?.subCategory}
                   </span>
                 </div>
               </div>

@@ -1,12 +1,9 @@
-import React from 'react'
-import { addBaseURL } from '../../utils/updateURL'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
-import { useEffect } from 'react'
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { addBaseURL } from '../../utils/updateURL';
 
 const ItemDetails = ({ item }) => {
-  const dispatch = useDispatch()
 
   const categories = useSelector((state) => state.category.categories)
 
@@ -98,14 +95,16 @@ const ItemDetails = ({ item }) => {
         </div>
 
         {/* Description Section */}
-        {category?.description && <div className="bg-white/5 rounded-lg p-4 border border-white/10 hover:bg-white/10 transition-colors duration-300">
-          <label className="text-sm font-medium text-gray-400 uppercase tracking-wider block mb-1">
-            Description
-          </label>
-          <p className="text-white whitespace-pre-wrap leading-relaxed">
-            {item?.description}
-          </p>
-        </div>}
+        {category?.description && (
+          <div className="bg-white/5 rounded-lg p-4 border border-white/10 hover:bg-white/10 transition-colors duration-300">
+            <label className="text-sm font-medium text-gray-400 uppercase tracking-wider block mb-1">
+              Description
+            </label>
+            <p className="text-white whitespace-pre-wrap leading-relaxed">
+              {item?.description}
+            </p>
+          </div>
+        )}
 
         {/* Price & Quantity Section */}
         <div className="grid grid-cols-2 gap-4">
@@ -119,12 +118,20 @@ const ItemDetails = ({ item }) => {
           </div>
           <div className="bg-white/5 rounded-lg p-4 border border-white/10 hover:bg-white/10 transition-colors duration-300">
             <label className="text-sm font-medium text-gray-400 uppercase tracking-wider block mb-1">
-              Quantity Available
+              Buy Cost
             </label>
             <p className="text-xl text-white font-semibold">
-              {item.quantity} units
+              ${item.buyCost}
             </p>
           </div>
+        </div>
+        <div className="bg-white/5 rounded-lg p-4 border border-white/10 hover:bg-white/10 transition-colors duration-300">
+          <label className="text-sm font-medium text-gray-400 uppercase tracking-wider block mb-1">
+            Quantity Available
+          </label>
+          <p className="text-xl text-white font-semibold">
+            {item.quantity} units
+          </p>
         </div>
 
         {/* Status Section */}
@@ -134,9 +141,9 @@ const ItemDetails = ({ item }) => {
           </label>
           <span
             className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-              item.status === "Published"
-                ? "bg-green-500/10 text-green-400 border border-green-500/20"
-                : "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"
+              item.status === 'Published'
+                ? 'bg-green-500/10 text-green-400 border border-green-500/20'
+                : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
             }`}
           >
             {item.status}
@@ -146,5 +153,11 @@ const ItemDetails = ({ item }) => {
     </div>
   );
 }
+
+ItemDetails.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  item: PropTypes.object,
+};
 
 export default ItemDetails

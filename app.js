@@ -7,7 +7,7 @@ const cors = require('cors');
 const path = require('path');
 const morgan = require('morgan');
 const helmet = require('helmet');
-require('dotenv').config()
+require('dotenv').config();
 
 const usersRoute = require('./routes/users');
 const customerRoute = require('./routes/customers');
@@ -26,21 +26,19 @@ mongoose.connect(process.env.DB_URI).then(
 mongoose.set('debug', true);
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
-app.use(morgan('combined'));
-app.use(helmet());
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: 'app.thebridalhouse.ma',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
+    origin: 'http://localhost:5173', // Replace with your frontend URL
   })
 );
+
 app.use(express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(path.join(__dirname, 'dist'))); // Serve your frontend build
+// app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/api/users', usersRoute);
 app.use('/api/customers', customerRoute);

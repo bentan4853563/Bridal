@@ -41,7 +41,7 @@ app.use(cookieParser());
 app.use(cors());
 
 app.use(express.static(path.join(__dirname, 'uploads')));
-// app.use(express.static(path.join(__dirname, 'dist')));
+app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use('/api/users', usersRoute);
 app.use('/api/customers', customerRoute);

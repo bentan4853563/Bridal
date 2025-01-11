@@ -37,6 +37,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors());
 
+app.use('/', express.static(path.join(__dirname, 'uploads')));
+
 app.use('/api/users', usersRoute);
 app.use('/api/customers', customerRoute);
 app.use('/api/payments', paymentRoute);
@@ -45,7 +47,6 @@ app.use('/api/reservations', reservationRoute);
 app.use('/api/category', categoryRoute);
 
 // Serve static files from the uploads directory
-app.use('/', express.static(path.join(__dirname, 'uploads')));
 
 // Serve the index.html file for all other routes
 app.get('*', (req, res) => {

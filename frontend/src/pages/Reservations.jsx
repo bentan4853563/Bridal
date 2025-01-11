@@ -51,7 +51,7 @@ const Reservations = () => {
   const getPaymentStatus = (reservation) => {
     const financials = calculateFinancials(reservation);
     const associatedPayments = payments.filter(
-      (item) => item.reservation._id === reservation._id
+      (item) => item.reservation?._id === reservation._id
     );
     const totalPaid = associatedPayments?.reduce(
       (sum, payment) => sum + payment.amount,

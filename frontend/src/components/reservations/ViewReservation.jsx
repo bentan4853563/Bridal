@@ -17,7 +17,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
   useEffect(() => {
     if (reservation && payments.length) {
       setAssociatedPayments(
-        payments?.filter((item) => item.reservation._id === reservation._id)
+        payments?.filter((item) => item.reservation?._id === reservation._id)
       );
     }
   }, [reservation, payments]);
@@ -60,7 +60,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
   const calculatePaymentDetails = () => {
     const financials = calculateFinancials();
     const associatedPayments = payments.filter(
-      (item) => item.reservation._id === reservation._id
+      (item) => item.reservation?._id === reservation._id
     );
     const totalPaid =
       associatedPayments?.reduce((sum, payment) => {

@@ -24,7 +24,7 @@ const PaymentView = () => {
   useEffect(() => {
     const fetchPayment = async () => {
       try {
-        setPayment(payments.find((item) => item._id === id));
+        setPayment(payments?.find((item) => item._id === id));
       } catch (error) {
         console.error("Error fetching payment:", error);
       } finally {

@@ -20,6 +20,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
   const items = useSelector((state) => state.item.items);
   const clients = useSelector((state) => state.customer.customers);
   const categories = useSelector((state) => state.category.categories);
+  const reservations = useSelector((state) => state.reservation.reservations);
 
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -53,20 +54,6 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
   // Add state for item selection
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [itemSearchTerm, setItemSearchTerm] = useState('');
-
-  // Filter available items based on search and dates
-  const filteredItems = items?.filter((item) => {
-    const categoryName = categories.find(
-      (cat) => cat._id === item.category
-    )?.name;
-    const matchesSearch =
-      item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
-      categoryName.toLowerCase().includes(itemSearchTerm.toLowerCase());
-    const isAvailable = !selectedItems.some(
-      (selected) => selected._id === item._id
-    );
-    return matchesSearch && isAvailable;
-  });
 
   // Load reservation data when component mounts
   useEffect(() => {
@@ -118,7 +105,10 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
       const weddingDate = new Date(selectedClient.weddingDate);
       const pickupDate = subDays(weddingDate, formData.bufferBefore);
       const returnDate = addDays(weddingDate, formData.bufferAfter);
-      const availabilityDate = addDays(weddingDate, formData.availability);
+      const availabilityDate = addDays(
+        weddingDate,
+        formData.availability + formData.bufferAfter
+      );
 
       setFormData((prev) => ({
         ...prev,
@@ -173,6 +163,54 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
     }
   };
 
+  // Update getAvailableItems to use the new availability check
+  const getAvailableItems = () => {
+    // Convert pickupDate and returnDate to Date objects if they are not already
+    const pickup = new Date(formData.pickupDate);
+    const returnDateObj = new Date(formData.availabilityDate);
+
+    return items
+      .filter((product) => {
+        // If the product is reserved, check the quantity
+        const reservedQuantity = reservations.reduce((total, reservation) => {
+          const reservationPickup = new Date(reservation.pickupDate);
+          const reservationReturn = new Date(reservation.availabilityDate);
+
+          // Count how many of this product are reserved
+          const currentProductReserved = reservation.items.filter(
+            (item) => item._id.toString() === product._id.toString()
+          );
+          const isCurrentProductReserved =
+            currentProductReserved.length > 0 &&
+            ((pickup >= reservationPickup && pickup <= reservationReturn) ||
+              (returnDateObj >= reservationPickup &&
+                returnDateObj <= reservationReturn) ||
+              (pickup <= reservationPickup &&
+                returnDateObj >= reservationReturn));
+
+          return isCurrentProductReserved ? total + 1 : total;
+        }, 0);
+
+        // Return true if the product is available and matches the search term
+        return product.quantity - reservedQuantity > 0;
+      })
+      .filter((item) => !selectedItems.some((i) => i._id === item._id));
+  };
+
+  // Filter available items based on search and dates
+  const filteredItems = getAvailableItems()?.filter((item) => {
+    const categoryName = categories.find(
+      (cat) => cat._id === item.category
+    )?.name;
+    const matchesSearch =
+      item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
+      categoryName.toLowerCase().includes(itemSearchTerm.toLowerCase());
+    const isAvailable = !selectedItems.some(
+      (selected) => selected._id === item._id
+    );
+    return matchesSearch && isAvailable;
+  });
+
   const handleSubmit = async () => {
     const financials = calculateFinancials();
 
@@ -201,7 +239,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         reservationData,
         (updatedReservation) => {
           dispatch(updateReservation(updatedReservation));
-          setStep(1)
+          setStep(1);
           onClose();
           navigate('/reservations');
         }
@@ -318,7 +356,9 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             </div>
             <button
               onClick={() =>
-                setSelectedItems(selectedItems?.filter((i) => i.id !== item.id))
+                setSelectedItems(
+                  selectedItems?.filter((i) => i._id !== item._id)
+                )
               }
               className="text-red-400 hover:text-red-300 transition-colors"
             >
@@ -358,7 +398,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
             <div className="grid grid-cols-2 gap-4 max-h-96 overflow-y-auto">
               {filteredItems?.map((item) => (
                 <button
-                  key={item.id}
+                  key={item._id}
                   onClick={() => {
                     setSelectedItems([...selectedItems, item]);
                     setIsItemModalOpen(false);
@@ -373,7 +413,12 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
                   <div>
                     <p className="text-white font-medium">{item.name}</p>
                     <p className="text-sm text-gray-400">${item.rentalCost}</p>
-                    <p className="text-sm text-gray-400">{item.category}</p>
+                    <p className="text-sm text-gray-400">
+                      {
+                        categories.find((cat) => cat._id === item.category)
+                          ?.name
+                      }
+                    </p>
                     <span className="inline-flex items-center px-2 py-1 mt-2 rounded-full text-xs font-medium bg-green-500/10 text-green-400">
                       Available
                     </span>
@@ -434,8 +479,8 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
           <div>
             <p className="text-sm text-gray-400">Return Date</p>
             <p className="text-lg font-medium text-white">
-              {formData.pickupDate
-                ? format(new Date(formData.pickupDate), 'PPP')
+              {formData.returnDate
+                ? format(new Date(formData.returnDate), 'PPP')
                 : ''}
             </p>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
 import { useNavigate } from "react-router-dom";
 
@@ -47,12 +47,19 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if(localStorage.getItem('isAuthenticated')) {
+      navigate('/home')
+    }
+  })
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true)
     handleLogin(formData, () => {
       navigate("/home");
+      setIsLoading(false)
       localStorage.setItem("isAuthenticated", "true");
     });
   };
@@ -155,12 +162,6 @@ const Login = () => {
           </form>
         </div>
       </div>
-
-      {error && (
-        <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-md">
-          {error}
-        </div>
-      )}
     </div>
   );
 };

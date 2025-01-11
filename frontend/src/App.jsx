@@ -1,66 +1,70 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
-} from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { ToastContainer } from "react-toastify"; // Import ToastContainer
-import "react-toastify/dist/ReactToastify.css"; // Import styles
+} from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import Login from "./pages/Login";
-import Items from "./pages/Items";
-import Payments from "./pages/Payments";
-import Settings from "./pages/Settings";
-import Dashboard from "./pages/Dashboard";
-import Customers from "./pages/Customers";
-import AddCustomer from "./pages/AddCustomer";
-import EditCustomer from "./pages/EditCustomer";
-import CustomerView from "./pages/CustomerView";
-import EditPayment from "./pages/EditPayment";
-import PaymentView from "./pages/PaymentView";
-import Reservations from "./pages/Reservations";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Documentation from "./pages/Documentation";
+import Login from './pages/Login';
+import Items from './pages/Items';
+import Payments from './pages/Payments';
+import Settings from './pages/Settings';
+import Dashboard from './pages/Dashboard';
+import Customers from './pages/Customers';
+import AddCustomer from './pages/AddCustomer';
+import EditCustomer from './pages/EditCustomer';
+import CustomerView from './pages/CustomerView';
+import EditPayment from './pages/EditPayment';
+import PaymentView from './pages/PaymentView';
+import Reservations from './pages/Reservations';
+import ProtectedRoute from './components/ProtectedRoute';
+import Documentation from './pages/Documentation';
 
-import { setUsers } from "./store/reducers/userSlice";
-import { setItems } from "./store/reducers/itemSlice";
-import { setPayments } from "./store/reducers/paymentSlice";
-import { setCustomers } from "./store/reducers/customerSlice";
-import { setCategories } from "./store/reducers/categorySlice";
-import { setReservations } from "./store/reducers/reservationSlice";
+import { setUsers } from './store/reducers/userSlice';
+import { setItems } from './store/reducers/itemSlice';
+import { setPayments } from './store/reducers/paymentSlice';
+import { setCustomers } from './store/reducers/customerSlice';
+import { setCategories } from './store/reducers/categorySlice';
+import { setReservations } from './store/reducers/reservationSlice';
 
-import { handleGetUsers } from "./actions/user";
-import { handleGetPayments } from "./actions/payment";
-import { handleGetCustomers } from "./actions/customer";
-import { handleGetCategories } from "./actions/category";
-import { handleGetAllProducts } from "./actions/product";
-import { handleGetReservations } from "./actions/reservation";
+import { handleGetUsers } from './actions/user';
+import { handleGetPayments } from './actions/payment';
+import { handleGetCustomers } from './actions/customer';
+import { handleGetCategories } from './actions/category';
+import { handleGetAllProducts } from './actions/product';
+import { handleGetReservations } from './actions/reservation';
 
 function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const loadCustomers = async () => {
-      const items = await handleGetAllProducts();
-      const users = await handleGetUsers();
-      const customers = await handleGetCustomers();
-      const categories = await handleGetCategories();
-      const reservations = await handleGetReservations();
-      const payments = await handleGetPayments()
+    const loadData = async () => {
+      try {
+        const items = await handleGetAllProducts();
+        const users = await handleGetUsers();
+        const customers = await handleGetCustomers();
+        const categories = await handleGetCategories();
+        const reservations = await handleGetReservations();
+        const payments = await handleGetPayments();
 
-      dispatch(setCustomers(customers));
-      dispatch(setCustomers(customers));
-      dispatch(setCategories(categories));
-      dispatch(setItems(items));
-      dispatch(setReservations(reservations));
-      dispatch(setPayments(payments))
-      dispatch(setUsers(users))
+        // Dispatch actions only once per data fetch
+        dispatch(setCustomers(customers));
+        dispatch(setCategories(categories));
+        dispatch(setItems(items));
+        dispatch(setReservations(reservations));
+        dispatch(setPayments(payments));
+        dispatch(setUsers(users));
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
     };
 
-    loadCustomers();
-  }, [dispatch]);
+    loadData();
+  }, [dispatch]); // Ensure dispatch is the only dependency
 
   return (
     <Router>
@@ -94,7 +98,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="/home" element={null} />{" "}
+          <Route path="/home" element={null} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/payments" element={<Payments />} />
           <Route path="/reservations" element={<Reservations />} />
@@ -112,16 +116,16 @@ function App() {
         </Route>
 
         {/* Catch all route */}
-        {/* <Route
+        <Route
           path="*"
           element={
-            localStorage.getItem("isAuthenticated") ? (
+            localStorage.getItem('isAuthenticated') ? (
               <Navigate to="/home" replace />
             ) : (
               <Navigate to="/" replace />
             )
           }
-        /> */}
+        />
       </Routes>
     </Router>
   );

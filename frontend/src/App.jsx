@@ -112,7 +112,7 @@ function App() {
         </Route>
 
         {/* Catch all route */}
-        <Route
+        {/* <Route
           path="*"
           element={
             localStorage.getItem("isAuthenticated") ? (
@@ -121,7 +121,7 @@ function App() {
               <Navigate to="/" replace />
             )
           }
-        />
+        /> */}
       </Routes>
     </Router>
   );

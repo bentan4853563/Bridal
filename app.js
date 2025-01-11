@@ -1,12 +1,9 @@
-require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
-const morgan = require('morgan');
-const helmet = require('helmet');
 require('dotenv').config();
 
 const usersRoute = require('./routes/users');
@@ -40,15 +37,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors());
 
-app.use(express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(path.join(__dirname, 'dist')));
-
 app.use('/api/users', usersRoute);
 app.use('/api/customers', customerRoute);
 app.use('/api/payments', paymentRoute);
 app.use('/api/products', productRoute);
 app.use('/api/reservations', reservationRoute);
 app.use('/api/category', categoryRoute);
+
+// Serve static files from the uploads directory
+app.use('/', express.static(path.join(__dirname, 'uploads')));
+
+// Serve the index.html file for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {

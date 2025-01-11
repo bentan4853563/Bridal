@@ -139,7 +139,6 @@ const transporter = nodemailer.createTransport({
 
 router.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
-  console.log('email :>> ', email);
   const user = await User.findOne({ email });
 
   if (!user) return res.status(404).send('User not found');
@@ -316,8 +315,6 @@ router.put('/update/:id', async (req, res) => {
     const userId = req.params.id;
     const { email, password } = req.body;
 
-    console.log('req.body :>> ', req.body);
-
     // Validate input
     if (!email || !password) {
       return res.status(400).json({
@@ -362,7 +359,6 @@ router.put('/update/:id', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const users = await User.find();
-    console.log('users :>> ', users);
     res.json(users);
   } catch (err) {
     res.status(500).json({

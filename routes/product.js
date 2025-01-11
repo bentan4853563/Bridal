@@ -181,7 +181,6 @@ router.put(
         new: true,
         runValidators: true, // Ensure validators are run for the update
       });
-      console.log(updatedProduct);
       if (!updatedProduct) {
         return res.status(404).json({ message: 'Product not found' });
       }

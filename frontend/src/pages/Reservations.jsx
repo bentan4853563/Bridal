@@ -90,7 +90,7 @@ const Reservations = () => {
 
   // Add calculateFinancials helper
   const calculateFinancials = (reservation) => {
-    const itemsTotal = reservation.items.reduce(
+    const itemsTotal = reservation.items?.reduce(
       (sum, item) => sum + item.rentalCost,
       0
     );
@@ -111,13 +111,13 @@ const Reservations = () => {
     };
   };
 
-  const handleViewReservation = (reservation) => {
-    setSelectedReservation(reservation);
+  const handleViewReservation = (index, reservation) => {
+    setSelectedReservation({id: index, ...reservation});
     setIsViewModalOpen(true);
   };
 
-  const handleEditReservation = (reservation) => {
-    setSelectedReservation(reservation);
+  const handleEditReservation = (index, reservation) => {
+    setSelectedReservation({id: index, ...reservation});
     setIsEditModalOpen(true);
   };
 
@@ -254,7 +254,8 @@ const Reservations = () => {
               currentItems?.map((reservation, index) => {
                 const financials = calculateFinancials(reservation);
                 const paymentStatus = getPaymentStatus(reservation);
-                const mainItem = reservation.items[0]; // Get first item for display
+                const mainItem =
+                  reservation.items?.length > 0 && reservation?.items[0]; // Get first item for display
 
                 return (
                   <tr key={reservation._id} className="hover:bg-white/5">
@@ -283,7 +284,7 @@ const Reservations = () => {
                             <span className="text-white text-sm">
                               {mainItem.name}
                             </span>
-                            {reservation.items.length > 1 && (
+                            {reservation.items?.length > 1 && (
                               <span className="text-gray-400 text-xs">
                                 +{reservation.items.length - 1} more items
                               </span>
@@ -295,7 +296,7 @@ const Reservations = () => {
                     {columnVisibility.weddingDate && (
                       <td className="p-4 text-white">
                         {new Date(
-                          reservation.client.weddingDate
+                          reservation.client?.weddingDate
                         ).toLocaleDateString()}
                       </td>
                     )}
@@ -381,13 +382,17 @@ const Reservations = () => {
                       <td className="p-4">
                         <div className="flex items-center justify-end">
                           <button
-                            onClick={() => handleViewReservation(reservation)}
+                            onClick={() =>
+                              handleViewReservation(index, reservation)
+                            }
                             className="p-1 hover:bg-white/10 rounded-lg transition-colors"
                           >
                             <EyeOpenIcon className="h-4 w-4 text-gray-400" />
                           </button>
                           <button
-                            onClick={() => handleEditReservation(reservation)}
+                            onClick={() =>
+                              handleEditReservation(index, reservation)
+                            }
                             className="p-1 hover:bg-white/10 rounded-lg transition-colors"
                           >
                             <Pencil1Icon className="h-4 w-4 text-gray-400" />

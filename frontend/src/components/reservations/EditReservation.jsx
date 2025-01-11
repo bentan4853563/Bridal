@@ -55,12 +55,37 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
   const [itemSearchTerm, setItemSearchTerm] = useState('');
 
+  useEffect(() => {
+    if (selectedClient?.weddingDate) {
+      const weddingDate = new Date(selectedClient.weddingDate);
+      const pickupDate = subDays(weddingDate, formData.bufferBefore);
+      const returnDate = addDays(weddingDate, formData.bufferAfter);
+      const availabilityDate = addDays(
+        weddingDate,
+        formData.availability + formData.bufferAfter
+      );
+
+      setFormData((prev) => ({
+        ...prev,
+        pickupDate: format(pickupDate, 'yyyy-MM-dd'),
+        returnDate: format(returnDate, 'yyyy-MM-dd'),
+        availabilityDate: format(availabilityDate, 'yyyy-MM-dd'),
+      }));
+    }
+  }, [
+    selectedClient?.weddingDate,
+    formData.bufferBefore,
+    formData.bufferAfter,
+    formData.availability,
+  ]);
+
   // Load reservation data when component mounts
   useEffect(() => {
     if (reservation) {
       setSelectedClient(reservation.client);
       setSelectedItems(reservation.items);
-      setFormData((prev) => prev, {
+      setFormData((prev) => ({
+        ...prev,
         type: reservation.type,
         status: reservation.status,
         pickupDate: new Date(reservation.pickupDate)
@@ -96,33 +121,10 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
         notes: reservation.notes,
         bufferBefore: reservation.bufferBefore,
         bufferAfter: reservation.bufferAfter,
-      });
-    }
-  }, [reservation]);
-
-  useEffect(() => {
-    if (selectedClient?.weddingDate) {
-      const weddingDate = new Date(selectedClient.weddingDate);
-      const pickupDate = subDays(weddingDate, formData.bufferBefore);
-      const returnDate = addDays(weddingDate, formData.bufferAfter);
-      const availabilityDate = addDays(
-        weddingDate,
-        formData.availability + formData.bufferAfter
-      );
-
-      setFormData((prev) => ({
-        ...prev,
-        pickupDate: format(pickupDate, 'yyyy-MM-dd'),
-        returnDate: format(returnDate, 'yyyy-MM-dd'),
-        availabilityDate: format(availabilityDate, 'yyyy-MM-dd'),
+        availability: reservation.availability,
       }));
     }
-  }, [
-    selectedClient?.weddingDate,
-    formData.bufferBefore,
-    formData.bufferAfter,
-    formData.availability,
-  ]);
+  }, [reservation]);
 
   const calculateFinancials = () => {
     const itemsTotal = selectedItems.reduce(

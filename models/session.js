@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
 const crypto = require('crypto');
 
 const SessionSchema = new mongoose.Schema({
@@ -27,8 +26,6 @@ const SessionSchema = new mongoose.Schema({
     default: 'valid',
   },
 });
-
-SessionSchema.plugin(uniqueValidator);
 
 SessionSchema.statics.generateToken = function() {
   return new Promise((resolve, reject) => {

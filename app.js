@@ -16,7 +16,9 @@ const paymentRoute = require('./routes/payment');
 mongoose.Promise = global.Promise;
 
 mongoose
-  .connect(process.env.DB_URI)
+  .connect(process.env.DB_URI, {
+    directConnection: true,
+  })
   .then(
     () => {
       console.log('Connected to mongoDB');
@@ -41,6 +43,11 @@ app.use('/api/payments', paymentRoute);
 app.use('/api/products', productRoute);
 app.use('/api/reservations', reservationRoute);
 app.use('/api/category', categoryRoute);
+
+// Health check route
+app.get('/api/health', (req, res) => {
+  res.status(200).json('Server is running correctly!');
+});
 
 // Serve static files from the uploads directory
 app.use('/', express.static(path.join(__dirname, 'uploads')));

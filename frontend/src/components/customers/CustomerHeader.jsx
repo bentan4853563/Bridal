@@ -31,7 +31,7 @@ CustomerHeader.propTypes = {
   title: PropTypes.string,
   onBack: PropTypes.func,
   onEdit: PropTypes.func,
-  showEditButton: PropTypes.func,
+  showEditButton: PropTypes.bool,
 };
 
 export default CustomerHeader 

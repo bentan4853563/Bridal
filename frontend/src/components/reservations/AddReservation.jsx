@@ -15,6 +15,7 @@ const AddReservation = ({ isOpen, onClose }) => {
 
   const clients = useSelector((state) => state.customer.customers);
   const items = useSelector((state) => state.item.items);
+  const reservations = useSelector(state => state.reservation.reservations)
 
   const [formData, setFormData] = useState({
     type: 'Final',
@@ -272,16 +273,16 @@ const AddReservation = ({ isOpen, onClose }) => {
   };
 
   // Check item availability considering wedding date and buffer times
-  // const checkItemAvailability = (item, pickupDate, returnDate) => {
+  // const checkItemAvailability = (item, pickupDate, availabilityDate) => {
   //   if (!selectedClient?.weddingDate) return true;
 
   //   const pickup = new Date(pickupDate);
-  //   const return_ = new Date(returnDate);
+  //   const return_ = new Date(availabilityDate);
   //   const weddingDate = new Date(selectedClient.weddingDate);
 
   //   // Calculate buffer dates
   //   const bufferStartDate = subDays(weddingDate, formData.bufferBefore);
-  //   const bufferEndDate = addDays(weddingDate, formData.bufferAfter);
+  //   const bufferEndDate = addDays(weddingDate, formData.availability);
 
   //   // Check if requested dates overlap with buffer period
   //   const isWithinBufferPeriod =
@@ -339,7 +340,7 @@ const AddReservation = ({ isOpen, onClose }) => {
       const weddingDate = new Date(selectedClient.weddingDate);
       const pickupDate = subDays(weddingDate, formData.bufferBefore);
       const returnDate = addDays(weddingDate, formData.bufferAfter);
-      const availabilityDate = addDays(weddingDate, formData.availability);
+      const availabilityDate = addDays(weddingDate, formData.availability + formData.bufferAfter);
 
       setFormData((prev) => ({
         ...prev,
@@ -450,8 +451,8 @@ const AddReservation = ({ isOpen, onClose }) => {
               <div>
                 <p className="text-sm text-gray-400">Return Date</p>
                 <p className="text-lg font-medium text-white">
-                  {formData.pickupDate
-                    ? format(new Date(formData.pickupDate), 'PPP')
+                  {formData.returnDate
+                    ? format(new Date(formData.returnDate), 'PPP')
                     : ''}
                 </p>
               </div>
@@ -589,18 +590,47 @@ const AddReservation = ({ isOpen, onClose }) => {
 
   // Update getAvailableItems to use the new availability check
   const getAvailableItems = () => {
-    // if (!formData.pickupDate || !formData.returnDate || !selectedClient?.weddingDate) return []
+     // Convert pickupDate and returnDate to Date objects if they are not already
+     const pickup = new Date(formData.pickupDate);
+     const returnDateObj = new Date(formData.availabilityDate);
 
-    // return items?.filter(item => {
-    //   const isAvailable = checkItemAvailability(item, formData.pickupDate, formData.returnDate)
-    //   const matchesSearch = itemSearchTerm === '' ||
-    //     item.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
-    //     item.category.toLowerCase().includes(itemSearchTerm.toLowerCase())
+     return items.filter((product) => {
+       // If the product is reserved, check the quantity
+       const reservedQuantity = reservations.reduce((total, reservation) => {
+         const reservationPickup = new Date(reservation.pickupDate);
+         const reservationReturn = new Date(reservation.availabilityDate);
 
-    //   return isAvailable && matchesSearch
-    // })
-    return items;
-  };
+         // Count how many of this product are reserved
+         const currentProductReserved = reservation.items.filter(
+           (item) => item._id.toString() === product._id.toString()
+         );
+         const isCurrentProductReserved =
+           currentProductReserved.length > 0 &&
+           ((pickup >= reservationPickup && pickup <= reservationReturn) ||
+             (returnDateObj >= reservationPickup &&
+               returnDateObj <= reservationReturn) ||
+             (pickup <= reservationPickup &&
+               returnDateObj >= reservationReturn));
+
+         return isCurrentProductReserved ? total + 1 : total;
+       }, 0);
+
+       // Check if the product has enough quantity available
+       const isAvailable = product.quantity - reservedQuantity > 0;
+
+       // Check if the product matches the search term
+       const matchesSearch =
+         itemSearchTerm === '' ||
+         product.name.toLowerCase().includes(itemSearchTerm.toLowerCase()) ||
+         (product.category &&
+           product.category
+             .toLowerCase()
+             .includes(itemSearchTerm.toLowerCase()));
+
+       // Return true if the product is available and matches the search term
+       return isAvailable && matchesSearch;
+     });
+   };
 
   // Update step 3 to include financial details
   const renderFinancialDetails = () => {
@@ -826,6 +856,7 @@ const AddReservation = ({ isOpen, onClose }) => {
         notes: formData.notes,
         bufferAfter: formData.bufferAfter,
         bufferBefore: formData.bufferBefore,
+        availability: formData.availability
       };
 
       handleReserve(reservationData, (newReservation) => {

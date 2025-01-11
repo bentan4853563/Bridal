@@ -1,5 +1,6 @@
 import React from 'react'
-import * as Popover from '@radix-ui/react-popover'
+import PropTypes from 'prop-types';
+import * as Popover from '@radix-ui/react-popover';
 import { LayoutIcon, CheckIcon, DragHandleDots2Icon } from '@radix-ui/react-icons'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
 
@@ -87,5 +88,14 @@ function WidgetManager({ widgets, visibleWidgets, onToggleWidget, onReorderWidge
     </Popover.Root>
   )
 }
+
+// Define prop types
+WidgetManager.propTypes = {
+  className: PropTypes.string,
+  widgets: PropTypes.array,
+  visibleWidgets: PropTypes.array,
+  onToggleWidget: PropTypes.func,
+  onReorderWidgets: PropTypes.func,
+};
 
 export default WidgetManager 

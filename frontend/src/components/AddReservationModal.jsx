@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types';
+import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
 // Dummy data for customers (replace with your actual data source)
 const dummyCustomers = [
@@ -34,7 +35,7 @@ const AddReservationModal = ({ isOpen, onClose }) => {
   // Customer search states
   const [customerSearch, setCustomerSearch] = useState('')
   const [showCustomerDropdown, setShowCustomerDropdown] = useState(false)
-  const [selectedCustomer, setSelectedCustomer] = useState(null)
+  // const [selectedCustomer, setSelectedCustomer] = useState(null)
 
   // Filter customers based on search
   const filteredCustomers = customerSearch.length >= 2
@@ -46,7 +47,7 @@ const AddReservationModal = ({ isOpen, onClose }) => {
     : []
 
   const handleCustomerSelect = (customer) => {
-    setSelectedCustomer(customer)
+    // setSelectedCustomer(customer)
     setFormData(prev => ({ ...prev, customerId: customer.id }))
     setCustomerSearch(customer.name)
     setShowCustomerDropdown(false)
@@ -55,8 +56,6 @@ const AddReservationModal = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      // TODO: Implement your API call here
-      console.log('Submitting reservation:', formData)
       onClose()
     } catch (error) {
       console.error('Error creating reservation:', error)
@@ -224,5 +223,10 @@ const AddReservationModal = ({ isOpen, onClose }) => {
     </div>
   )
 }
+
+AddReservationModal.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+};
 
 export default AddReservationModal 

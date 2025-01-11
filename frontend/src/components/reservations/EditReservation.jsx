@@ -302,7 +302,7 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
       <div className="space-y-4">
         {selectedItems?.map((item) => (
           <div
-            key={item.id}
+            key={item._id}
             className="flex items-center justify-between bg-white/5 p-4 rounded-lg"
           >
             <div className="flex items-center gap-4">

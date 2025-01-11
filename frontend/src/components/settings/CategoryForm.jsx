@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react'
-import { Cross2Icon } from '@radix-ui/react-icons'
+import React, { useState, useEffect } from 'react'
+import PropTypes from "prop-types";
+import { Cross2Icon } from '@radix-ui/react-icons';
 
 const CategoryForm = ({ isOpen, onClose, onSubmit, type, initialData }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: ''
   })
-
-  console.log('initialData :>> ', initialData);
 
   useEffect(() => {
     if (initialData) {
@@ -111,5 +110,13 @@ const CategoryForm = ({ isOpen, onClose, onSubmit, type, initialData }) => {
     </div>
   );
 }
+
+CategoryForm.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  onSubmit: PropTypes.func,
+  type: PropTypes.string,
+  initialData: PropTypes.object,
+};
 
 export default CategoryForm 

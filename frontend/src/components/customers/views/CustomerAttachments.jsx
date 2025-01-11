@@ -24,12 +24,6 @@ const CustomerAttachments = ({
   const documentFiles = attachments?.filter((file) =>
     file.link.includes("documents\\")
   );
-  console.log(
-    "attachments, imageFiles, documentFiles :>> ",
-    attachments,
-    imageFiles,
-    documentFiles
-  );
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prev) =>

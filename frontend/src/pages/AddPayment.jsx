@@ -64,7 +64,7 @@ const AddPayment = ({ isOpen, onClose, reservation }) => {
   const handleCustomerSelect = (customer) => {
     setSelectedCustomer(customer);
     setFormData((prev) => ({ ...prev, client: customer._id }));
-    setCustomerSearch(customer.name);
+    setCustomerSearch(`${customer.name} ${customer.surname}`);
     setShowCustomerDropdown(false);
     setSelectedReservation(null);
     setFormData((prev) => ({ ...prev, reservation: "" }));

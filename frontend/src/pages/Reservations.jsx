@@ -1,27 +1,27 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   PlusIcon,
   Pencil1Icon,
   TrashIcon,
   EyeOpenIcon,
   MagnifyingGlassIcon,
-} from "@radix-ui/react-icons";
-import Pagination from "../components/Pagination";
-import AddReservation from "../components/reservations/AddReservation";
-import EditReservation from "../components/reservations/EditReservation";
-import ViewReservation from "../components/reservations/ViewReservation";
-import { addBaseURL } from "../utils/updateURL";
-import { handleDeleteReservation } from "../actions/reservation";
-import { deleteReservation } from "../store/reducers/reservationSlice";
-import { useDispatch } from "react-redux";
+} from '@radix-ui/react-icons';
+import Pagination from '../components/Pagination';
+import AddReservation from '../components/reservations/AddReservation';
+import EditReservation from '../components/reservations/EditReservation';
+import ViewReservation from '../components/reservations/ViewReservation';
+import { addBaseURL } from '../utils/updateURL';
+import { handleDeleteReservation } from '../actions/reservation';
+import { deleteReservation } from '../store/reducers/reservationSlice';
+import { useDispatch } from 'react-redux';
 
 const Reservations = () => {
   const dispatch = useDispatch();
   const reservations = useSelector((state) => state.reservation.reservations);
   const payments = useSelector((state) => state.payment.payments);
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -58,9 +58,9 @@ const Reservations = () => {
       0
     );
 
-    if (totalPaid >= financials.total) return "Paid";
-    if (totalPaid > 0) return "Partial";
-    return "Unpaid";
+    if (totalPaid >= financials.total) return 'Paid';
+    if (totalPaid > 0) return 'Partial';
+    return 'Unpaid';
   };
 
   // Add calculateFinancials helper
@@ -86,20 +86,27 @@ const Reservations = () => {
     };
   };
 
-  const handleViewReservation = (reservation) => {
-    setSelectedReservation(reservation);
+  const handleViewReservation = (reservation, index) => {
+    setSelectedReservation((prev) => ({
+      id: index + 1, // Update the ID or index
+      ...prev, // Ensure you spread the previous state if needed
+      ...reservation, // Spread the reservation details
+    }));
     setIsViewModalOpen(true);
   };
 
-  const handleEditReservation = (reservation) => {
-    setSelectedReservation(reservation);
+  const handleEditReservation = (reservation, index) => {
+    setSelectedReservation((prev) => ({
+      id: index + 1, // Update the ID or index
+      ...prev, // Ensure you spread the previous state if needed
+      ...reservation, // Spread the reservation details
+    }));
     setIsEditModalOpen(true);
   };
 
   const deleteReservationData = async (id) => {
-    if (window.confirm("Are you sure you want to delete this reservation?")) {
+    if (window.confirm('Are you sure you want to delete this reservation?')) {
       handleDeleteReservation(id, () => {
-        console.log("id :>> ", id);
         dispatch(deleteReservation(id));
       });
     }
@@ -177,130 +184,136 @@ const Reservations = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/10">
-            {currentItems?.map((reservation, index) => {
-              const financials = calculateFinancials(reservation);
-              const paymentStatus = getPaymentStatus(reservation);
-              const mainItem = reservation.items[0]; // Get first item for display
+            {currentItems.length > 0 &&
+              currentItems?.map((reservation, index) => {
+                const financials = calculateFinancials(reservation);
+                const paymentStatus = getPaymentStatus(reservation);
+                const mainItem = reservation.items[0]; // Get first item for display
 
-              return (
-                <tr key={reservation._id} className="hover:bg-white/5">
-                  <td className="p-4 text-white">#{index + 1}</td>
-                  <td className="p-4 text-white">
-                    {new Date(reservation.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="p-4 text-white">{reservation.client?.name}</td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={addBaseURL(mainItem.primaryPhoto)}
-                        alt={mainItem.name}
-                        className="h-10 w-10 rounded-lg object-cover"
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-white text-sm">
-                          {mainItem.name}
-                        </span>
-                        {reservation.items.length > 1 && (
-                          <span className="text-gray-400 text-xs">
-                            +{reservation.items.length - 1} more items
+                return (
+                  <tr key={reservation._id} className="hover:bg-white/5">
+                    <td className="p-4 text-white">#{index + 1}</td>
+                    <td className="p-4 text-white">
+                      {new Date(reservation.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="p-4 text-white">
+                      {reservation.client?.name}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={addBaseURL(mainItem.primaryPhoto)}
+                          alt={mainItem.name}
+                          className="h-10 w-10 rounded-lg object-cover"
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-white text-sm">
+                            {mainItem.name}
                           </span>
-                        )}
+                          {reservation.items.length > 1 && (
+                            <span className="text-gray-400 text-xs">
+                              +{reservation.items.length - 1} more items
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="p-4 text-white">
-                    {new Date(
-                      reservation.client.weddingDate
-                    ).toLocaleDateString()}
-                  </td>
-                  <td className="p-4 text-white">
-                    {new Date(reservation.pickupDate).toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: false, // Change to false for 24-hour format
-                    })}
-                  </td>
-                  <td className="p-4 text-white">
-                    {new Date(reservation.returnDate).toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: false, // Change to false for 24-hour format
-                    })}
-                  </td>
-                  <td className="p-4 text-white">
-                    {new Date(reservation.availabilityDate).toLocaleString(
-                      'en-US',
-                      {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: false, // Change to false for 24-hour format
-                      }
-                    )}
-                  </td>
-                  <td className="p-4 text-white">
-                    ${financials.total.toLocaleString()}
-                  </td>
-                  <td className="p-4">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        reservation.type === 'Final'
-                          ? 'bg-purple-500/10 text-purple-400'
-                          : 'bg-blue-500/10 text-blue-400'
-                      }`}
-                    >
-                      {reservation.type}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        paymentStatus === 'Paid'
-                          ? 'bg-green-500/10 text-green-400'
-                          : paymentStatus === 'Partial'
-                          ? 'bg-yellow-500/10 text-yellow-400'
-                          : 'bg-red-500/10 text-red-400'
-                      }`}
-                    >
-                      {paymentStatus}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center justify-end">
-                      <button
-                        onClick={() => handleViewReservation(reservation)}
-                        className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                    </td>
+                    <td className="p-4 text-white">
+                      {new Date(
+                        reservation.client.weddingDate
+                      ).toLocaleDateString()}
+                    </td>
+                    <td className="p-4 text-white">
+                      {new Date(reservation.pickupDate).toLocaleString(
+                        'en-US',
+                        {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: false, // Change to false for 24-hour format
+                        }
+                      )}
+                    </td>
+                    <td className="p-4 text-white">
+                      {new Date(reservation.returnDate).toLocaleString(
+                        'en-US',
+                        {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: false, // Change to false for 24-hour format
+                        }
+                      )}
+                    </td>
+                    <td className="p-4 text-white">
+                      {new Date(reservation.availabilityDate).toLocaleString(
+                        'en-US',
+                        {
+                          year: 'numeric',
+                          month: '2-digit',
+                          day: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          hour12: false, // Change to false for 24-hour format
+                        }
+                      )}
+                    </td>
+                    <td className="p-4 text-white">
+                      ${financials.total.toLocaleString()}
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          reservation.type === 'Final'
+                            ? 'bg-purple-500/10 text-purple-400'
+                            : 'bg-blue-500/10 text-blue-400'
+                        }`}
                       >
-                        <EyeOpenIcon className="h-4 w-4 text-gray-400" />
-                      </button>
-                      <button
-                        onClick={() => handleEditReservation(reservation)}
-                        className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                        {reservation.type}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          paymentStatus === 'Paid'
+                            ? 'bg-green-500/10 text-green-400'
+                            : paymentStatus === 'Partial'
+                            ? 'bg-yellow-500/10 text-yellow-400'
+                            : 'bg-red-500/10 text-red-400'
+                        }`}
                       >
-                        <Pencil1Icon className="h-4 w-4 text-gray-400" />
-                      </button>
-                      <button
-                        onClick={() => deleteReservationData(reservation._id)}
-                        className="p-1 hover:bg-white/10 rounded-lg transition-colors"
-                      >
-                        <TrashIcon className="h-4 w-4 text-gray-400" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
+                        {paymentStatus}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center justify-end">
+                        <button
+                          onClick={() => handleViewReservation(reservation, index)}
+                          className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                        >
+                          <EyeOpenIcon className="h-4 w-4 text-gray-400" />
+                        </button>
+                        <button
+                          onClick={() => handleEditReservation(reservation, index)}
+                          className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                        >
+                          <Pencil1Icon className="h-4 w-4 text-gray-400" />
+                        </button>
+                        <button
+                          onClick={() => deleteReservationData(reservation._id)}
+                          className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                        >
+                          <TrashIcon className="h-4 w-4 text-gray-400" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>

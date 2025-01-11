@@ -32,7 +32,7 @@ const CustomerReservations = ({ reservations }) => {
           {reservations?.map((reservation, index) => {
             const mainItem = reservation.items[0]; // Get first item for display
             return (
-              <tr key={reservation.id} className="hover:bg-white/5">
+              <tr key={reservation._id} className="hover:bg-white/5">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                   #{index + 1}
                 </td>

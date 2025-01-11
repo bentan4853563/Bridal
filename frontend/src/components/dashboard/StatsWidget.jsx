@@ -1,4 +1,7 @@
+import React from 'react'
+import PropTypes from 'prop-types';
 import { ArrowUpIcon, ArrowDownIcon } from '@radix-ui/react-icons'
+
 
 const StatsWidget = ({ stats }) => {
   return (
@@ -14,7 +17,7 @@ const StatsWidget = ({ stats }) => {
               <div className="p-2 bg-white/10 rounded-lg">
                 <Icon className="h-6 w-6 text-white" />
               </div>
-              <div className={`flex items-center gap-1 text-sm ${
+              {stat.title !== "Dress" && <div className={`flex items-center gap-1 text-sm ${
                 stat.trend === 'up' ? 'text-green-400' : 'text-red-400'
               }`}>
                 {stat.trend === 'up' ? (
@@ -23,7 +26,7 @@ const StatsWidget = ({ stats }) => {
                   <ArrowDownIcon className="h-4 w-4" />
                 )}
                 {stat.change}
-              </div>
+              </div>}
             </div>
             <div>
               <p className="text-sm text-gray-400">{stat.title}</p>
@@ -35,5 +38,10 @@ const StatsWidget = ({ stats }) => {
     </div>
   )
 }
+
+// Define prop types
+StatsWidget.propTypes = {
+  stats: PropTypes.array,
+};
 
 export default StatsWidget 

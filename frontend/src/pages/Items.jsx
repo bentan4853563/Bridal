@@ -43,7 +43,6 @@ const Items = () => {
   // Add this useEffect to handle navigation from Quick Actions
   useEffect(() => {
     if (location.state?.showAddModal) {
-      console.log("location.state :>> ", location.state);
       setShowAddModal(true);
       // Clear the state after showing modal
       window.history.replaceState({}, document.title);
@@ -130,7 +129,7 @@ const Items = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-8">
+    <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">

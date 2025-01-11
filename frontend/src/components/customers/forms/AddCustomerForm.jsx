@@ -13,7 +13,7 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
     whatsapp: "",
     email: "",
     weddingDate: "",
-    weddingTime: "",
+    weddingTime: "00:00",
     weddingLocation: "",
     type: "Client",
   });
@@ -58,7 +58,7 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-200">Surname</label>
+            <label className="text-sm font-medium text-gray-200">Email</label>
             <Input
               type="email"
               name="email"

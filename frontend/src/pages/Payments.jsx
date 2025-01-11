@@ -37,18 +37,18 @@ const Payments = () => {
   );
   const totalPages = Math.ceil(filteredPayments?.length / itemsPerPage);
 
-  const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case "paid":
-        return "bg-green-500/10 text-green-500";
-      case "pending":
-        return "bg-yellow-500/10 text-yellow-500";
-      case "cancelled":
-        return "bg-red-500/10 text-red-500";
-      default:
-        return "bg-gray-500/10 text-gray-500";
-    }
-  };
+  // const getStatusColor = (status) => {
+  //   switch (status.toLowerCase()) {
+  //     case "paid":
+  //       return "bg-green-500/10 text-green-500";
+  //     case "pending":
+  //       return "bg-yellow-500/10 text-yellow-500";
+  //     case "cancelled":
+  //       return "bg-red-500/10 text-red-500";
+  //     default:
+  //       return "bg-gray-500/10 text-gray-500";
+  //   }
+  // };
 
   const handleRowClick = (paymentId) => {
     navigate(`/payment/${paymentId}`);

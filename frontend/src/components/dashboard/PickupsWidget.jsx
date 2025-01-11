@@ -1,16 +1,16 @@
-import { 
-  CalendarIcon, 
-  ClockIcon,
-  ArrowUpIcon 
-} from '@radix-ui/react-icons'
-import * as Popover from '@radix-ui/react-popover'
+import React from 'react'
+// import { 
+//   CalendarIcon, 
+//   ClockIcon,
+//   ArrowUpIcon 
+// } from '@radix-ui/react-icons'
+import PropTypes from "prop-types";
+import * as Popover from '@radix-ui/react-popover';
 
 const PickupsWidget = ({ 
   pickups, 
-  dateRange, 
   activeRange, 
   onRangeChange, 
-  onDateChange,
   predefinedRanges 
 }) => {
   return (
@@ -32,7 +32,7 @@ const PickupsWidget = ({
                 side="bottom"
               >
                 <div className="space-y-1">
-                  {Object.keys(predefinedRanges).map(range => (
+                  {Object.keys(predefinedRanges).map((range) => (
                     <button
                       key={range}
                       onClick={() => {
@@ -42,8 +42,8 @@ const PickupsWidget = ({
                         document.dispatchEvent(closeEvent);
                       }}
                       className={`w-full px-3 py-2 text-sm rounded-lg text-left transition-colors ${
-                        activeRange === range 
-                          ? 'bg-blue-500 text-white' 
+                        activeRange === range
+                          ? 'bg-blue-500 text-white'
                           : 'text-gray-400 hover:bg-white/5'
                       }`}
                     >
@@ -55,32 +55,52 @@ const PickupsWidget = ({
             </Popover.Portal>
           </Popover.Root>
         </div>
-        
+
         <div className="space-y-4">
-          {pickups?.map(pickup => (
-            <div 
-              key={pickup.id}
+          {pickups?.map((reservation) => (
+            <div
+              key={reservation._id}
               className="flex items-center justify-between p-4 rounded-lg bg-white/5"
             >
               <div>
-                <h3 className="font-medium text-white">{pickup.customerName}</h3>
-                <p className="text-sm text-gray-400">{pickup.date}</p>
+                <h3 className="font-medium text-white">
+                  {reservation.client.name}{" "}{reservation.client.surname}
+                </h3>
+                <p className="text-sm text-gray-400">
+                  {new Date(reservation.pickupDate).toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false, // Change to false for 24-hour format
+                  })}
+                </p>
                 <div className="mt-1">
-                  {pickup.items?.map(item => (
-                    <span key={item.id} className="inline-block text-xs text-gray-400 mr-2">
-                      {item.name} {item.size ? `(${item.size})` : ''}
+                  {reservation.items?.map((item) => (
+                    <span
+                      key={item._id}
+                      className="inline-block text-xs text-gray-400 mr-2"
+                    >
+                      {item.name}
                     </span>
                   ))}
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-400">{pickup.items.length} items</span>
-                <span className={`px-2 py-1 text-xs rounded-full ${
-                  pickup.status === 'Confirmed' ? 'bg-green-500/20 text-green-400' :
-                  pickup.status === 'Pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                  'bg-blue-500/20 text-blue-400'
-                }`}>
-                  {pickup.status}
+                <span className="text-sm text-gray-400">
+                  {reservation.items.length} items
+                </span>
+                <span
+                  className={`px-2 py-1 text-xs rounded-full ${
+                    reservation.status === 'Confirmed'
+                      ? 'bg-green-500/20 text-green-400'
+                      : reservation.status === 'Pending'
+                      ? 'bg-yellow-500/20 text-yellow-400'
+                      : 'bg-blue-500/20 text-blue-400'
+                  }`}
+                >
+                  {reservation.status}
                 </span>
               </div>
             </div>
@@ -89,6 +109,16 @@ const PickupsWidget = ({
       </div>
     </div>
   );
+};
+
+// Define prop types
+PickupsWidget.propTypes = {
+  className: PropTypes.string,
+  pickups: PropTypes.array,
+  activeRange: PropTypes.string,
+  onRangeChange: PropTypes.func,
+  onDateChange: PropTypes.func,
+  predefinedRanges: PropTypes.array,
 };
 
 export default PickupsWidget 

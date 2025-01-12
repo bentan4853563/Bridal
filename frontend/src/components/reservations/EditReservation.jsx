@@ -297,7 +297,9 @@ const EditReservation = ({ isOpen, onClose, reservation }) => {
 
       {selectedClient && (
         <div className="bg-white/5 p-4 rounded-lg space-y-2">
-          <p className="text-white font-medium">{selectedClient.name}</p>
+          <p className="text-white font-medium">
+            {selectedClient.name} {selectedClient.surname}
+          </p>
           <p className="text-sm text-gray-400">{selectedClient.phone}</p>
           <p className="text-sm text-gray-400">
             Wedding Date: {selectedClient.weddingDate}

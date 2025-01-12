@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Cross2Icon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { format, addDays, subDays } from 'date-fns';
+import { format, addDays, subDays, differenceInDays } from 'date-fns';
 import { useSelector } from 'react-redux';
 import { addBaseURL } from '../../utils/updateURL';
 import { handleReserve } from '../../actions/reservation';
@@ -21,6 +21,7 @@ const AddReservation = ({ isOpen, onClose }) => {
     type: 'Final',
     clientId: '',
     items: [],
+    weddingDate: '',
     pickupDate: '',
     returnDate: '',
     availabilityDate: '',
@@ -55,6 +56,12 @@ const AddReservation = ({ isOpen, onClose }) => {
     { number: 2, title: 'Items & Dates' },
     { number: 3, title: 'Financial Details' },
   ];
+
+  useEffect(() => {
+    if(selectedClient) {
+      setFormData(prev => ({...prev, weddingDate: selectedClient.weddingDate}))
+    }
+  }, [selectedClient])
 
   // Update search functionality
   // useEffect(() => {
@@ -337,7 +344,7 @@ const AddReservation = ({ isOpen, onClose }) => {
   // Add effect to update pickup and return dates when buffer times or wedding date changes
   useEffect(() => {
     if (selectedClient?.weddingDate) {
-      const weddingDate = new Date(selectedClient.weddingDate);
+      const weddingDate = formData.weddingDate;
       const pickupDate = subDays(weddingDate, formData.bufferBefore);
       const returnDate = addDays(weddingDate, formData.bufferAfter);
       const availabilityDate = addDays(weddingDate, formData.availability + formData.bufferAfter);
@@ -350,7 +357,7 @@ const AddReservation = ({ isOpen, onClose }) => {
       }));
     }
   }, [
-    selectedClient?.weddingDate,
+    formData.weddingDate,
     formData.bufferBefore,
     formData.bufferAfter,
     formData.availability,
@@ -398,9 +405,17 @@ const AddReservation = ({ isOpen, onClose }) => {
         <div className="bg-white/5 rounded-lg p-4 space-y-4">
           <div>
             <p className="text-sm text-gray-400">Wedding Date</p>
-            <p className="text-lg font-medium text-white">
+            {/* <p className="text-lg font-medium text-white">
               {format(new Date(selectedClient.weddingDate), 'PPP')}
-            </p>
+            </p> */}
+            <input
+              type="date"
+              value={formData.weddingDate}
+              onChange={(e) =>
+                setFormData({ ...formData, weddingDate: e.target.value })
+              }
+              className="w-full px-4 py-2 rounded-md border border-white/20 bg-white/10 text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+            />
           </div>
 
           <div className="grid grid-cols-3 gap-4">
@@ -836,6 +851,7 @@ const AddReservation = ({ isOpen, onClose }) => {
     const financials = calculateFinancials();
 
     try {
+      const diffDays = differenceInDays(formData.weddingDate, selectedClient.weddingDate)
       // Create the reservation object matching the actual data structure
       const reservationData = {
         client: selectedClient._id,
@@ -854,15 +870,15 @@ const AddReservation = ({ isOpen, onClose }) => {
         total: financials.total,
         payments: [], // Will be populated later
         notes: formData.notes,
-        bufferAfter: formData.bufferAfter,
+        bufferAfter: formData.bufferAfter + diffDays,
         bufferBefore: formData.bufferBefore,
-        availability: formData.availability
+        availability: formData.availability,
       };
 
       handleReserve(reservationData, (newReservation) => {
         dispatch(addReservation(newReservation));
-        onClose();
         setStep(1);
+        onClose();
       });
     } catch (error) {
       console.error('Error creating reservation:', error);

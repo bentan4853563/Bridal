@@ -259,7 +259,9 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
                     Availability Date
                   </label>
                   <p className="text-white font-medium">
-                    {new Date(reservation.availabilityDate).toLocaleDateString()}
+                    {new Date(
+                      reservation.availabilityDate
+                    ).toLocaleDateString()}
                   </p>
                 </div>
                 <div>
@@ -267,11 +269,14 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
                     Availability Time
                   </label>
                   <p className="text-white font-medium">
-                    {new Date(reservation.availabilityDate).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: false,
-                    })}
+                    {new Date(reservation.availabilityDate).toLocaleTimeString(
+                      [],
+                      {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                      }
+                    )}
                   </p>
                 </div>
               </div>
@@ -279,7 +284,8 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
                 <label className="text-sm text-gray-400">Buffer Days</label>
                 <p className="text-white font-medium">
                   Before: {reservation.bufferBefore} days | After:{' '}
-                  {reservation.bufferAfter} days | Availability: {reservation.availability} days
+                  {reservation.bufferAfter} days | Availability:{' '}
+                  {reservation.availability} days
                 </p>
               </div>
             </div>
@@ -487,9 +493,9 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
           <div className="flex items-center gap-2">
             <a
               onClick={() => {
-                handleDownloadWeddingDressRentalContract(reservation)
+                handleDownloadWeddingDressRentalContract(reservation);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm font-medium transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm font-medium transition-colors cursor-pointer"
             >
               <DownloadIcon className="h-5 w-5" />
               Download Contract

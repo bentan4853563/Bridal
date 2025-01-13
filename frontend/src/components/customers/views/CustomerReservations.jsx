@@ -55,9 +55,9 @@ const CustomerReservations = ({ reservations }) => {
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                   {reservation.service}
-                </td>
+                </td> */}
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                   {reservation.createdAt.split('T')[0]}
                 </td>

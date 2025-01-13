@@ -118,7 +118,7 @@ ReturnsWidget.propTypes = {
   activeRange: PropTypes.string,
   onRangeChange: PropTypes.func,
   onDateChange: PropTypes.func,
-  predefinedRanges: PropTypes.array,
+  predefinedRanges: PropTypes.object,
 };
 
 export default ReturnsWidget; 

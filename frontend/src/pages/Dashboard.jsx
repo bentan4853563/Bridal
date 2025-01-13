@@ -72,10 +72,10 @@ const DashboardContent = () => {
   const reservations = useSelector((state) => state.reservation.reservations);
   const payments = useSelector((state) => state.payment.payments);
 
-  const activeReservations = reservations.filter(
+  const activeReservations = reservations?.filter(
     (reservation) => new Date(reservation.availabilityDate) > new Date()
   );
-  const totalPayments = payments.reduce(
+  const totalPayments = payments?.reduce(
     (total, payment) => total + payment.amount,
     0
   );
@@ -221,14 +221,14 @@ const DashboardContent = () => {
     );
 
     // Count of customers in the previous month
-    const previousMonthCount = customers.filter(
+    const previousMonthCount = customers?.filter(
       (customer) =>
         new Date(customer.createdAt) >= startOfPreviousMonth &&
         new Date(customer.createdAt) < startOfCurrentMonth
     ).length;
 
     // Count of customers in the current month
-    const currentMonthCount = customers.filter(
+    const currentMonthCount = customers?.filter(
       (customer) => new Date(customer.createdAt) >= startOfCurrentMonth
     ).length;
 
@@ -260,13 +260,11 @@ const DashboardContent = () => {
     );
 
     // Calculate total payments for the current month
-    const currentAmount = payments
-      .filter((payment) => new Date(payment.createdAt) >= startOfCurrentMonth)
+    const currentAmount = payments?.filter((payment) => new Date(payment.createdAt) >= startOfCurrentMonth)
       .reduce((total, payment) => total + payment.amount, 0);
 
     // Calculate total payments for the previous month
-    const previousMonthAmount = payments
-      .filter((payment) => new Date(payment.createdAt) < startOfCurrentMonth)
+    const previousMonthAmount = payments?.filter((payment) => new Date(payment.createdAt) < startOfCurrentMonth)
       .reduce((total, payment) => total + payment.amount, 0);
 
     // Calculate change value
@@ -298,7 +296,7 @@ const DashboardContent = () => {
     );
 
     // Calculate current active reservations
-    const currentActiveAmount = activeReservations.length;
+    const currentActiveAmount = activeReservations?.length;
 
     // Calculate previous month's active reservations
     const startOfPreviousMonth = new Date(
@@ -338,7 +336,7 @@ const DashboardContent = () => {
   const stats = [
     {
       title: 'Total Customers',
-      value: customers.length,
+      value: customers?.length,
       change: getChangeOfCustomer().value,
       trend: getChangeOfCustomer().trend,
       icon: PersonIcon,
@@ -352,7 +350,7 @@ const DashboardContent = () => {
     },
     {
       title: 'Active Reservations',
-      value: activeReservations.length,
+      value: activeReservations?.length,
       change: getActivationChange().value,
       trend: getActivationChange().trend,
       icon: CalendarIcon,

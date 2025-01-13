@@ -23,6 +23,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "js-file-downloader": "^1.1.25",
+    "jspdf": "^2.5.2",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-big-calendar": "^1.17.1",

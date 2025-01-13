@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Input } from '../../ui/Input';
-import { Button } from "../../ui/Button";
-import AttachmentsSection from "../../shared/AttachmentsSection";
+import { Button } from '../../ui/Button';
+import AttachmentsSection from '../../shared/AttachmentsSection';
 
 const EditCustomerForm = ({
   customer,
@@ -16,12 +16,13 @@ const EditCustomerForm = ({
     surname: customer.surname,
     email: customer.email,
     address: customer.address,
-    weddingCity: customer.weddingCity,
+    idNumber: customer.idNumber,
     phone: customer.phone,
     whatsapp: customer.whatsapp,
     weddingDate: customer.weddingDate,
     weddingTime: customer.weddingTime,
     weddingLocation: customer.weddingLocation,
+    weddingCity: customer.weddingCity,
     type: customer.type,
     attachments: customer.attachments,
   });
@@ -46,9 +47,9 @@ const EditCustomerForm = ({
       // Check if the value is an array (attachments)
       if (Array.isArray(formData[key])) {
         formData[key].forEach((file, index) => {
-          formDataToSend.append(`attachments[${index}][name]`, file.name); 
-          formDataToSend.append(`attachments[${index}][size]`, file.size); 
-          formDataToSend.append(`attachments[${index}][link]`, file.link); 
+          formDataToSend.append(`attachments[${index}][name]`, file.name);
+          formDataToSend.append(`attachments[${index}][size]`, file.size);
+          formDataToSend.append(`attachments[${index}][link]`, file.link);
         });
       } else {
         formDataToSend.append(key, formData[key]);
@@ -57,7 +58,7 @@ const EditCustomerForm = ({
 
     // Append newFiles if there are any
     newFiles.forEach((file) => {
-      formDataToSend.append("newFiles", file);
+      formDataToSend.append('newFiles', file);
     });
 
     // Call the onSubmit function with the FormData
@@ -112,9 +113,7 @@ const EditCustomerForm = ({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-200">
-                Email
-              </label>
+              <label className="text-sm font-medium text-gray-200">Email</label>
               <Input
                 type="email"
                 name="email"
@@ -139,11 +138,13 @@ const EditCustomerForm = ({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-200">City</label>
+              <label className="text-sm font-medium text-gray-200">
+                CIN/PASSPORT ID
+              </label>
               <Input
-                type="text"
-                name="city"
-                value={formData.weddingCity}
+                type="idNumber"
+                name="idNumber"
+                value={formData.idNumber}
                 onChange={handleChange}
                 required
               />
@@ -217,6 +218,20 @@ const EditCustomerForm = ({
             </div>
 
             <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-200">
+                {' '}
+                Wedding City
+              </label>
+              <Input
+                type="text"
+                name="city"
+                value={formData.weddingCity}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
               <label className="text-sm font-medium text-gray-200">Type</label>
               <select
                 name="type"
@@ -271,7 +286,7 @@ const EditCustomerForm = ({
                 <span>Saving...</span>
               </div>
             ) : (
-              "Save Changes"
+              'Save Changes'
             )}
           </Button>
         </div>

@@ -13,6 +13,7 @@ const CustomerSchema = new mongoose.Schema(
     surname: { type: String, required: true },
     email: { type: String, required: true },
     address: { type: String, required: true },
+    idNumber: { type: String, required: true },
     phone: { type: String, required: true },
     weddingCity: { type: String, required: true },
     whatsapp: { type: String },

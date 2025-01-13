@@ -8,12 +8,12 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
     name: "",
     surname: "",
     address: "",
-    weddingCity: "",
     phone: "",
     whatsapp: "",
     email: "",
     weddingDate: "",
     weddingTime: "00:00",
+    weddingCity: "",
     weddingLocation: "",
     type: "Client",
   });
@@ -81,11 +81,14 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-200">City</label>
+            <label className="text-sm font-medium text-gray-200">
+              {' '}
+              CIN/PASSPORT ID
+            </label>
             <Input
-              type="text"
-              name="weddingCity"
-              value={formData.weddingCity}
+              type="idNumber"
+              name="idNumber"
+              value={formData.idNumber}
               onChange={handleChange}
               required
             />
@@ -152,6 +155,19 @@ const AddCustomerForm = ({ onSubmit, onCancel }) => {
               type="text"
               name="weddingLocation"
               value={formData.weddingLocation}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-200">
+              Wedding City
+            </label>
+            <Input
+              type="text"
+              name="weddingCity"
+              value={formData.weddingCity}
               onChange={handleChange}
               required
             />

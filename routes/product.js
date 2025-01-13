@@ -1,4 +1,6 @@
 const express = require('express');
+const path = require('path');
+const fs = require('fs');
 const multer = require('multer');
 const router = express.Router();
 require('dotenv').config();
@@ -125,15 +127,24 @@ router.put(
       const { id } = req.params;
       const updatedData = req.body;
 
+      const existingProduct = await Product.findById(id);
+
       // Update primary photo if provided
       if (req.files.newPrimaryPhoto && req.files.newPrimaryPhoto.length > 0) {
+        // Remove files from the filesystem
+        const primaryPhotoPath = path.join(
+          __dirname,
+          '../uploads',
+          updatedData.primaryPhoto
+        );
+        fs.unlink(primaryPhotoPath, (err) => {
+          if (err) console.error('Error deleting primary photo:', err);
+        });
+
         updatedData.primaryPhoto = req.files.newPrimaryPhoto[0].path.replace(
           'uploads',
           ''
         );
-      } else if (!updatedData.primaryPhoto) {
-        // If no new primary photo and no existing image, keep it as is
-        updatedData.primaryPhoto = updatedData.primaryPhoto || null; // or keep existing value
       }
 
       // Ensure secondaryImages is an array
@@ -146,18 +157,27 @@ router.put(
         const newSecondaryImages = req.files.newSecondPhotos?.map((file) =>
           file.path.replace('uploads', '')
         );
+        // Didn't updated secondary image urls
         const existingImages =
           updatedData.secondaryImages?.filter(
             (url) => !url.includes(front_url)
           ) || [];
+
         updatedData.secondaryImages = [
           ...existingImages,
           ...newSecondaryImages,
         ];
-      } else {
-        // If no new secondary images, retain existing ones
-        updatedData.secondaryImages = updatedData.secondaryImages || [];
       }
+      // Remove files
+      const removedImages = existingProduct.secondaryImages.filter(
+        (url) => !updatedData.secondaryImages.includes(url)
+      );
+      removedImages.forEach((image) => {
+        const imagePath = path.join(__dirname, '../uploads', image);
+        fs.unlink(imagePath, (err) => {
+          if (err) console.error('Error deleting secondary image:', err);
+        });
+      });
 
       // Ensure secondaryImages is an array
       updatedData.videoUrls = Array.isArray(updatedData.videoUrls)
@@ -169,12 +189,26 @@ router.put(
           file.path.replace('uploads', '')
         );
         const existingVideos =
-          updatedData.videoUrls?.filter((url) => url.includes(front_url)) || [];
+          updatedData.videoUrls?.filter((url) => !url.includes(front_url)) ||
+          [];
+
+        console.log('updatedData.videoUrls :>> ', updatedData.videoUrls);
+
         updatedData.videoUrls = [...existingVideos, ...newVideoUrls];
-      } else {
-        // If no new videos, retain existing ones
-        updatedData.videoUrls = updatedData.videoUrls || [];
       }
+
+      // Remove files
+      const removedVideos = existingProduct.videoUrls.filter(
+        (url) => !updatedData.videoUrls.includes(url)
+      );
+      console.log('removedVideos :>> ', removedVideos);
+
+      removedVideos.forEach((video) => {
+        const videoPath = path.join(__dirname, '../uploads', video);
+        fs.unlink(videoPath, (err) => {
+          if (err) console.error('Error deleting video:', err);
+        });
+      });
 
       // Update the product with the new data
       const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, {
@@ -202,6 +236,32 @@ router.delete('/delete/:id', async (req, res) => {
     if (!deletedProduct) {
       return res.status(404).json({ message: 'Product not found' });
     }
+
+    // Remove files from the filesystem
+    const primaryPhotoPath = path.join(
+      __dirname,
+      '../uploads',
+      deletedProduct.primaryPhoto
+    );
+
+    fs.unlink(primaryPhotoPath, (err) => {
+      if (err) console.error('Error deleting primary photo:', err);
+    });
+
+    deletedProduct.secondaryImages.forEach((image) => {
+      const imagePath = path.join(__dirname, '../uploads', image);
+      fs.unlink(imagePath, (err) => {
+        if (err) console.error('Error deleting secondary image:', err);
+      });
+    });
+
+    deletedProduct.videoUrls.forEach((video) => {
+      const videoPath = path.join(__dirname, '../uploads', video);
+      fs.unlink(videoPath, (err) => {
+        if (err) console.error('Error deleting video:', err);
+      });
+    });
+
     res.json({
       message: 'Product deleted successfully',
     });

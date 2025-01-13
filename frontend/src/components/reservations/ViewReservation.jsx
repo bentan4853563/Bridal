@@ -7,6 +7,7 @@ import { Cross2Icon, DownloadIcon, PlusIcon } from '@radix-ui/react-icons';
 
 import { addBaseURL } from '../../utils/updateURL';
 import AddPayment from '../../pages/AddPayment';
+import handleDownloadWeddingDressRentalContract from '../../utils/downloadContract';
 
 const ViewReservation = ({ isOpen, onClose, reservation }) => {
   const payments = useSelector((state) => state.payment.payments);
@@ -486,7 +487,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
           <div className="flex items-center gap-2">
             <a
               onClick={() => {
-                /* Download/Print contract logic */
+                handleDownloadWeddingDressRentalContract(reservation)
               }}
               className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white text-sm font-medium transition-colors"
             >

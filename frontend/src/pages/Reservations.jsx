@@ -184,235 +184,236 @@ const Reservations = () => {
 
       {/* Updated table with reordered columns */}
       <div className="bg-white/5 rounded-lg overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-white/10">
-              {columnVisibility.id && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  ID
-                </th>
-              )}
-              {columnVisibility.createdAt && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  Created At
-                </th>
-              )}
-              {columnVisibility.clientName && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  Client Name
-                </th>
-              )}
-              {columnVisibility.item && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  Item
-                </th>
-              )}
-              {columnVisibility.weddingDate && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  Wedding Date
-                </th>
-              )}
-              {columnVisibility.pickupDate && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  Pickup Date
-                </th>
-              )}
-              {columnVisibility.returnDate && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  Return Date
-                </th>
-              )}
-              {columnVisibility.availabilityDate && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  Availability Date
-                </th>
-              )}
-              {columnVisibility.total && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  Total
-                </th>
-              )}
-              {columnVisibility.type && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  Type
-                </th>
-              )}
-              {columnVisibility.payment && (
-                <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
-                  Payment
-                </th>
-              )}
-              {columnVisibility.actions && (
-                <th className="text-right text-xs font-medium text-gray-400 uppercase p-4">
-                  Actions
-                </th>
-              )}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/10">
-            {currentItems.length > 0 &&
-              currentItems?.map((reservation, index) => {
-                const financials = calculateFinancials(reservation);
-                const paymentStatus = getPaymentStatus(reservation);
-                const mainItem =
-                  reservation.items?.length > 0 && reservation?.items[0]; // Get first item for display
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-white/10">
+                {columnVisibility.id && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    ID
+                  </th>
+                )}
+                {columnVisibility.createdAt && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    Created At
+                  </th>
+                )}
+                {columnVisibility.clientName && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    Client Name
+                  </th>
+                )}
+                {columnVisibility.item && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    Item
+                  </th>
+                )}
+                {columnVisibility.weddingDate && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    Wedding Date
+                  </th>
+                )}
+                {columnVisibility.pickupDate && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    Pickup Date
+                  </th>
+                )}
+                {columnVisibility.returnDate && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    Return Date
+                  </th>
+                )}
+                {columnVisibility.availabilityDate && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    Availability Date
+                  </th>
+                )}
+                {columnVisibility.total && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    Total
+                  </th>
+                )}
+                {columnVisibility.type && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    Type
+                  </th>
+                )}
+                {columnVisibility.payment && (
+                  <th className="text-left text-xs font-medium text-gray-400 uppercase p-4">
+                    Payment
+                  </th>
+                )}
+                {columnVisibility.actions && (
+                  <th className="text-right text-xs font-medium text-gray-400 uppercase p-4">
+                    Actions
+                  </th>
+                )}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/10">
+              {currentItems.length > 0 &&
+                currentItems?.map((reservation, index) => {
+                  const financials = calculateFinancials(reservation);
+                  const paymentStatus = getPaymentStatus(reservation);
+                  const mainItem =
+                    reservation.items?.length > 0 && reservation?.items[0]; // Get first item for display
 
-                return (
-                  <tr key={reservation._id} className="hover:bg-white/5">
-                    {columnVisibility.id && (
-                      <td className="p-4 text-white">#{index + 1}</td>
-                    )}
-                    {columnVisibility.createdAt && (
-                      <td className="p-4 text-white">
-                        {new Date(reservation.createdAt).toLocaleDateString()}
-                      </td>
-                    )}
-                    {columnVisibility.clientName && (
-                      <td className="p-4 text-white">
-                        {reservation.client?.name}
-                      </td>
-                    )}
-                    {columnVisibility.item && (
-                      <td className="p-4">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={addBaseURL(mainItem.primaryPhoto)}
-                            alt={mainItem.name}
-                            className="h-10 w-10 rounded-lg object-cover"
-                          />
-                          <div className="flex flex-col">
-                            <span className="text-white text-sm">
-                              {mainItem.name}
-                            </span>
-                            {reservation.items?.length > 1 && (
-                              <span className="text-gray-400 text-xs">
-                                +{reservation.items.length - 1} more items
+                  return (
+                    <tr key={reservation._id} className="hover:bg-white/5">
+                      {columnVisibility.id && (
+                        <td className="p-4 text-white">#{index + 1}</td>
+                      )}
+                      {columnVisibility.createdAt && (
+                        <td className="p-4 text-white">
+                          {new Date(reservation.createdAt).toLocaleDateString()}
+                        </td>
+                      )}
+                      {columnVisibility.clientName && (
+                        <td className="p-4 text-white">
+                          {reservation.client?.name}
+                        </td>
+                      )}
+                      {columnVisibility.item && (
+                        <td className="p-4">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={addBaseURL(mainItem.primaryPhoto)}
+                              alt={mainItem.name}
+                              className="h-10 w-10 rounded-lg object-cover"
+                            />
+                            <div className="flex flex-col">
+                              <span className="text-white text-sm">
+                                {mainItem.name}
                               </span>
-                            )}
+                              {reservation.items?.length > 1 && (
+                                <span className="text-gray-400 text-xs">
+                                  +{reservation.items.length - 1} more items
+                                </span>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                    )}
-                    {columnVisibility.weddingDate && (
-                      <td className="p-4 text-white">
-                        {new Date(
-                          reservation.client?.weddingDate
-                        ).toLocaleDateString()}
-                      </td>
-                    )}
-                    {columnVisibility.pickupDate && (
-                      <td className="p-4 text-white">
-                        {new Date(reservation.pickupDate).toLocaleString(
-                          'en-US',
-                          {
+                        </td>
+                      )}
+                      {columnVisibility.weddingDate && (
+                        <td className="p-4 text-white">
+                          {new Date(
+                            reservation.client?.weddingDate
+                          ).toLocaleDateString()}
+                        </td>
+                      )}
+                      {columnVisibility.pickupDate && (
+                        <td className="p-4 text-white">
+                          {new Date(reservation.pickupDate).toLocaleString(
+                            'en-US',
+                            {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: false,
+                            }
+                          )}
+                        </td>
+                      )}
+                      {columnVisibility.returnDate && (
+                        <td className="p-4 text-white">
+                          {new Date(reservation.returnDate).toLocaleString(
+                            'en-US',
+                            {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: false,
+                            }
+                          )}
+                        </td>
+                      )}
+                      {columnVisibility.availabilityDate && (
+                        <td className="p-4 text-white">
+                          {new Date(
+                            reservation.availabilityDate
+                          ).toLocaleString('en-US', {
                             year: 'numeric',
                             month: '2-digit',
                             day: '2-digit',
                             hour: '2-digit',
                             minute: '2-digit',
                             hour12: false,
-                          }
-                        )}
-                      </td>
-                    )}
-                    {columnVisibility.returnDate && (
-                      <td className="p-4 text-white">
-                        {new Date(reservation.returnDate).toLocaleString(
-                          'en-US',
-                          {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false,
-                          }
-                        )}
-                      </td>
-                    )}
-                    {columnVisibility.availabilityDate && (
-                      <td className="p-4 text-white">
-                        {new Date(reservation.availabilityDate).toLocaleString(
-                          'en-US',
-                          {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false,
-                          }
-                        )}
-                      </td>
-                    )}
-                    {columnVisibility.total && (
-                      <td className="p-4 text-white">
-                        ${financials.total.toLocaleString()}
-                      </td>
-                    )}
-                    {columnVisibility.type && (
-                      <td className="p-4">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            reservation.type === 'Final'
-                              ? 'bg-purple-500/10 text-purple-400'
-                              : 'bg-blue-500/10 text-blue-400'
-                          }`}
-                        >
-                          {reservation.type}
-                        </span>
-                      </td>
-                    )}
-                    {columnVisibility.payment && (
-                      <td className="p-4">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            paymentStatus === 'Paid'
-                              ? 'bg-green-500/10 text-green-400'
-                              : paymentStatus === 'Partial'
-                              ? 'bg-yellow-500/10 text-yellow-400'
-                              : 'bg-red-500/10 text-red-400'
-                          }`}
-                        >
-                          {paymentStatus}
-                        </span>
-                      </td>
-                    )}
-                    {columnVisibility.actions && (
-                      <td className="p-4">
-                        <div className="flex items-center justify-end">
-                          <button
-                            onClick={() =>
-                              handleViewReservation(index, reservation)
-                            }
-                            className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                          })}
+                        </td>
+                      )}
+                      {columnVisibility.total && (
+                        <td className="p-4 text-white">
+                          ${financials.total.toLocaleString()}
+                        </td>
+                      )}
+                      {columnVisibility.type && (
+                        <td className="p-4">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              reservation.type === 'Final'
+                                ? 'bg-purple-500/10 text-purple-400'
+                                : 'bg-blue-500/10 text-blue-400'
+                            }`}
                           >
-                            <EyeOpenIcon className="h-4 w-4 text-gray-400" />
-                          </button>
-                          <button
-                            onClick={() =>
-                              handleEditReservation(index, reservation)
-                            }
-                            className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                            {reservation.type}
+                          </span>
+                        </td>
+                      )}
+                      {columnVisibility.payment && (
+                        <td className="p-4">
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              paymentStatus === 'Paid'
+                                ? 'bg-green-500/10 text-green-400'
+                                : paymentStatus === 'Partial'
+                                ? 'bg-yellow-500/10 text-yellow-400'
+                                : 'bg-red-500/10 text-red-400'
+                            }`}
                           >
-                            <Pencil1Icon className="h-4 w-4 text-gray-400" />
-                          </button>
-                          <button
-                            onClick={() =>
-                              deleteReservationData(reservation._id)
-                            }
-                            className="p-1 hover:bg-white/10 rounded-lg transition-colors"
-                          >
-                            <TrashIcon className="h-4 w-4 text-gray-400" />
-                          </button>
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
+                            {paymentStatus}
+                          </span>
+                        </td>
+                      )}
+                      {columnVisibility.actions && (
+                        <td className="p-4">
+                          <div className="flex items-center justify-end">
+                            <button
+                              onClick={() =>
+                                handleViewReservation(index, reservation)
+                              }
+                              className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                            >
+                              <EyeOpenIcon className="h-4 w-4 text-gray-400" />
+                            </button>
+                            <button
+                              onClick={() =>
+                                handleEditReservation(index, reservation)
+                              }
+                              className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                            >
+                              <Pencil1Icon className="h-4 w-4 text-gray-400" />
+                            </button>
+                            <button
+                              onClick={() =>
+                                deleteReservationData(reservation._id)
+                              }
+                              className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+                            >
+                              <TrashIcon className="h-4 w-4 text-gray-400" />
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Pagination */}

@@ -115,9 +115,12 @@ const Customers = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Surname
                 </th>
-                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   CIN/Passport
-                </th> */}
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                   Phone
                 </th>
@@ -150,9 +153,12 @@ const Customers = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                     {customer.surname}
                   </td>
-                  {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    {customer.identification}
-                  </td> */}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                    {customer.email}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                    {customer.idNumber}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
                     {customer.phone}
                   </td>

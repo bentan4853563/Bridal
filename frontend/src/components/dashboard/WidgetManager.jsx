@@ -1,22 +1,31 @@
-import React from 'react'
+import React from 'react';
 import PropTypes from 'prop-types';
 import * as Popover from '@radix-ui/react-popover';
-import { LayoutIcon, CheckIcon, DragHandleDots2Icon } from '@radix-ui/react-icons'
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
+import {
+  LayoutIcon,
+  CheckIcon,
+  DragHandleDots2Icon,
+} from '@radix-ui/react-icons';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
-function WidgetManager({ widgets, visibleWidgets, onToggleWidget, onReorderWidgets }) {
+function WidgetManager({
+  widgets,
+  visibleWidgets,
+  onToggleWidget,
+  onReorderWidgets,
+}) {
   const handleDragEnd = (result) => {
-    if (!result.destination) return
-
-    const sourceIndex = result.source.index
-    const destinationIndex = result.destination.index
+    if (!result.destination) return;
+    console.log('result :>> ', result);
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
 
     onReorderWidgets({
       sourceIndex,
       destinationIndex,
-      draggableId: result.draggableId
-    })
-  }
+      draggableId: result.draggableId,
+    });
+  };
 
   return (
     <Popover.Root>
@@ -38,15 +47,15 @@ function WidgetManager({ widgets, visibleWidgets, onToggleWidget, onReorderWidge
             <DragDropContext onDragEnd={handleDragEnd}>
               <Droppable droppableId="widgets">
                 {(provided) => (
-                  <div 
+                  <div
                     className="space-y-2"
                     {...provided.droppableProps}
                     ref={provided.innerRef}
                   >
                     {widgets?.map((widget, index) => (
-                      <Draggable 
-                        key={widget.id} 
-                        draggableId={widget.id} 
+                      <Draggable
+                        key={widget.id}
+                        draggableId={widget.id}
                         index={index}
                       >
                         {(provided) => (
@@ -58,7 +67,9 @@ function WidgetManager({ widgets, visibleWidgets, onToggleWidget, onReorderWidge
                           >
                             <div className="flex items-center gap-2">
                               <DragHandleDots2Icon className="h-4 w-4 text-gray-400" />
-                              <span className="text-sm text-gray-400">{widget.label}</span>
+                              <span className="text-sm text-gray-400">
+                                {widget.label}
+                              </span>
                             </div>
                             <button
                               onClick={() => onToggleWidget(widget.id)}
@@ -86,7 +97,7 @@ function WidgetManager({ widgets, visibleWidgets, onToggleWidget, onReorderWidge
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
-  )
+  );
 }
 
 // Define prop types
@@ -98,4 +109,4 @@ WidgetManager.propTypes = {
   onReorderWidgets: PropTypes.func,
 };
 
-export default WidgetManager 
+export default WidgetManager;

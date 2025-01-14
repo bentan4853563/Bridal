@@ -102,13 +102,13 @@ const DashboardContent = () => {
 
   // Then use availableWidgets in your state
   const [visibleWidgets, setVisibleWidgets] = useState(() => {
-    const saved = localStorage.getItem('visibleWidgets');
-    return saved ? JSON.parse(saved) : availableWidgets?.map((w) => w.id);
+    // const saved = localStorage.getItem('visibleWidgets');
+    return availableWidgets?.map((w) => w.id);
   });
 
   const [widgetOrder, setWidgetOrder] = useState(() => {
-    const saved = localStorage.getItem('widgetOrder');
-    return saved ? JSON.parse(saved) : availableWidgets?.map((w) => w.id);
+    // const saved = localStorage.getItem('widgetOrder');
+    return availableWidgets?.map((w) => w.id);
   });
 
   const handleToggleWidget = (widgetId) => {
@@ -120,15 +120,21 @@ const DashboardContent = () => {
       return newVisibleWidgets;
     });
   };
-
+  
   const handleReorderWidgets = (result) => {
-    const { destinationIndex, draggableId } = result;
+    const { destinationIndex, sourceIndex, draggableId } = result;
 
+    // Create a copy of the current widget order
     const newOrder = Array.from(widgetOrder);
-    newOrder.splice(destinationIndex, 0, draggableId);
 
+    // Remove the item from the source index
+    const [movedWidget] = newOrder.splice(sourceIndex, 1);
+
+    // Insert the item at the destination index
+    newOrder.splice(destinationIndex, 0, movedWidget);
+
+    // Update the state with the new order
     setWidgetOrder(newOrder);
-    localStorage.setItem('widgetOrder', JSON.stringify(newOrder));
   };
 
   // const dateRangeOptions = [
@@ -244,9 +250,7 @@ const DashboardContent = () => {
 
     const trend = changeValue > 0 ? 'up' : 'down';
     const value =
-      percentage > 0
-        ? `+${parseInt(percentage)}%`
-        : `${parseInt(percentage)}%`;
+      percentage > 0 ? `+${parseInt(percentage)}%` : `${parseInt(percentage)}%`;
 
     return { trend, value };
   };
@@ -260,11 +264,13 @@ const DashboardContent = () => {
     );
 
     // Calculate total payments for the current month
-    const currentAmount = payments?.filter((payment) => new Date(payment.createdAt) >= startOfCurrentMonth)
+    const currentAmount = payments
+      ?.filter((payment) => new Date(payment.createdAt) >= startOfCurrentMonth)
       .reduce((total, payment) => total + payment.amount, 0);
 
     // Calculate total payments for the previous month
-    const previousMonthAmount = payments?.filter((payment) => new Date(payment.createdAt) < startOfCurrentMonth)
+    const previousMonthAmount = payments
+      ?.filter((payment) => new Date(payment.createdAt) < startOfCurrentMonth)
       .reduce((total, payment) => total + payment.amount, 0);
 
     // Calculate change value

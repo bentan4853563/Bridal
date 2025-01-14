@@ -1,26 +1,50 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   PlusIcon,
   Pencil1Icon,
   TrashIcon,
   EyeOpenIcon,
   MagnifyingGlassIcon,
-} from "@radix-ui/react-icons";
-import AddPayment from "./AddPayment";
-import Pagination from "../components/Pagination";
-import { handleDeletePayment } from "../actions/payment";
-import { deletePayment } from "../store/reducers/paymentSlice";
+  GridIcon,
+  // ListIcon,
+} from '@radix-ui/react-icons';
+import AddPayment from './AddPayment';
+import Pagination from '../components/Pagination';
+import { handleDeletePayment } from '../actions/payment';
+import { deletePayment } from '../store/reducers/paymentSlice';
 
 const Payments = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const payments = useSelector((state) => state.payment.payments);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  // Column visibility state
+  const [columnVisibility, setColumnVisibility] = useState({
+    id: true,
+    reference: true,
+    customer: true,
+    amount: true,
+    date: true,
+    paymentMethod: true,
+    type: true,
+    actions: true,
+  });
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Toggle column visibility
+  const toggleColumn = (column) => {
+    setColumnVisibility((prev) => ({
+      ...prev,
+      [column]: !prev[column],
+    }));
+  };
 
   const filteredPayments = payments?.filter(
     (payment) =>
@@ -37,19 +61,6 @@ const Payments = () => {
   );
   const totalPages = Math.ceil(filteredPayments?.length / itemsPerPage);
 
-  // const getStatusColor = (status) => {
-  //   switch (status.toLowerCase()) {
-  //     case "paid":
-  //       return "bg-green-500/10 text-green-500";
-  //     case "pending":
-  //       return "bg-yellow-500/10 text-yellow-500";
-  //     case "cancelled":
-  //       return "bg-red-500/10 text-red-500";
-  //     default:
-  //       return "bg-gray-500/10 text-gray-500";
-  //   }
-  // };
-
   const handleRowClick = (paymentId) => {
     navigate(`/payment/${paymentId}`);
   };
@@ -64,10 +75,10 @@ const Payments = () => {
   };
 
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this payment?")) {
+    if (window.confirm('Are you sure you want to delete this payment?')) {
       handleDeletePayment(id, () => {
-        dispatch(deletePayment(id))
-      })
+        dispatch(deletePayment(id));
+      });
     }
   };
 
@@ -97,41 +108,79 @@ const Payments = () => {
             className="w-full h-10 pl-9 pr-4 rounded-md border border-white/20 bg-white/10 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30"
           />
         </div>
+
+        {/* Column Visibility Dropdown */}
+        <div className="relative w-full flex justify-end">
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="px-4 py-2 bg-white/10 rounded-lg text-white text-sm font-medium"
+          >
+            Toggle Columns
+          </button>
+          {dropdownOpen && (
+            <div className="absolute top-12 z-20 bg-gray-200 rounded-lg shadow-lg p-4">
+              {Object.keys(columnVisibility).map((column) => (
+                <label key={column} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={columnVisibility[column]}
+                    onChange={() => toggleColumn(column)}
+                    className="mr-2"
+                  />
+                  {column.replace(/([A-Z])/g, ' $1')}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Payments Table */}
+      {/* Payments Table or Grid */}
       <div className="bg-white/10 backdrop-blur-lg rounded-lg border border-white/20 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/20">
-              <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
-                  Id
-                </th>
-                <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
-                  Reference
-                </th>
-                <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
-                  Customer
-                </th>
-                <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
-                  Amount
-                </th>
-                <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
-                  Date
-                </th>
-                <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
-                  Method
-                </th>
-                <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
-                  Type
-                </th>
-                {/* <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
-                  Status
-                </th> */}
-                <th className="text-right text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
-                  Actions
-                </th>
+                {columnVisibility.id && (
+                  <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
+                    Id
+                  </th>
+                )}
+                {columnVisibility.reference && (
+                  <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
+                    Reference
+                  </th>
+                )}
+                {columnVisibility.customer && (
+                  <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
+                    Customer
+                  </th>
+                )}
+                {columnVisibility.amount && (
+                  <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
+                    Amount
+                  </th>
+                )}
+                {columnVisibility.date && (
+                  <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
+                    Date
+                  </th>
+                )}
+                {columnVisibility.paymentMethod && (
+                  <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
+                    Method
+                  </th>
+                )}
+                {columnVisibility.type && (
+                  <th className="text-left text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
+                    Type
+                  </th>
+                )}
+                {columnVisibility.actions && (
+                  <th className="text-right text-xs font-medium text-gray-300 uppercase tracking-wider px-6 py-3">
+                    Actions
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
@@ -140,41 +189,45 @@ const Payments = () => {
                   key={payment.id}
                   className="hover:bg-white/5 transition-colors"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    #{index + 1}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    {payment.reference}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    {payment.client.name}{" "}{payment.client.surname}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    ${payment.amount.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    {new Date(payment.paymentDate).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    {payment.paymentMethod}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
-                    {payment.paymentType}
-                  </td>
-                  {/* <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
-                        payment.reservation.paymentStatus
-                      )}`}
-                    >
-                      {payment.reservation.paymentStatus}
-                    </span>
-                  </td> */}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
+                  {columnVisibility.id && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                      #{index + 1}
+                    </td>
+                  )}
+                  {columnVisibility.reference && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                      {payment.reference}
+                    </td>
+                  )}
+                  {columnVisibility.customer && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                      {payment.client.name} {payment.client.surname}
+                    </td>
+                  )}
+                  {columnVisibility.amount && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                      ${payment.amount.toLocaleString()}
+                    </td>
+                  )}
+                  {columnVisibility.date && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                      {new Date(payment.paymentDate).toLocaleDateString()}
+                    </td>
+                  )}
+                  {columnVisibility.paymentMethod && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                      {payment.paymentMethod}
+                    </td>
+                  )}
+                  {columnVisibility.type && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-white">
+                      {payment.paymentType}
+                    </td>
+                  )}
+                  {columnVisibility.actions && <td className="px-6 py-4 whitespace-nowrap text-sm text-white text-right">
                     <div className="flex justify-end space-x-2">
                       <button
                         className="p-1 hover:bg-white/10 rounded"
-                        title="View"
                         onClick={() => handleRowClick(payment._id)}
                       >
                         <EyeOpenIcon className="h-4 w-4 text-blue-400" />
@@ -197,7 +250,7 @@ const Payments = () => {
                         <TrashIcon className="h-4 w-4 text-red-400" />
                       </button>
                     </div>
-                  </td>
+                  </td>}
                 </tr>
               ))}
             </tbody>

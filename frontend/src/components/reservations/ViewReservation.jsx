@@ -144,7 +144,7 @@ const ViewReservation = ({ isOpen, onClose, reservation }) => {
               <div>
                 <label className="text-sm text-gray-400">Full Name</label>
                 <p className="text-white font-medium">
-                  {reservation.client.name}
+                  {reservation.client.name}{" "}{reservation.client.surname}
                 </p>
               </div>
               <div>

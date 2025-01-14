@@ -143,6 +143,10 @@ const Items = () => {
           </button>
         </div>
 
+        <div class="flex justify-center items-center h-screen">
+          <button class="hexagon-button">Click Me</button>
+        </div>
+
         {/* Filters */}
         <div className="flex gap-4 bg-white/5 p-4 rounded-lg">
           <select

@@ -69,3 +69,59 @@ option {
     transform: translateY(0);
   }
 }
+
+
+
+
+
+
+
+
+
+
+.hexagon-button {
+  position: relative;
+  width: 100px;
+  /* Adjust the size as needed */
+  height: 55px;
+  /* Adjust the size as needed */
+  background-color: #4A90E2;
+  /* Button color */
+  color: white;
+  /* Text color */
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  line-height: 55px;
+  /* Center text vertically */
+  transition: background-color 0.3s;
+}
+
+.hexagon-button:before,
+.hexagon-button:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  border-left: 50px solid transparent;
+  /* Half of width */
+  border-right: 50px solid transparent;
+  /* Half of width */
+}
+
+.hexagon-button:before {
+  bottom: 100%;
+  border-bottom: 30px solid #4A90E2;
+  /* Color of the top triangle */
+}
+
+.hexagon-button:after {
+  top: 100%;
+  border-top: 30px solid #4A90E2;
+  /* Color of the bottom triangle */
+}
+
+.hexagon-button:hover {
+  background-color: #357ABD;
+  /* Change color on hover */
+}

@@ -157,7 +157,7 @@ const Reservations = () => {
         </div>
 
         {/* Column Visibility Dropdown */}
-        <div className="relative z-100">
+        <div className="relative w-full flex justify-end">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="px-4 py-2 bg-white/10 rounded-lg text-white text-sm font-medium"
@@ -165,7 +165,7 @@ const Reservations = () => {
             Toggle Columns
           </button>
           {dropdownOpen && (
-            <div className="absolute bg-gray-200 rounded-lg shadow-lg p-4">
+            <div className="absolute top-12 bg-gray-200 rounded-lg shadow-lg p-4">
               {Object.keys(columnVisibility).map((column) => (
                 <label key={column} className="flex items-center">
                   <input
@@ -270,7 +270,8 @@ const Reservations = () => {
                       )}
                       {columnVisibility.clientName && (
                         <td className="p-4 text-white">
-                          {reservation.client?.name}
+                          {reservation.client?.name}{" "}
+                          {reservation.client?.surname}
                         </td>
                       )}
                       {columnVisibility.item && (
@@ -383,7 +384,7 @@ const Reservations = () => {
                           <div className="flex items-center justify-end">
                             <button
                               onClick={() =>
-                                handleViewReservation(index, reservation)
+                                handleViewReservation(index + 1, reservation)
                               }
                               className="p-1 hover:bg-white/10 rounded-lg transition-colors"
                             >
@@ -391,7 +392,7 @@ const Reservations = () => {
                             </button>
                             <button
                               onClick={() =>
-                                handleEditReservation(index, reservation)
+                                handleEditReservation(index + 1, reservation)
                               }
                               className="p-1 hover:bg-white/10 rounded-lg transition-colors"
                             >

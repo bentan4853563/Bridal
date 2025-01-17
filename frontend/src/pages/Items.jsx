@@ -142,7 +142,7 @@ const Items = () => {
             Add Item
           </button>
         </div>
-        
+
         {/* Filters */}
         <div className="flex gap-4 bg-white/5 p-4 rounded-lg">
           <select
@@ -232,6 +232,18 @@ const Items = () => {
                   <span className="text-gray-400">Buy Cost</span>
                   <span className="text-white font-medium">
                     ${item?.buyCost}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Sell Price</span>
+                  <span className="text-white font-medium">
+                    ${item?.sellPrice}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-400">Size</span>
+                  <span className="text-white font-medium">
+                    {item?.size}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-sm">

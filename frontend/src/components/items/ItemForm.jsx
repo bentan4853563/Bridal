@@ -11,6 +11,8 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
     videoUrls: [],
     rentalCost: '',
     buyCost: '',
+    sellPrice: 0,
+    size: 0,
     category: '',
     subCategory: '',
     quantity: 0,
@@ -121,7 +123,9 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
       formDataToSubmit.append('name', formData.name);
       formDataToSubmit.append('rentalCost', formData.rentalCost);
       formDataToSubmit.append('buyCost', formData.buyCost);
+      formDataToSubmit.append('sellPrice', formData.sellPrice);
       formDataToSubmit.append('category', formData.category);
+      formDataToSubmit.append('size', formData.size);
       formDataToSubmit.append('subCategory', formData.subCategory);
       formDataToSubmit.append('quantity', formData.quantity);
       formDataToSubmit.append('status', formData.status);
@@ -214,6 +218,45 @@ const ItemForm = ({ isOpen, onClose, onSubmit, initialData, categories }) => {
               />
               {errors.buyCost && (
                 <p className="text-xs text-red-400">{errors.buyCost}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-200">
+                Size
+              </label>
+              <input
+                type="number"
+                name="size"
+                value={formData.size}
+                onChange={handleChange}
+                min="0"
+                className={`w-full rounded-md border ${
+                  errors.size ? 'border-red-500' : 'border-white/20'
+                } bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20`}
+              />
+              {errors.size && (
+                <p className="text-xs text-red-400">{errors.size}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-200">
+                Sell Price ($)
+              </label>
+              <input
+                type="number"
+                name="sellPrice"
+                value={formData.sellPrice}
+                onChange={handleChange}
+                min="0"
+                className={`w-full rounded-md border ${
+                  errors.sellPrice ? 'border-red-500' : 'border-white/20'
+                } bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20`}
+              />
+              {errors.sellPrice && (
+                <p className="text-xs text-red-400">{errors.sellPrice}</p>
               )}
             </div>
           </div>

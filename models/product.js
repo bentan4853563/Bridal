@@ -27,6 +27,12 @@ const ProductSchema = new mongoose.Schema(
     buyCost: {
       type: Number,
     },
+    sellPrice: {
+      type: Number,
+    },
+    size: {
+      type: Number
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',

@@ -261,7 +261,7 @@ const PaymentView = () => {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-white truncate">{file.name}</p>
                     <p className="text-xs text-gray-400">
-                      {(file.size / 1024 / 1024).toFixed(2)} MB
+                      {Math.floor(file.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   </div>
 

@@ -19,10 +19,10 @@ const CustomerAttachments = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const imageFiles = attachments?.filter((file) =>
-    file.link.includes("images\\")
+    file.link.includes("images/")
   );
   const documentFiles = attachments?.filter((file) =>
-    file.link.includes("documents\\")
+    file.link.includes("documents/")
   );
 
   const handlePrevImage = () => {

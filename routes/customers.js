@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Determine the folder based on file type
     const ext = path.extname(file.originalname).toLowerCase();
-    if (['.png', '.jpg', '.jpeg', '.gif'].includes(ext)) {
+    if (['.png', '.jpg', '.jpeg', '.gif', 'webp'].includes(ext)) {
       cb(null, 'uploads/customers/images'); // Image files
     } else {
       cb(null, 'uploads/customers/documents'); // Document files
